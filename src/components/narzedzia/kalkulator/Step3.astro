@@ -1,0 +1,99 @@
+<div id="step-3" class="hidden step-content transition-opacity duration-500 relative">
+  
+    <div class="flex justify-end mb-4">
+        <button class="reset-btn text-sm text-gray-400 hover:text-red-500 underline decoration-dotted">Zacznij od nowa</button>
+    </div>
+
+    <h2 class="text-2xl font-bold text-airtur-dark mb-2 text-center">Krok 3: Audyt Efektywności Energetycznej</h2>
+    <p class="text-gray-500 text-center mb-8 max-w-2xl mx-auto">
+      Na podstawie poniższych danych obliczymy realne zapotrzebowanie energetyczne Twojego budynku.
+    </p>
+
+    <!-- 1. Rachunki -->
+    <div class="mb-8 bg-gray-50 p-6 rounded-2xl border border-gray-200">
+      <label class="block text-lg font-bold text-airtur-dark mb-2 text-center">
+        Średni miesięczny koszt ogrzewania (sezon zimowy):
+      </label>
+      <p class="text-sm text-gray-500 text-center mb-6">
+        Prosimy podać kwotę z rachunku. System automatycznie przeliczy ją na efektywną energię cieplną.
+      </p>
+      
+      <div class="flex items-center gap-4 mb-4">
+        <input type="number" id="bill-input" value="800" min="100" max="10000" step="50" class="w-28 px-3 py-2 text-2xl font-bold text-airtur-blue text-center bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-airtur-blue">
+        <input type="range" id="bill-slider" min="100" max="5000" step="50" value="800" class="flex-grow h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-airtur-blue">
+      </div>
+      <div class="flex justify-between text-xs text-gray-400 font-mono">
+        <span>100 zł</span>
+        <span>5000+ zł</span>
+      </div>
+    </div>
+
+    <!-- 2. Obecne źródło ciepła (Klucz do sprawności) -->
+    <div class="mb-10">
+      <p class="text-lg font-bold text-airtur-dark mb-4 text-center">Obecne źródło ogrzewania:</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <!-- data-fuel to klucz do cennika w JS -->
+        <button class="heat-btn w-full bg-white border-2 border-gray-200 rounded-xl p-4 text-center hover:border-airtur-blue transition-all duration-200 flex flex-col items-center justify-center gap-1" data-fuel="electric">
+          <span class="font-medium text-gray-700">Grzejniki elektryczne</span>
+          <span class="text-[10px] text-gray-400 uppercase tracking-wide">Mata / Piec akumulacyjny</span>
+        </button>
+        <button class="heat-btn w-full bg-white border-2 border-gray-200 rounded-xl p-4 text-center hover:border-airtur-blue transition-all duration-200 flex flex-col items-center justify-center gap-1" data-fuel="coal_old">
+            <span class="font-medium text-gray-700">Kocioł Węglowy</span>
+            <span class="text-[10px] text-gray-400 uppercase tracking-wide">Starego typu / Drewno</span>
+        </button>
+        <button class="heat-btn w-full bg-white border-2 border-gray-200 rounded-xl p-4 text-center hover:border-airtur-blue transition-all duration-200 flex flex-col items-center justify-center gap-1" data-fuel="pellet">
+            <span class="font-medium text-gray-700">Ekogroszek / Pellet</span>
+            <span class="text-[10px] text-gray-400 uppercase tracking-wide">Kocioł z podajnikiem</span>
+        </button>
+        <button class="heat-btn w-full bg-white border-2 border-gray-200 rounded-xl p-4 text-center hover:border-airtur-blue transition-all duration-200 flex flex-col items-center justify-center gap-1" data-fuel="gas">
+            <span class="font-medium text-gray-700">Gaz Ziemny</span>
+            <span class="text-[10px] text-gray-400 uppercase tracking-wide">Kocioł kondensacyjny</span>
+        </button>
+        <button class="heat-btn w-full bg-white border-2 border-gray-200 rounded-xl p-4 text-center hover:border-airtur-blue transition-all duration-200 flex flex-col items-center justify-center gap-1" data-fuel="oil">
+            <span class="font-medium text-gray-700">Olej Opałowy</span>
+            <span class="text-[10px] text-gray-400 uppercase tracking-wide">Własny zbiornik</span>
+        </button>
+        <button class="heat-btn w-full bg-white border-2 border-gray-200 rounded-xl p-4 text-center hover:border-airtur-blue transition-all duration-200 flex flex-col items-center justify-center gap-1" data-fuel="district">
+            <span class="font-medium text-gray-700">Ciepło Miejskie</span>
+            <span class="text-[10px] text-gray-400 uppercase tracking-wide">Systemowy węzeł</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. NOWOŚĆ: Poziom Komfortu (Korekta na niedogrzanie) -->
+    <div class="mb-12">
+        <p class="text-lg font-bold text-airtur-dark mb-4 text-center">Obecny komfort cieplny w pomieszczeniu:</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <label class="cursor-pointer group">
+                <input type="radio" name="comfort" value="low" class="peer sr-only">
+                <div class="p-4 rounded-xl border-2 border-gray-200 peer-checked:border-airtur-blue peer-checked:bg-blue-50 transition-all text-center h-full">
+                    <div class="font-bold text-gray-700 mb-1">Oszczędny</div>
+                    <div class="text-xs text-gray-500">Utrzymuję niższą temperaturę (< 20°C) ze względu na koszty.</div>
+                </div>
+            </label>
+            <label class="cursor-pointer group">
+                <input type="radio" name="comfort" value="standard" class="peer sr-only" checked>
+                <div class="p-4 rounded-xl border-2 border-gray-200 peer-checked:border-airtur-blue peer-checked:bg-blue-50 transition-all text-center h-full">
+                    <div class="font-bold text-gray-700 mb-1">Optymalny</div>
+                    <div class="text-xs text-gray-500">Standardowa temperatura pokojowa (ok. 21°C).</div>
+                </div>
+            </label>
+            <label class="cursor-pointer group">
+                <input type="radio" name="comfort" value="high" class="peer sr-only">
+                <div class="p-4 rounded-xl border-2 border-gray-200 peer-checked:border-airtur-blue peer-checked:bg-blue-50 transition-all text-center h-full">
+                    <div class="font-bold text-gray-700 mb-1">Wysoki</div>
+                    <div class="text-xs text-gray-500">Lubię ciepło, utrzymuję stałą, wysoką temperaturę (> 22°C).</div>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <button id="roi-btn" class="w-full bg-airtur-blue text-white font-bold py-5 rounded-xl hover:bg-opacity-90 transition shadow-lg text-xl uppercase tracking-wide transform hover:-translate-y-1">
+      PRZEPROWADŹ ANALIZĘ OSZCZĘDNOŚCI
+    </button>
+
+    <div class="mt-8 text-center">
+      <button class="back-btn text-gray-400 hover:text-airtur-dark underline text-sm" data-prev="2">← Wróć do Doboru Mocy</button>
+    </div>
+
+  </div>

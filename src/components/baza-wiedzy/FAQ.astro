@@ -1,0 +1,186 @@
+---
+// src/components/baza-wiedzy/FAQ.astro
+import { knowledgeData } from '../../data/knowledgeData';
+
+// Filtrujemy tylko pytania FAQ
+const faqs = knowledgeData.filter(item => item.type === 'faq');
+
+// Konfiguracja kategorii
+const categories = [
+  { id: 'all', label: 'Wszystkie' },
+  { id: 'ogolne', label: 'Ogólne' },
+  { id: 'montaz', label: 'Montaż' },
+  { id: 'finanse', label: 'Finanse' },
+  { id: 'zdrowie', label: 'Zdrowie' },
+];
+
+const defaultCategory = 'montaz';
+
+// Dane strukturalne dla Google
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.title,
+    "acceptedAnswer": { "@type": "Answer", "text": faq.answer }
+  }))
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+<!-- Kontener główny - usunięto <section> i paddingi, aby komponent wypełniał kolumnę gridu -->
+<div id="faq-section" class="w-full">
+  
+  <!-- Nagłówek sekcji i taby -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+      <h2 class="text-lg font-bold text-airtur-dark uppercase tracking-tight">Szybkie odpowiedzi</h2>
+
+      <div class="flex flex-wrap gap-1.5" id="faq-tabs">
+      {categories.map((cat) => (
+          <button 
+            class={`faq-tab-btn px-3 py-1 rounded-full text-[10px] font-bold border transition-all duration-300 ${cat.id === defaultCategory ? 'active bg-airtur-blue text-white border-airtur-blue' : 'bg-white text-gray-400 border-gray-100 hover:border-airtur-blue hover:text-airtur-blue'}`}
+            data-category={cat.id}
+          >
+            {cat.label}
+          </button>
+      ))}
+      </div>
+  </div>
+
+  <!-- Lista pytań -->
+  <div class="space-y-2.5" id="faq-container">
+    {faqs.map((faq) => (
+      <div 
+          id={faq.id} 
+          class={`faq-item border border-gray-100 rounded-xl overflow-hidden transition-all duration-300 hover:border-airtur-blue/30 bg-white shadow-sm scroll-mt-32 ${defaultCategory !== 'all' && faq.category !== defaultCategory ? 'hidden' : ''}`} 
+          data-category={faq.category}
+      >
+        <button class="faq-toggle w-full flex justify-between items-center p-4 text-left focus:outline-none group">
+          <span class="text-sm font-bold text-airtur-dark group-hover:text-airtur-blue pr-4 leading-snug">{faq.title}</span>
+          <div class="relative w-4 h-4 flex items-center justify-center text-airtur-blue flex-shrink-0">
+            <span class="absolute w-full h-0.5 bg-current transform transition-transform duration-300 icon-horizontal"></span>
+            <span class="absolute h-full w-0.5 bg-current transform transition-transform duration-300 icon-vertical"></span>
+          </div>
+        </button>
+        <div class="faq-answer max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+          <div class="p-4 pt-0 text-xs text-gray-500 leading-relaxed border-t border-transparent" set:html={faq.answer}></div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style is:global>
+  .faq-highlight {
+    animation: faqPulse 2.5s ease-out forwards;
+    border-radius: 12px;
+  }
+  @keyframes faqPulse {
+    0% { background-color: rgba(10, 179, 198, 0.2); }
+    100% { background-color: white; }
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const tabs = document.querySelectorAll('.faq-tab-btn');
+  const items = document.querySelectorAll('.faq-item');
+
+  const filterFaqs = (categoryId) => {
+    tabs.forEach(t => {
+      const target = t as HTMLElement;
+      const isTarget = target.dataset.category === categoryId;
+      t.classList.toggle('bg-airtur-blue', isTarget);
+      t.classList.toggle('text-white', isTarget);
+      t.classList.toggle('border-airtur-blue', isTarget);
+      t.classList.toggle('bg-white', !isTarget);
+      t.classList.toggle('text-gray-400', !isTarget);
+      t.classList.toggle('border-gray-100', !isTarget);
+      t.classList.toggle('active', isTarget);
+    });
+
+    items.forEach(item => {
+      if (categoryId === 'all' || (item as HTMLElement).dataset.category === categoryId) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  };
+
+  const openFaq = (id) => {
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    document.querySelectorAll('.faq-answer').forEach(ans => {
+        if (ans.parentElement !== target) {
+            (ans as HTMLElement).style.maxHeight = '0px';
+            ans.classList.add('max-h-0');
+            ans.closest('.faq-item')?.classList.remove('bg-blue-50/50', 'border-airtur-blue');
+            const icon = ans.closest('.faq-item')?.querySelector('.icon-vertical');
+            if (icon) icon.classList.remove('rotate-90', 'opacity-0');
+        }
+    });
+
+    const answer = target.querySelector('.faq-answer') as HTMLElement;
+    const iconVert = target.querySelector('.icon-vertical');
+    
+    if (answer) {
+      answer.classList.remove('max-h-0');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+      target.classList.add('bg-blue-50/50', 'border-airtur-blue');
+      if (iconVert) iconVert.classList.add('rotate-90', 'opacity-0');
+    }
+
+    setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.classList.add('faq-highlight');
+        setTimeout(() => target.classList.remove('faq-highlight'), 3000);
+    }, 100);
+  };
+
+  tabs.forEach(tab => tab.addEventListener('click', () => filterFaqs((tab as HTMLElement).dataset.category)));
+
+  document.querySelectorAll('.faq-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const answer = btn.nextElementSibling as HTMLElement;
+        const isOpen = !answer.classList.contains('max-h-0');
+        
+        if (isOpen) {
+            answer.style.maxHeight = '0px';
+            answer.classList.add('max-h-0');
+            item?.classList.remove('bg-blue-50/50', 'border-airtur-blue');
+            const icon = item?.querySelector('.icon-vertical');
+            if (icon) icon.classList.remove('rotate-90', 'opacity-0');
+        } else {
+            if (item) openFaq(item.id);
+        }
+    });
+  });
+
+  window.addEventListener('faq-navigate', (e: any) => {
+    const { hash, category } = e.detail;
+    const id = hash.replace('#', '');
+    filterFaqs(category);
+    setTimeout(() => openFaq(id), 150);
+  });
+
+  const handleHashOnLoad = () => {
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#faq-')) {
+        const id = hash.substring(1);
+        const item = document.getElementById(id);
+        if (item) {
+            filterFaqs(item.dataset.category);
+            setTimeout(() => openFaq(id), 600);
+        }
+    }
+  };
+
+  window.addEventListener('load', handleHashOnLoad);
+  window.addEventListener('hashchange', handleHashOnLoad);
+});
+</script>

@@ -1,0 +1,32 @@
+# Konfiguracja nagłówków HTTP dla AirTUR
+# Ten plik powinien znajdować się w folderze /public projektu Astro
+
+/*
+  # Zapobieganie osadzaniu strony w ramkach (ochrona przed clickjackingiem)
+  X-Frame-Options: DENY
+  # Blokada zgadywania typu zawartości przez przeglądarkę
+  X-Content-Type-Options: nosniff
+  # Polityka odsyłaczy (bezpieczeństwo prywatności)
+  Referrer-Policy: strict-origin-when-cross-origin
+  # Blokada uprawnień do kamery, mikrofonu i geolokalizacji
+  Permissions-Policy: geolocation=(self), microphone=(), camera=()
+  # Wymuszanie bezpiecznego połączenia HTTPS (HSTS)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  # Ochrona przed atakami XSS
+  X-XSS-Protection: 1; mode=block
+
+# Agresywne buforowanie dla zasobów wygenerowanych przez Astro
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Buforowanie dla obrazów i fontów w folderze assets
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Standardowe buforowanie dla plików graficznych i ikon
+/*.png
+  Cache-Control: public, max-age=604800
+/*.svg
+  Cache-Control: public, max-age=604800
+/*.ico
+  Cache-Control: public, max-age=604800

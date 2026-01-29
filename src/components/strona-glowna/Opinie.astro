@@ -1,0 +1,120 @@
+---
+// Importujemy dane z Twojego pliku JS
+import { reviewsData } from '../../data/reviewsData.js';
+
+// Przygotowanie danych do nieskończonej pętli (duplikujemy zestaw)
+const loopedReviews = [...reviewsData, ...reviewsData];
+---
+
+<section class="bg-airtur-gray-light py-20 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-airtur-dark">
+        Dowody Słuszności: Zobacz, co mówią Nasi Klienci
+      </h2>
+    </div>
+
+    <!-- KONTENER KARUZELI -->
+    <div class="relative">
+      <div
+        id="review-track"
+        class="flex transition-transform duration-700 ease-out"
+        style="will-change: transform;"
+      >
+        {loopedReviews.map((review) => (
+          <div class="review-card relative w-[90%] md:w-[48%] lg:w-1/3 shrink-0 p-8 bg-white rounded-xl shadow-lg border border-gray-100 mx-3 flex flex-col">
+
+            {/* GWIAZDKI (Dynamiczne na podstawie pola rating, domyślnie 5) */}
+            <div class="flex justify-center text-yellow-500 mb-6">
+              {Array.from({ length: review.rating || 5 }).map(() => (
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.96 6.012h6.319c.969 0 1.353 1.25.56 1.81l-5.11 3.713 1.96 6.012c.3.921-.755 1.688-1.54 1.127L10 17.062l-5.11 3.713c-.785.561-1.84-.156-1.54-1.127l1.96-6.012-5.11-3.713c-.793-.56-.409-1.81.56-1.81h6.319l1.96-6.012z"/>
+                </svg>
+              ))}
+            </div>
+
+            {/* TEKST OPINII */}
+            <p class="text-lg text-gray-700 italic mb-12">
+              "{review.text}"
+            </p>
+
+            {/* INTELIGENTNY AUTOR: Łączy author + city, zapobiega przecinkowi na końcu jeśli city brak */}
+            <p class="absolute bottom-6 right-6 text-airtur-dark font-semibold text-right">
+              – {review.author}{review.city ? `, ${review.city}` : ''}
+            </p>
+
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* Całkowite ukrycie paska przewijania */
+  #review-track {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  #review-track::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  function initCarousel() {
+    const track = document.getElementById("review-track");
+    if (!track) return;
+
+    const cards = track.getElementsByClassName("review-card");
+    if (cards.length === 0) return;
+
+    let index = 0;
+    const autoplaySpeed = 4000; // Czas wyświetlania jednej klatki
+    const originalLength = cards.length / 2;
+
+    // Funkcja obliczająca pełną szerokość karty wraz z marginesami
+    const getCardWidth = () => {
+      const card = cards[0] as HTMLElement;
+      const style = window.getComputedStyle(card);
+      const marginLeft = parseFloat(style.marginLeft);
+      const marginRight = parseFloat(style.marginRight);
+      return card.offsetWidth + marginLeft + marginRight;
+    };
+
+    function move() {
+      index++;
+      
+      track.style.transition = "transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
+      track.style.transform = `translateX(-${index * getCardWidth()}px)`;
+
+      // Mechanizm pętli nieskończonej
+      if (index >= originalLength) {
+        setTimeout(() => {
+          track.style.transition = "none";
+          index = 0;
+          track.style.transform = `translateX(0px)`;
+        }, 800); // Musi być równe czasowi trwania transition
+      }
+    }
+
+    let interval = setInterval(move, autoplaySpeed);
+
+    // Obsługa zmiany rozmiaru okna (responsywność premium)
+    window.addEventListener('resize', () => {
+      clearInterval(interval);
+      track.style.transition = "none";
+      index = 0;
+      track.style.transform = `translateX(0px)`;
+      interval = setInterval(move, autoplaySpeed);
+    });
+  }
+
+  // Uruchomienie skryptu
+  document.addEventListener("DOMContentLoaded", initCarousel);
+  
+  // Wsparcie dla Astro View Transitions (jeśli używasz)
+  document.addEventListener("astro:page-load", initCarousel);
+</script>

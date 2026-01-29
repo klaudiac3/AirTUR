@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  /* Tutaj definiujemy Twoje kolory AirTUR */
+  --color-airtur-blue: #0AB3C6;
+  --color-airtur-dark: #3A4149;
+  --color-airtur-navy: #0A3876;
+  --color-airtur-white: #FFFFFF;
+  --color-airtur-gray: #F1F2F6;
+  --color-airtur-gray-light: #F6F7FA;
+  --color-airtur-tech: #212529;
+  
+  /* Domyślna czcionka */
+  --font-sans: "Inter", "ui-sans-serif", "system-ui", "sans-serif";
+}

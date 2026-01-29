@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+// Importujemy centralną konfigurację firmy
+import { companyConfig } from '../data/companyConfig';
+---
+
+<Layout title="Polityka Cookies - AirTUR" description="Informacje o wykorzystaniu plików cookies w serwisie AirTUR.">
+  <main class="pt-32 pb-24 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <header class="mb-12 border-b border-gray-100 pb-8 text-center">
+        <h1 class="text-4xl font-extrabold text-airtur-dark mb-4">Polityka Cookies</h1>
+        <p class="text-gray-500">Dowiedz się, jak dbamy o Twoją wygodę i bezpieczeństwo danych w serwisie {companyConfig.name}.</p>
+      </header>
+
+      <div class="prose prose-blue prose-lg max-w-none text-gray-700 space-y-8">
+        
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">Co to są ciasteczka?</h2>
+          <p>
+            Pliki cookies (tzw. „ciasteczka”) to małe dane informatyczne przechowywane w Twojej przeglądarce. Pomagają one stronie działać poprawnie, zapamiętywać Twoje preferencje i dostosować się do Twoich potrzeb.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">Do czego ich używamy w AirTUR?</h2>
+          <ul class="list-disc pl-6 space-y-2">
+            <li><strong>Prawidłowe działanie:</strong> Dzięki nim nasz kalkulator mocy zapamiętuje Twoje dane podczas przechodzenia między krokami, co oszczędza Twój czas.</li>
+            <li><strong>Analiza ruchu:</strong> Korzystamy z narzędzi statystycznych (anonimowo), aby wiedzieć, które treści w Bazie Wiedzy są dla Ciebie najbardziej pomocne.</li>
+            <li><strong>Twoje zgody:</strong> Zapamiętujemy fakt zaakceptowania komunikatów prawnych, aby nie wyświetlać Ci ich przy każdej kolejnej wizycie.</li>
+          </ul>
+        </section>
+
+        <section class="bg-gray-50 p-8 rounded-2xl border border-gray-100 italic">
+          <p>
+            <strong>Pamiętaj:</strong> Możesz w dowolnym momencie wyłączyć obsługę ciasteczek w ustawieniach swojej przeglądarki. Należy jednak pamiętać, że może to wpłynąć na poprawność działania niektórych narzędzi interaktywnych na naszej stronie.
+          </p>
+        </section>
+
+        <section class="text-center pt-8 border-t border-gray-50">
+          <p class="text-sm text-gray-500">
+            Masz pytania dotyczące cookies? Napisz do nas: 
+            <a href={companyConfig.contact.emailLink} class="text-airtur-blue font-bold">{companyConfig.contact.email}</a>
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</Layout>

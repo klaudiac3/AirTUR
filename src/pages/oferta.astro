@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Wprowadzenie from '../components/oferta/Wprowadzenie.astro';
+import Montaz from '../components/oferta/Montaz.astro';
+import Partnerzy from '../components/oferta/Partnerzy.astro';
+import Serwis from '../components/oferta/Serwis.astro';
+// Import sekcji Analiza
+import Analiza from '../components/oferta/Analiza.astro';
+// IMPORTUJEMY NOWY PASEK NAWIGACJI
+import OfferProgressSideNav from '../components/oferta/OfferProgressSideNav.astro';
+---
+
+<Layout title="Oferta">
+  
+  <!-- Dodajemy klasę relative dla kontekstu pozycjonowania -->
+  <main class="relative">
+    
+    <Wprowadzenie />
+
+    <!-- PRZENIESIONO: Partnerzy zaraz po wstępie budują zaufanie na start -->
+    <Partnerzy />
+
+    <!-- Sekcje z ID (ukryte wewnątrz komponentów: id="montaz", id="serwis", id="analiza") -->
+    <Montaz />
+
+    <Serwis />
+
+    <!-- SEKCJA 5: ANALIZA -->
+    <Analiza />
+
+    <!-- Dodajemy komponent paska bocznego -->
+    <OfferProgressSideNav />
+
+  </main>
+
+</Layout>

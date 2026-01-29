@@ -1,0 +1,304 @@
+---
+// src/components/narzedzia/Konwersja.astro
+import { companyConfig } from '../../data/companyConfig';
+---
+
+<section class="bg-white pb-24 pt-12" id="conversion-section">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- GŁÓWNA KARTA KONWERSJI -->
+    <div class="bg-airtur-dark rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+      
+      <!-- Ozdobne tło -->
+      <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-airtur-blue to-transparent"></div>
+
+      <!-- 1. IKONA DOKUMENTU -->
+      <div class="flex justify-center mb-8">
+        <div class="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-white">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 1.043 3.296 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+            </svg>
+        </div>
+      </div>
+
+      <!-- 2. NAGŁÓWEK -->
+      <div class="text-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+          Twoja osobista Analiza Inwestycyjna jest gotowa.
+        </h2>
+        <p class="text-lg text-gray-300 leading-relaxed max-w-2xl mx-auto">
+          Wyniki Twoich obliczeń to doskonały fundament. Chcesz otrzymać od nas pełny, niezobowiązujący raport w PDF?
+        </p>
+      </div>
+
+      <!-- 3. LISTA KORZYŚCI (ZACHOWANA W CAŁOŚCI) -->
+      <div class="bg-white/5 rounded-2xl p-6 md:p-8 mb-10 border border-white/10">
+        <ul class="space-y-4 text-left max-w-lg mx-auto">
+            <li class="flex items-start gap-4">
+                <div class="flex-shrink-0 mt-1">
+                    <div class="w-6 h-6 rounded-full bg-airtur-blue flex items-center justify-center shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                    </div>
+                </div>
+                <span class="text-gray-200">Listę 3 rekomendowanych modeli o mocy dopasowanej do Twoich potrzeb, które zapewnią Ci realne oszczędności.</span>
+            </li>
+            <li class="flex items-start gap-4">
+                <div class="flex-shrink-0 mt-1">
+                    <div class="w-6 h-6 rounded-full bg-airtur-blue flex items-center justify-center shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                    </div>
+                </div>
+                <span class="text-gray-200">Szczegółową, transparentną wycenę montażu zgodną z naszą Zasadą Idealnego Porządku.</span>
+            </li>
+            <li class="flex items-start gap-4">
+                <div class="flex-shrink-0 mt-1">
+                    <div class="w-6 h-6 rounded-full bg-airtur-blue flex items-center justify-center shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                    </div>
+                </div>
+                <span class="text-gray-200">Gwarancję niezmienności ceny przez 30 dni.</span>
+            </li>
+        </ul>
+      </div>
+
+      <!-- 4. FORMULARZ GŁÓWNY (E-MAIL) -->
+      <div class="max-w-md mx-auto mb-12">
+        <p class="text-center text-sm text-gray-400 mb-4">Wpisz swoje imię oraz adres e-mail, aby otrzymać Twoją osobistą analizę.</p>
+        
+        <form 
+            id="tools-form-email"
+            name="kalkulator-raport-email" 
+            method="POST" 
+            data-netlify="true" 
+            class="space-y-4"
+            novalidate
+        >
+            <!-- DANE TECHNICZNE (UKRYTE) -->
+            <input type="hidden" name="form-name" value="kalkulator-raport-email" />
+            <input type="hidden" name="source" value="narzedzia_kalkulator_raport_email" />
+            
+            <!-- Klasy calc-field-xxx są kluczowe dla synchronizacji z Kalkulatorem -->
+            <input type="hidden" name="wynik_metraz" class="calc-field-area" value="" />
+            <input type="hidden" name="wynik_moc" class="calc-field-power" value="" />
+            <input type="hidden" name="wynik_cel" class="calc-field-goal" value="" />
+            <input type="hidden" name="wynik_oszczednosci" class="calc-field-savings" value="" />
+            <input type="hidden" name="wynik_model" class="calc-field-model" value="" />
+            
+            <!-- DODANE NOWE POLA (Dla nowej logiki) -->
+            <input type="hidden" name="wynik_rachunek" class="calc-field-bill" value="" />
+            <input type="hidden" name="wynik_paliwo" class="calc-field-fuel" value="" />
+            <input type="hidden" name="wynik_komfort" class="calc-field-comfort" value="" />
+            <input type="hidden" name="wynik_slonce" class="calc-field-sun" value="" />
+            <input type="hidden" name="wynik_typ_budynku" class="calc-field-building" value="" />
+            <input type="hidden" name="wynik_ludzie" class="calc-field-people" value="" />
+            
+            <div>
+                <input type="text" name="imie" required placeholder="Twoje imię" class="w-full px-5 py-4 rounded-xl bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg">
+            </div>
+            <div>
+                <input type="email" id="email-field-tools" name="email" required placeholder="Adres e-mail" class="w-full px-5 py-4 rounded-xl bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg">
+            </div>
+
+            <!-- Błąd walidacji -->
+            <div id="error-tools-mail" class="hidden text-red-400 text-xs font-bold italic py-1 text-center">Wprowadź poprawny adres e-mail.</div>
+
+            <div class="flex items-start pt-2 px-1 text-left">
+                <div class="flex items-center h-5">
+                    <input id="consent-tools-mail" type="checkbox" required class="w-5 h-5 text-airtur-blue border-white/20 rounded focus:ring-airtur-blue cursor-pointer bg-white/10">
+                </div>
+                <div class="ml-3 text-xs leading-snug text-gray-400">
+                    <label for="consent-tools-mail" class="cursor-pointer">
+                        Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu przesłania raportu diagnostycznego oraz kontaktu ofertowego.
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide transform hover:-translate-y-1 cursor-pointer">
+                WYŚLIJ MÓJ DARMOWY RAPORT
+            </button>
+        </form>
+      </div>
+
+      <!-- 5. ALTERNATYWNE CTA (TELEFON - ROZWIJANE) -->
+      <div class="border-t border-white/10 pt-8 text-center">
+        
+        <button id="toggle-phone-form" class="group inline-flex items-center gap-2 text-gray-300 hover:text-white transition-colors cursor-pointer focus:outline-none">
+            <span class="text-lg font-semibold border-b border-gray-500 group-hover:border-white transition-colors">Wolisz omówić wyniki z ekspertem? Zostaw numer, oddzwonimy.</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 transition-transform duration-300" id="arrow-icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+        </button>
+
+        <!-- Ukryty formularz telefoniczny -->
+        <div id="phone-form-container" class="hidden mt-6 max-w-md mx-auto animate-fade-in-down">
+            <form 
+                id="tools-form-phone"
+                name="kalkulator-raport-phone" 
+                method="POST" 
+                data-netlify="true" 
+                class="space-y-4 bg-white/5 p-6 rounded-xl border border-white/10 text-left"
+                novalidate
+            >
+                <input type="hidden" name="form-name" value="kalkulator-raport-phone" />
+                <input type="hidden" name="source" value="narzedzia_kalkulator_raport_telefon" />
+                
+                <!-- Pola ukryte również tutaj (zduplikowane i uzupełnione) -->
+                <input type="hidden" name="wynik_metraz" class="calc-field-area" value="" />
+                <input type="hidden" name="wynik_moc" class="calc-field-power" value="" />
+                <input type="hidden" name="wynik_cel" class="calc-field-goal" value="" />
+                <input type="hidden" name="wynik_oszczednosci" class="calc-field-savings" value="" />
+                <input type="hidden" name="wynik_model" class="calc-field-model" value="" />
+                <!-- DODANE NOWE POLA TAKŻE TUTAJ -->
+                <input type="hidden" name="wynik_rachunek" class="calc-field-bill" value="" />
+                <input type="hidden" name="wynik_paliwo" class="calc-field-fuel" value="" />
+                <input type="hidden" name="wynik_komfort" class="calc-field-comfort" value="" />
+                <input type="hidden" name="wynik_slonce" class="calc-field-sun" value="" />
+                <input type="hidden" name="wynik_typ_budynku" class="calc-field-building" value="" />
+                <input type="hidden" name="wynik_ludzie" class="calc-field-people" value="" />
+
+                <div>
+                    <input type="text" name="imie" required placeholder="Twoje imię" class="w-full px-5 py-3 rounded-lg bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-airtur-blue transition">
+                </div>
+                <div>
+                    <input type="tel" id="phone-field-tools" name="telefon" required placeholder="Numer telefonu" class="w-full px-5 py-3 rounded-lg bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-airtur-blue transition">
+                </div>
+
+                <div id="error-tools-phone" class="hidden text-red-400 text-xs font-bold italic py-1 text-center">Numer powinien mieć min. 9 cyfr.</div>
+
+                <!-- ZGODA RODO (Telefon) -->
+                <div class="flex items-start pt-1">
+                    <div class="flex items-center h-5">
+                        <input id="consent-tools-phone" type="checkbox" required class="w-4 h-4 text-airtur-blue border-white/20 rounded focus:ring-airtur-blue cursor-pointer bg-white/10">
+                    </div>
+                    <div class="ml-3 text-[11px] leading-snug text-gray-400">
+                        <label for="consent-tools-phone" class="cursor-pointer">
+                            Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu przesłania raportu diagnostycznego oraz kontaktu telefonicznego doradcy AirTUR. 
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn w-full bg-white text-airtur-dark font-bold py-3 rounded-lg hover:bg-gray-100 transition shadow-md uppercase tracking-wide cursor-pointer">
+                    PROSZĘ O TELEFON
+                </button>
+            </form>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+    // 1. Logika rozwijania
+    const toggleBtn = document.getElementById('toggle-phone-form');
+    const phoneContainer = document.getElementById('phone-form-container');
+    const arrowIcon = document.getElementById('arrow-icon');
+    
+    toggleBtn?.addEventListener('click', () => {
+        const isHidden = phoneContainer.classList.contains('hidden');
+        if (isHidden) {
+            phoneContainer.classList.remove('hidden');
+            arrowIcon.classList.add('rotate-180');
+        } else {
+            phoneContainer.classList.add('hidden');
+            arrowIcon.classList.remove('rotate-180');
+        }
+    });
+
+    // 2. Obsługa wysyłki Ajax do Netlify
+    document.addEventListener('DOMContentLoaded', () => {
+        const forms = document.querySelectorAll('form[data-netlify="true"]');
+        
+        const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
+
+        forms.forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const targetForm = e.target;
+                const formData = new FormData(targetForm);
+                const submitBtn = targetForm.querySelector('.submit-btn');
+
+                const emailInput = targetForm.querySelector('input[type="email"]');
+                const phoneInput = targetForm.querySelector('input[type="tel"]');
+
+                if (emailInput && !isValidEmail(emailInput.value)) {
+                    document.getElementById('error-tools-mail')?.classList.remove('hidden');
+                    emailInput.focus();
+                    return;
+                }
+                if (phoneInput && !isValidPhone(phoneInput.value)) {
+                    document.getElementById('error-tools-phone')?.classList.remove('hidden');
+                    phoneInput.focus();
+                    return;
+                }
+
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerText = "PRZETWARZANIE...";
+                }
+
+                try {
+                    await fetch("/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: new URLSearchParams(formData).toString(),
+                    });
+
+                    // Zbieranie danych do URL (Przekierowanie na Thank You Page)
+                    const params = new URLSearchParams();
+                    params.append('cel', 'raport');
+                    
+                    // Bezpieczne pobieranie pól (w tym nowych!)
+                    [
+                        'wynik_metraz', 'wynik_moc', 'wynik_cel', 'wynik_oszczednosci', 'wynik_model',
+                        'wynik_rachunek', 'wynik_paliwo', 'wynik_komfort', 'wynik_slonce', 'wynik_typ_budynku', 'wynik_ludzie'
+                    ].forEach(key => {
+                        const val = formData.get(key);
+                        if(val) params.append(key.replace('wynik_', ''), val);
+                    });
+
+                    window.location.href = `/podziekowanie?${params.toString()}`;
+
+                } catch (error) {
+                    console.error("Netlify Error:", error);
+                    if(submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "SPRÓBUJ PONOWNIE";
+                    }
+                }
+            });
+        });
+
+        // Ukrywanie błędów
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => {
+                document.getElementById('error-tools-mail')?.classList.add('hidden');
+                document.getElementById('error-tools-phone')?.classList.add('hidden');
+            });
+        });
+    });
+</script>
+
+<style>
+    .animate-fade-in-down {
+        animation: fadeInDown 0.4s ease-out forwards;
+    }
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

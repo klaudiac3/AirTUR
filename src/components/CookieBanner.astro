@@ -1,0 +1,55 @@
+---
+// src/components/CookieBanner.astro
+---
+
+<div 
+  id="cookie-banner" 
+  class="fixed bottom-0 left-0 w-full z-[100] transform translate-y-full transition-transform duration-700 ease-in-out"
+>
+  <div class="max-w-7xl mx-auto px-4 pb-6 sm:px-6 lg:px-8">
+    <div class="bg-airtur-dark border border-white/10 rounded-2xl shadow-2xl p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <div class="flex items-center gap-4">
+        <div class="bg-airtur-blue/20 p-3 rounded-full hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+          </svg>
+        </div>
+        <p class="text-gray-300 text-sm leading-relaxed text-center md:text-left">
+          Nasza witryna wykorzystuje pliki cookies, aby zapewnić Ci najlepszą jakość obsługi, zapamiętać wyniki kalkulatora oraz analizować ruch. Szczegóły znajdziesz w 
+          <a href="/polityka-cookies" class="text-white font-bold hover:text-airtur-blue underline underline-offset-4 transition-colors">Polityce Cookies</a>.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3 w-full md:w-auto">
+        <button 
+          id="accept-cookies" 
+          class="flex-1 md:flex-none bg-airtur-blue hover:bg-airtur-navy text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 whitespace-nowrap shadow-lg"
+        >
+          Rozumiem
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const banner = document.getElementById('cookie-banner');
+    const acceptBtn = document.getElementById('accept-cookies');
+    const STORAGE_KEY = 'airtur_cookie_consent';
+
+    // Pokazujemy baner tylko jeśli nie ma jeszcze zgody
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      setTimeout(() => {
+        banner?.classList.remove('translate-y-full');
+      }, 1500); // Małe opóźnienie dla lepszego efektu
+    }
+
+    acceptBtn?.addEventListener('click', () => {
+      localStorage.setItem(STORAGE_KEY, 'accepted');
+      banner?.classList.add('translate-y-full');
+    });
+  });
+</script>

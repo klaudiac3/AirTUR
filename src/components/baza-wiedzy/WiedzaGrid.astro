@@ -1,0 +1,105 @@
+---
+import { getCollection } from 'astro:content';
+
+// 1. Pobieramy wszystkie artykuły z folderu src/content/blog/
+const allPosts = await getCollection('blog');
+
+// 2. Sortujemy od najnowszych (Bezpieczna metoda dla dat tekstowych i obiektowych)
+const sortedPosts = allPosts.sort(
+  (a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
+);
+
+// 3. Oddzielamy te "Featured" (Filary Wiedzy) od reszty
+const featuredPosts = sortedPosts.filter(post => post.data.featured);
+const regularPosts = sortedPosts.filter(post => !post.data.featured);
+---
+
+<!-- Sekcja bloga z dopasowaniem do mobile -->
+<section class="bg-white pt-8 pb-16 md:pt-12 md:pb-24 border-t border-gray-100" id="articles-grid">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- CZĘŚĆ 1: FILARY WIEDZY (Wyróżnione) -->
+    {featuredPosts.length > 0 && (
+      <div class="mb-10 md:mb-12">
+        <h2 class="text-xl md:text-3xl font-bold text-airtur-dark mb-6 md:mb-10 text-left border-l-4 border-airtur-blue pl-4">
+          Wyróżnione analizy
+        </h2>
+
+        <!-- ZMIANA: grid-cols-2 na mobile, mniejszy gap -->
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
+          {featuredPosts.map((post) => (
+            <a href={`/blog/${post.slug}`} class="group flex flex-col h-full bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-md md:shadow-lg border border-gray-100 hover:shadow-2xl hover:border-airtur-blue/30 transition-all duration-300">
+              
+              <!-- Zdjęcie: mniejsza wysokość na mobile -->
+              <div class="relative aspect-[4/3] md:h-60 overflow-hidden bg-gray-100 flex-shrink-0">
+                <img 
+                  src={post.data.image} 
+                  alt={post.data.title} 
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                  onerror="this.onerror=null; this.src='https://placehold.co/600x400/F3F4F6/3A4149?text=Brak+zdjęcia';"
+                />
+                <!-- Tag: mniejszy na mobile -->
+                <div class="absolute top-2 left-2 md:top-4 md:left-4">
+                    <span class="bg-airtur-blue text-white text-[8px] md:text-xs font-bold px-1.5 py-0.5 md:px-3 md:py-1.5 rounded uppercase tracking-wide shadow-md">
+                        {post.data.category}
+                    </span>
+                </div>
+              </div>
+
+              <!-- Treść: mniejszy padding i font na mobile -->
+              <div class="p-3 md:p-6 flex flex-col flex-grow">
+                <h3 class="text-xs md:text-lg font-bold text-airtur-dark mb-1.5 md:mb-3 group-hover:text-airtur-blue transition-colors leading-tight line-clamp-2 md:line-clamp-none">
+                    {post.data.title}
+                </h3>
+                
+                <!-- Ukrywamy opis na mobile w wyróżnionych, aby zachować wysokość -->
+                <p class="text-gray-600 text-xs md:text-sm leading-relaxed mb-4 flex-grow line-clamp-3 hidden md:block">
+                    {post.data.excerpt}
+                </p>
+                
+                <div class="pt-2 md:pt-4 border-t border-gray-100 flex items-center justify-between mt-auto">
+                    <span class="text-[9px] md:text-xs text-gray-400 font-medium">{post.data.readingTime}</span>
+                    <span class="text-airtur-blue text-[10px] md:text-sm font-bold flex items-center gap-1">
+                        CZYTAJ <span class="hidden sm:inline">RAPORT</span> <span>→</span>
+                    </span>
+                </div>
+              </div>
+
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+
+    <!-- CZĘŚĆ 2: POZOSTAŁE ARTYKUŁY (Lista) -->
+    {regularPosts.length > 0 && (
+      <div>
+        <h3 class="text-lg md:text-2xl font-bold text-gray-400 mb-6 uppercase tracking-widest text-[10px] md:text-sm">Pozostałe wpisy</h3>
+        
+        <!-- ZMIANA: grid-cols-2 na mobile -->
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+            {regularPosts.map((post) => (
+                <a href={`/blog/${post.slug}`} class="group flex flex-col h-full bg-gray-50 rounded-xl overflow-hidden hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-gray-200">
+                    <div class="aspect-video overflow-hidden bg-gray-100 flex-shrink-0">
+                        <img 
+                          src={post.data.image} 
+                          alt={post.data.title} 
+                          class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                          onerror="this.onerror=null; this.src='https://placehold.co/600x400/F3F4F6/3A4149?text=Brak+zdjęcia';"
+                        />
+                    </div>
+                    <div class="p-3 md:p-5 flex flex-col flex-grow">
+                        <span class="text-[8px] md:text-xs font-bold text-airtur-blue uppercase tracking-wide block mb-1">{post.data.category}</span>
+                        <h4 class="font-bold text-airtur-dark text-[11px] md:text-base leading-tight mb-2 group-hover:text-airtur-blue transition-colors line-clamp-2">{post.data.title}</h4>
+                        <!-- Opis widoczny tylko od tabletu wzwyż -->
+                        <p class="text-[10px] md:text-xs text-gray-500 line-clamp-2 mt-auto hidden md:block">{post.data.excerpt}</p>
+                    </div>
+                </a>
+            ))}
+        </div>
+      </div>
+    )}
+
+  </div>
+</section>

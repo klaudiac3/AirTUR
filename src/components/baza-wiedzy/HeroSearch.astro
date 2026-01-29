@@ -1,0 +1,257 @@
+---
+// src/components/baza-wiedzy/HeroSearch.astro
+import { getCollection } from 'astro:content';
+import { knowledgeData as manualData } from '../../data/knowledgeData';
+import FAQ from './FAQ.astro'; // DODANO: Import komponentu FAQ
+
+// 1. POBIERANIE DANYCH
+const blogPosts = await getCollection('blog');
+const casePosts = await getCollection('cases');
+
+// A. Artykuły z bloga
+const blogEntries = blogPosts.map(post => ({
+  title: post.data.title || 'Bez tytułu',
+  type: 'artykul',
+  category: post.data.category || 'ogolne',
+  tags: ['blog', post.data.category, ...(post.data.tags || [])].filter(Boolean),
+  url: `/blog/${post.slug}`,
+  excerpt: post.data.excerpt || ''
+}));
+
+// B. FAQ z artykułów
+const blogFaqs = blogPosts.flatMap(post => {
+  if (!post.data.faq) return [];
+  return post.data.faq.map((q, index) => ({
+    title: q.question,
+    type: 'faq',
+    category: post.data.category || 'ogolne',
+    tags: ['faq', 'pytanie', 'blog'],
+    url: `/blog/${post.slug}#faq-${index}`,
+    answer: q.answer,
+    excerpt: q.answer || ''
+  }));
+});
+
+// C. STUDIA PRZYPADKÓW
+const caseEntries = casePosts.map(entry => {
+  const d = entry.data;
+  const smartTags = [
+    'case study', 
+    'realizacja', 
+    d.location, 
+    d.category, 
+    ...(d.tags || []),
+    d.content?.technology?.brand,
+    d.content?.technology?.system
+  ].filter(Boolean).map(t => String(t));
+
+  const searchContent = `
+    ${d.location || ''}
+    ${d.tile_data?.problem_short || ''} 
+    ${d.tile_data?.solution_short || ''} 
+    ${d.tile_data?.result_short || ''}
+    ${d.content?.problem?.description || ''}
+    ${d.content?.solution?.description || ''}
+    ${d.content?.effect?.description || ''}
+    ${d.content?.technology?.air_purification || ''}
+  `.replace(/\s+/g, ' ').trim();
+
+  return {
+    title: d.title || 'Case Study',
+    type: 'case',
+    category: d.category || 'realizacje',
+    tags: smartTags,
+    url: `/studia-przypadkow/${entry.slug}`,
+    excerpt: searchContent 
+  };
+});
+
+// 2. ŁĄCZENIE DANYCH
+const searchData = [...(manualData || []), ...blogEntries, ...blogFaqs, ...caseEntries].filter(item => item);
+
+// 3. KATEGORIE
+const uniqueCategories = [...new Set(searchData.map(item => item.category))].filter(Boolean);
+const categoryConfig = {
+    'finanse': { label: 'Finanse i ROI', icon: '💰' },
+    'zdrowie': { label: 'Zdrowie', icon: '👶' },
+    'technologia': { label: 'Technologia', icon: '⚙️' },
+    'montaz': { label: 'Montaż', icon: '🔧' },
+    'poradnik': { label: 'Poradniki', icon: '🛡️' },
+    'ogolne': { label: 'Ogólne', icon: 'ℹ️' },
+};
+---
+
+<section class="bg-gray-50 pt-6 pb-8 md:pt-10 md:pb-12 border-b border-gray-200 relative z-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- NAGŁÓWEK GÓRNY (Wyśrodkowany i mniejszy) -->
+    <div class="mb-8 md:mb-10 text-center">
+      <h1 class="text-xl md:text-3xl font-extrabold text-airtur-dark mb-2 leading-tight">
+        Baza Wiedzy AirTUR. <span class="text-airtur-blue">Decyzje oparte na faktach.</span>
+      </h1>
+      <p class="text-xs md:text-sm text-gray-500 max-w-xl mx-auto leading-relaxed">
+        Przeszukaj nasze studia przypadków, poradniki i FAQ o klimatyzacji.
+      </p>
+    </div>
+
+    <!-- UKŁAD DWUKOLUMNOWY -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+      
+      <!-- KOLUMNA LEWA: SEKCOJA FAQ -->
+      <div id="faq-column-container" class="w-full">
+        <FAQ /> <!-- ZMIANA: Tutaj wstawiamy komponent FAQ -->
+      </div>
+
+      <!-- KOLUMNA PRAWA: WYSZUKIWARKA -->
+      <div class="w-full lg:sticky lg:top-24">
+        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-lg shadow-blue-900/5 border border-white">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <label for="search-input" class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+              Wyszukiwarka
+            </label>
+            <span class="text-[10px] text-airtur-blue font-bold bg-blue-50 px-2 py-0.5 rounded-full">LIVE</span>
+          </div>
+          
+          <div class="relative w-full mb-4 group" id="search-wrapper" data-knowledge={JSON.stringify(searchData)}>
+            <input 
+              type="text" 
+              id="search-input"
+              placeholder="Szukaj informacji..." 
+              class="w-full pl-5 pr-12 py-3.5 rounded-xl border-2 border-gray-100 shadow-sm text-sm text-airtur-dark focus:outline-none focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/10 transition-all placeholder:text-gray-300"
+              autocomplete="off"
+            >
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-airtur-blue pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+            </div>
+            <div id="search-results-dropdown" class="hidden absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 max-h-[350px] overflow-y-auto"></div>
+          </div>
+
+          <div class="flex flex-wrap justify-start gap-1.5">
+            {uniqueCategories.map(catKey => {
+              const config = categoryConfig[catKey] || { label: catKey, icon: '📂' };
+              return (
+                <button class="filter-pill flex items-center gap-1.5 px-2.5 py-1.5 bg-gray-50 border border-gray-100 rounded-lg hover:border-airtur-blue hover:bg-white transition-all cursor-pointer group" data-search={catKey}>
+                  <span class="text-sm group-hover:scale-110 transition-transform">{config.icon}</span>
+                  <span class="text-[10px] font-bold text-gray-500 group-hover:text-airtur-blue uppercase tracking-tight">{config.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .faq-highlight {
+    animation: faqPulse 2.5s ease-out forwards;
+    border-radius: 8px;
+  }
+  @keyframes faqPulse {
+    0% { background-color: rgba(10, 179, 198, 0.3); }
+    100% { background-color: transparent; }
+  }
+</style>
+
+<script type="module">
+    import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.mjs';
+
+    try {
+        const wrapper = document.getElementById('search-wrapper');
+        if (!wrapper) throw new Error('Nie znaleziono elementu #search-wrapper');
+
+        const rawData = wrapper.dataset.knowledge;
+        if (!rawData) throw new Error('Brak danych w atrybucie data-knowledge');
+
+        const knowledgeData = JSON.parse(rawData);
+        
+        const input = document.getElementById('search-input');
+        const dropdown = document.getElementById('search-results-dropdown');
+        const pills = document.querySelectorAll('.filter-pill');
+
+        let fuse = new Fuse(knowledgeData, {
+            threshold: 0.2,
+            ignoreLocation: true,
+            ignoreDiacritics: true,
+            keys: [
+                { name: 'title', weight: 0.8 },
+                { name: 'tags', weight: 0.6 },
+                { name: 'excerpt', weight: 0.2 },
+                { name: 'answer', weight: 0.2 },
+            ]
+        });
+
+        const handleNavigation = (url, category, type) => {
+            if (!url) return;
+            const [path, hash] = url.split('#');
+            const isExternal = path && !window.location.pathname.endsWith(path) && path !== '';
+
+            if (isExternal) {
+                window.location.href = url;
+                return;
+            }
+
+            const navEvent = new CustomEvent('faq-navigate', { 
+                detail: { hash, category, type } 
+            });
+            window.dispatchEvent(navEvent);
+
+            dropdown.classList.add('hidden');
+            input.value = '';
+        };
+
+        const renderResults = (query) => {
+            if (!fuse) return;
+            const results = fuse.search(query).map(r => r.item);
+            
+            if (results.length > 0) {
+                dropdown.innerHTML = results.slice(0, 8).map(item => `
+                    <a href="${item.url}" data-category="${item.category}" data-type="${item.type}" class="block p-3.5 border-b border-gray-50 hover:bg-blue-50 transition-colors search-result-link">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded ${
+                                item.type === 'faq' ? 'bg-yellow-100 text-yellow-700' : 
+                                (item.type === 'case' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700')
+                            }">
+                                ${item.type === 'faq' ? 'Pytanie' : (item.type === 'case' ? 'Studium Przypadku' : 'Artykuł')}
+                            </span>
+                            <span class="text-[8px] text-gray-400 font-bold uppercase">${item.category}</span>
+                        </div>
+                        <h3 class="text-xs font-bold text-airtur-dark leading-tight">${item.title}</h3>
+                    </a>
+                `).join('');
+                dropdown.classList.remove('hidden');
+            } else {
+                dropdown.innerHTML = '<div class="p-5 text-center text-[10px] text-gray-400">Brak wyników...</div>';
+                dropdown.classList.remove('hidden');
+            }
+        };
+
+        input?.addEventListener('input', (e) => {
+            if (e.target.value.length >= 2) renderResults(e.target.value);
+            else dropdown.classList.add('hidden');
+        });
+
+        dropdown.addEventListener('click', (e) => {
+            const link = e.target.closest('.search-result-link');
+            if (!link) return;
+            e.preventDefault();
+            handleNavigation(link.getAttribute('href'), link.dataset.category, link.dataset.type);
+        });
+
+        pills.forEach(pill => pill.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            input.value = pill.dataset.search;
+            input.focus();
+            renderResults(input.value);
+        }));
+
+        document.addEventListener('click', (e) => {
+            if (!wrapper.contains(e.target)) dropdown.classList.add('hidden');
+        });
+
+    } catch (err) {
+        console.error("BŁĄD WYSZUKIWARKI:", err);
+    }
+</script>

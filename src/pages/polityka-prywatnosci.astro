@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+// Importujemy centralną konfigurację firmy, aby dane były zawsze aktualne
+import { companyConfig } from '../data/companyConfig';
+---
+
+<Layout title="Polityka Prywatności - AirTUR" description="Informacje o przetwarzaniu danych osobowych w serwisie AirTUR.">
+  <main class="pt-32 pb-24 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <header class="mb-12 border-b border-gray-100 pb-8">
+        <h1 class="text-4xl font-extrabold text-airtur-dark mb-4">Polityka Prywatności</h1>
+        <p class="text-gray-500 italic">Zgodna z RODO. Ostatnia aktualizacja: 27 stycznia 2026 r.</p>
+      </header>
+
+      <div class="prose prose-blue prose-lg max-w-none text-gray-700 space-y-8">
+        
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">1. Kto jest Administratorem danych?</h2>
+          <p>Operatorem serwisu oraz Administratorem Twoich danych osobowych jest:</p>
+          <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mt-4">
+            <!-- Dane pobierane dynamicznie z companyConfig -->
+            <p class="font-bold text-airtur-dark">{companyConfig.fullName}</p>
+            <p>{companyConfig.address.full}</p>
+            <p>NIP: {companyConfig.nip}</p>
+            <p>E-mail: <a href={companyConfig.contact.emailLink} class="text-airtur-blue font-medium">{companyConfig.contact.email}</a></p>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">2. Jakie dane przetwarzamy?</h2>
+          <p>Zbieramy tylko te dane, które są niezbędne do rzetelnego świadczenia usług:</p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li><strong>Formularze kontaktowe:</strong> Imię, nazwisko, adres e-mail oraz numer telefonu, aby móc odpowiedzieć na Twoje zapytanie ofertowe.</li>
+            <li><strong>Kalkulator Mocy i ROI:</strong> Parametry techniczne budynku oraz Twój e-mail, aby przesłać Ci gotowy raport z wyliczeniami.</li>
+            <li><strong>Statystyki:</strong> Anonimowe dane o ruchu na stronie (Google Analytics), które pomagają nam ulepszać ofertę.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">3. Cel i podstawa przetwarzania</h2>
+          <p>Podstawą przetwarzania Twoich danych jest realizacja zapytania (Art. 6 ust. 1 lit. b RODO) lub Twoja dobrowolna zgoda wyrażona przy korzystaniu z kalkulatora (Art. 6 ust. 1 lit. a RODO).</p>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">4. Twoje prawa</h2>
+          <p>W każdej chwili masz prawo do:</p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>Dostępu do swoich danych oraz otrzymania ich kopii.</li>
+            <li>Sprostowania lub usunięcia danych („prawo do bycia zapomnianym”).</li>
+            <li>Wycofania zgody na przetwarzanie danych w celach marketingowych.</li>
+          </ul>
+        </section>
+
+        <section class="bg-airtur-blue/5 p-8 rounded-2xl border border-airtur-blue/10 mt-12 text-center">
+          <p class="text-sm font-medium mb-2">Masz dodatkowe pytania dotyczące bezpieczeństwa Twoich danych?</p>
+          <a href={companyConfig.contact.emailLink} class="text-xl font-bold text-airtur-blue hover:underline">{companyConfig.contact.email}</a>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</Layout>

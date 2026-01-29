@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Wprowadzenie from '../components/narzedzia/Wprowadzenie.astro';
+import Kalkulator from '../components/narzedzia/Kalkulator.astro';
+import Konwersja from '../components/narzedzia/Konwersja.astro';
+---
+
+<Layout title="Narzędzia i Kalkulator | AirTUR">
+  
+  <main class="bg-white">
+    
+    <!-- 1. Pasek górny (Wąski) -->
+    <Wprowadzenie />
+
+    <!-- 2. Kalkulator (Główna sekcja) -->
+    <!-- ZMIANA: Usunięto pt-8 (zmieniono na pt-0), aby kalkulator był bliżej paska postępu -->
+    <div class="pt-0 pb-0">
+        <Kalkulator />
+    </div>
+    
+    <!-- 3. Sekcja Konwersji (Raport PDF) -->
+    <!-- ZMIANA: Dodano '-mt-24' i 'relative z-10'. 
+         To "wciąga" sekcję formularza o 96px w górę, niwelując wewnętrzny padding dolny Kalkulatora. 
+         Dzięki temu formularz pojawia się tuż pod wynikami. -->
+    <div id="conversion-section" class="hidden opacity-0 translate-y-10 transition-all duration-1000 ease-out border-t border-gray-100 -mt-24 relative z-10">
+        <Konwersja />
+    </div>
+    
+  </main>
+
+</Layout>
+
+<script>
+  // Logika pojawiania się sekcji Konwersji (Obserwator)
+  document.addEventListener('DOMContentLoaded', () => {
+    // Element 'step-4' znajduje się wewnątrz komponentu <Kalkulator />
+    const conversionSection = document.getElementById('conversion-section');
+    const step4 = document.getElementById('step-4');
+
+    if (step4 && conversionSection) {
+      
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            
+            // Sprawdzamy czy klasa 'hidden' została usunięta (czyli użytkownik jest w kroku 4)
+            if (!step4.classList.contains('hidden')) {
+                
+                // 1. Odkryj sekcję
+                conversionSection.classList.remove('hidden');
+                
+                // 2. Animuj wjazd
+                setTimeout(() => {
+                    conversionSection.classList.remove('opacity-0', 'translate-y-10');
+                }, 100);
+
+                // 3. Delikatnie przesuń ekran
+                setTimeout(() => {
+                    conversionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 600);
+            } else {
+                // Ukryj ponownie przy resecie
+                conversionSection.classList.add('hidden', 'opacity-0', 'translate-y-10');
+            }
+
+          }
+        });
+      });
+
+      observer.observe(step4, { attributes: true });
+    }
+  });
+</script>

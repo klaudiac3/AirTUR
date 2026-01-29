@@ -1,0 +1,255 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+// import { Image } from 'astro:assets'; 
+
+// 1. Generowanie ścieżek
+export async function getStaticPaths() {
+  const caseEntries = await getCollection('cases');
+  return caseEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+// 2. Pobieranie danych
+const { entry } = Astro.props;
+const d = entry.data;
+
+// 3. SEO
+const seoTitle = d.seo?.meta_title || `Case Study #${d.caseId}: ${d.title}`;
+const seoDesc = d.seo?.meta_description || d.tile_data.excerpt;
+
+// 4. Helper do tabeli
+const techSpecs = [
+  { label: 'System', value: d.content.technology?.system },
+  { label: 'Producent / Model', value: d.content.technology?.brand },
+  { label: 'Moc chłodzenia', value: typeof d.content.technology?.cooling_kw === 'number' ? `${d.content.technology.cooling_kw} kW` : d.content.technology?.cooling_kw },
+  { label: 'Moc grzania', value: typeof d.content.technology?.heating_kw === 'number' ? `${d.content.technology.heating_kw} kW` : d.content.technology?.heating_kw },
+  { label: 'SCOP (Grzanie)', value: d.content.technology?.scop, highlight: 'green' },
+  { label: 'SEER (Chłodzenie)', value: d.content.technology?.seer },
+  { label: 'Klasa Energ. (Grzanie)', value: d.content.technology?.energy_class_heating, bold: true },
+  { label: 'Czynnik chłodniczy', value: d.content.technology?.refrigerant },
+  { label: 'Zakres pracy', value: d.content.technology?.working_range },
+  { label: 'Min. poziom hałasu', value: d.content.technology?.noise_level_min },
+  { label: 'Sterowanie Wi-Fi', value: d.content.technology?.wifi_control ? 'TAK (W cenie)' : null, highlight: 'brand' },
+  { label: 'Oczyszczanie', value: d.content.technology?.air_purification, fullWidth: true },
+].filter(item => item.value !== undefined && item.value !== null);
+
+const PLACEHOLDER_IMG = 'https://placehold.co/1200x600/1e293b/ffffff?text=Realizacja+AirTUR';
+---
+
+<Layout title={seoTitle} description={seoDesc}>
+  
+  <header class="bg-airtur-dark text-white pt-28 pb-10 border-b border-white/5 relative overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl opacity-20 pointer-events-none">
+        <div class="absolute top-10 right-10 w-64 h-64 bg-airtur-blue rounded-full blur-[100px] opacity-40"></div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+      <div class="inline-flex items-center gap-3 bg-white/5 backdrop-blur-sm px-4 py-1.5 rounded-full mb-6 border border-white/10">
+        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-airtur-blue">
+            #{d.caseId}
+        </span>
+        <span class="w-1 h-1 rounded-full bg-white/40"></span>
+        <span class="text-[10px] font-bold uppercase tracking-[0.1em] text-gray-300">
+            {d.location}
+        </span>
+      </div>
+      
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-black mb-4 leading-[1.1] tracking-tight text-balance">
+        {d.title}
+      </h1>
+      
+      <div class="inline-block px-3 py-1 rounded bg-airtur-blue text-white text-[10px] font-bold uppercase tracking-wider">
+        {d.category}
+      </div>
+    </div>
+  </header>
+
+  <section class="py-12 md:py-16 bg-white overflow-x-hidden">
+    
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      
+      <div class="rounded-2xl overflow-hidden shadow-xl mb-12 border border-gray-200 relative group bg-gray-50 aspect-video">
+        <img 
+            src={d.image} 
+            alt={d.title} 
+            class="w-full h-full object-cover"
+            loading="eager"
+            fetchpriority="high"
+            onerror={`this.onerror=null; this.src='${PLACEHOLDER_IMG}';`}
+        />
+        <div class="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-2xl pointer-events-none"></div>
+      </div>
+
+      <article class="case-content text-gray-700 leading-relaxed text-lg">
+        
+        <div class="mb-16">
+            <h2 class="text-3xl font-black text-airtur-dark mb-6">{d.content.problem.heading}</h2>
+            
+            <p class="whitespace-pre-line mb-10" set:html={d.content.problem.description}></p>
+            
+            {/* CYTAT */}
+            {d.content.problem.quote && (
+                <div class="custom-quote-wrapper">
+                    <blockquote set:html={d.content.problem.quote}></blockquote>
+                </div>
+            )}
+        </div>
+
+        <div class="mb-16">
+             <h2 class="text-3xl font-black text-airtur-dark mb-6">{d.content.solution.heading}</h2>
+            <p class="whitespace-pre-line" set:html={d.content.solution.description}></p>
+        </div>
+
+        {d.content.technology && (
+            <div class="my-20 bg-white rounded-[2rem] border border-gray-200 shadow-xl overflow-hidden">
+                <div class="bg-airtur-dark px-8 py-6 flex items-center gap-4">
+                    <div class="p-2 bg-white/10 rounded-lg text-airtur-blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white leading-none">
+                            {d.content.technology.heading}
+                        </h3>
+                        <p class="text-gray-400 text-xs mt-1 uppercase tracking-wider">Specyfikacja techniczna</p>
+                    </div>
+                </div>
+                <div class="p-8 md:p-10 bg-gray-50/50">
+                    <div class="flex flex-col gap-4">
+                        {techSpecs.map((spec) => (
+                            <div class="flex items-end justify-between group">
+                                <span class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1 pr-2 shrink-0">
+                                    {spec.label}
+                                </span>
+                                <div class="grow border-b-2 border-dotted border-gray-300 mb-2 mx-2 opacity-40 group-hover:opacity-100 transition-opacity"></div>
+                                <span class={`
+                                    text-right text-base mb-0.5 pl-2 shrink-0 font-bold
+                                    ${spec.highlight === 'green' ? 'text-green-600' : ''}
+                                    ${spec.highlight === 'brand' ? 'text-airtur-blue' : ''}
+                                    ${spec.bold ? 'text-airtur-dark' : 'text-gray-700'}
+                                    ${!spec.highlight && !spec.bold ? 'font-medium' : ''}
+                                `}>
+                                    {spec.value}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        )}
+
+        <div class="relative z-10">
+            <h2 class="text-3xl font-black text-airtur-dark mb-6">{d.content.effect.heading}</h2>
+            
+            <div class="bg-gradient-to-br from-green-50 to-white border border-green-200 rounded-3xl p-8 relative overflow-hidden shadow-sm">
+                <div class="absolute -right-6 -bottom-6 opacity-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-48 h-48 text-green-600">
+                        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="flex gap-6 relative z-10">
+                    <div class="hidden md:flex shrink-0 w-12 h-12 bg-green-100 rounded-full items-center justify-center text-green-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                            <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 0 1 1.04-.208Z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div>
+                         <p class="text-gray-800 text-lg leading-relaxed font-medium" set:html={d.content.effect.description}></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      </article>
+
+      <div class="flex justify-center -mt-2 pb-2">
+         <div class="h-16 border-l-2 border-dotted border-gray-300"></div>
+      </div>
+    
+    </div> <div class="max-w-5xl mx-auto px-4 sm:px-6">
+        
+        <div class="text-center mb-10 md:mb-12">
+            <h3 class="text-3xl font-black text-airtur-dark">Podsumowanie inwestycji</h3>
+            <p class="text-gray-500 mt-2 text-lg">Twarde dane dla tego przypadku</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            
+            <div class="bg-airtur-dark text-white p-10 md:p-14 rounded-[2.5rem] shadow-2xl relative overflow-hidden group flex flex-col items-center text-center justify-center min-h-[320px]">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-airtur-blue/20 rounded-full blur-[60px] -mr-12 -mt-12 group-hover:bg-airtur-blue/30 transition-colors pointer-events-none"></div>
+                <p class="text-gray-400 uppercase text-xs font-black tracking-[0.25em] mb-8">{d.roi_dashboard.roi_label}</p>
+                <p class="text-6xl lg:text-8xl font-black text-green-400 leading-none tracking-tight whitespace-nowrap scale-100 transform group-hover:scale-105 transition-transform duration-300">
+                    {d.roi_dashboard.value}
+                </p>
+            </div>
+
+            <div class="bg-white border-2 border-airtur-blue p-10 md:p-14 rounded-[2.5rem] shadow-xl flex flex-col items-center text-center justify-center min-h-[320px]">
+                <p class="text-gray-400 uppercase text-xs font-black tracking-[0.25em] mb-8">{d.roi_dashboard.time_label}</p>
+                <p class="text-6xl lg:text-7xl font-black text-airtur-dark leading-none whitespace-nowrap">
+                    {d.roi_dashboard.time}
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 p-10 md:p-14 rounded-[2.5rem] border border-gray-200 text-center max-w-3xl mx-auto">
+            <h3 class="font-black text-airtur-dark mb-8 text-2xl md:text-3xl">
+                {d.roi_dashboard.ctaHeadline}
+            </h3>
+            <a href={d.roi_dashboard.ctaButtonLink} class="inline-flex items-center justify-center px-10 py-5 bg-airtur-blue text-white rounded-2xl font-black text-base shadow-xl hover:brightness-110 hover:-translate-y-1 transition-all uppercase tracking-widest group">
+                {d.roi_dashboard.ctaButtonText}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+            
+            <div class="mt-10 pt-10 border-t border-gray-200/60">
+                <a href="/studia-przypadkow" class="text-gray-400 hover:text-airtur-blue text-xs font-bold uppercase tracking-widest inline-flex items-center gap-2 transition-colors">
+                    ← Wróć do listy wszystkich realizacji
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+  </section>
+</Layout>
+
+<style is:global>
+  .custom-quote-wrapper blockquote {
+    position: relative;
+    border-left: 6px solid #0AB3C6;
+    background-color: #F8F9FA;
+    padding: 2.5rem 2.5rem 2.5rem 3.5rem;
+    border-radius: 0 20px 20px 0;
+    margin: 3rem 0;
+    font-style: italic;
+    font-size: 1.15em;
+    color: #374151;
+    line-height: 1.6;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  }
+
+  .custom-quote-wrapper blockquote::before {
+    content: '"';
+    position: absolute;
+    top: 5px;
+    left: 15px;
+    font-size: 6rem;
+    line-height: 1;
+    color: #0AB3C6;
+    opacity: 0.15;
+    font-family: serif;
+    pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    .custom-quote-wrapper blockquote {
+        padding: 2rem 1.5rem 2rem 2.5rem;
+        font-size: 1rem;
+    }
+  }
+</style>

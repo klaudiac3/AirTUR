@@ -1,0 +1,201 @@
+---
+// src/components/blog/TableOfContents.astro
+const { headings } = Astro.props;
+// Filtrujemy tylko nagłówki H2 i H3
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<nav id="toc-container" class="bg-gray-50 rounded-2xl border border-gray-200 transition-opacity duration-300 opacity-100">
+  
+  <div class="flex items-center justify-between p-6 border-b border-gray-200/50 cursor-pointer lg:cursor-default touch-action-manipulation" id="toc-header-mobile">
+    <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-airtur-blue">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+        <span class="text-lg font-bold text-airtur-dark">Spis treści</span>
+    </div>
+    
+    <button 
+      id="toc-close-btn-desktop" 
+      class="hidden lg:block p-1 rounded-full text-gray-400 hover:text-airtur-blue hover:bg-white transition-colors duration-200 cursor-pointer"
+      title="Schowaj panel boczny"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+    </button>
+
+    <button 
+        id="toc-chevron-mobile"
+        class="lg:hidden p-1 text-gray-400 transition-transform duration-300 -rotate-90"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+    </button>
+  </div>
+  
+  <div id="toc-list-wrapper" class="overflow-hidden transition-[max-height] duration-500 max-h-0 lg:max-h-[70vh] lg:overflow-y-auto custom-scrollbar desktop-overscroll">
+      <ul id="toc-list" class="space-y-2 text-sm px-6 pb-6 pt-0 lg:pt-6">
+        {toc.map((heading) => (
+          <li class={`${heading.depth === 3 ? 'ml-4' : ''}`}>
+            <a 
+              href={`#${heading.slug}`} 
+              class="toc-link block text-gray-600 hover:text-airtur-blue hover:font-bold transition-colors duration-200 py-1 leading-snug"
+              data-target={heading.slug}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+  </div>
+
+</nav>
+
+<style>
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #E5E7EB; border-radius: 20px; }
+  
+  /* BAZOWY STYL AKTYWNY (MOBILE) */
+  .toc-link.active { 
+    color: #0AB3C6; 
+  }
+
+  /* DESKTOP STYLES */
+  @media (min-width: 1024px) {
+    .toc-link.active {
+        font-weight: 700;
+        transform: translateX(4px);
+    }
+
+    /* NAPRAWA: Overscroll-contain działa TYLKO na desktopie.
+       Na mobile to właśnie ta linijka powodowała "zacinanie się" scrolla całej strony. */
+    .desktop-overscroll {
+      overscroll-behavior: contain;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const listWrapper = document.getElementById('toc-list-wrapper');
+    const list = document.getElementById('toc-list');
+    const headerMobile = document.getElementById('toc-header-mobile'); 
+    const chevronMobile = document.getElementById('toc-chevron-mobile');
+    const links = document.querySelectorAll('.toc-link');
+    const headings = Array.from(document.querySelectorAll('h2, h3'));
+    
+    // Zmienna do przechowywania stanu otwarcia na mobile
+    let isMobileOpen = false;
+
+    // --- LOGIKA MOBILE (NAPRAWIONA) ---
+    headerMobile?.addEventListener('click', (e) => {
+        // @ts-ignore
+        // Jeśli kliknięto w desktopowy przycisk zamykania, nie uruchamiaj logiki mobile
+        if (e.target.closest('#toc-close-btn-desktop')) return;
+
+        // Sprawdzenie czy jesteśmy na mobile (po widoczności chevronu)
+        // @ts-ignore
+        const isMobile = window.getComputedStyle(chevronMobile).display !== 'none';
+        
+        if (isMobile) {
+            // Zapobiega dziwnym skokom przeglądarki
+            e.preventDefault();
+
+            if (!isMobileOpen) {
+                // OTWIERANIE
+                const fullHeight = list.scrollHeight;
+                // Ograniczenie wysokości do 70vh, żeby nie zajęło całego ekranu
+                const viewHeight = window.innerHeight * 0.7; 
+                const targetHeight = Math.min(fullHeight, viewHeight);
+
+                listWrapper.style.maxHeight = targetHeight + 'px';
+                chevronMobile.style.transform = 'rotate(0deg)';
+                
+                // Ustawiamy overflow na auto od razu, jeśli treść jest długa,
+                // ale bez overscroll-contain w CSS, scrollowanie spisu nie zablokuje scrollowania body.
+                if (fullHeight > viewHeight) {
+                    // Czekamy chwilę na animację, ale krócej, żeby było płynniej
+                    setTimeout(() => {
+                        if (isMobileOpen) listWrapper.style.overflowY = 'auto';
+                    }, 300);
+                }
+                isMobileOpen = true;
+
+            } else {
+                // ZAMYKANIE
+                // Najpierw ukrywamy scrollbar, żeby nie mignął
+                listWrapper.style.overflowY = 'hidden';
+                
+                // Wymuszamy przerysowanie dla płynności
+                requestAnimationFrame(() => {
+                    listWrapper.style.maxHeight = '0px';
+                });
+                
+                chevronMobile.style.transform = 'rotate(-90deg)';
+                isMobileOpen = false;
+            }
+        }
+    });
+
+    // --- SCROLL SPY (BEZ ZMIAN W LOGICE DETEKCJI) ---
+    const updateActiveLink = () => {
+        // @ts-ignore
+        const isMobile = window.getComputedStyle(chevronMobile).display !== 'none';
+        
+        // Na mobile aktualizujemy tylko jak jest otwarte, żeby nie mieliło w tle
+        if (isMobile && !isMobileOpen) return;
+
+        let activeId = '';
+        const offset = 150; 
+        for (const heading of headings) {
+            if (heading.getBoundingClientRect().top < offset + 50) { 
+                activeId = heading.getAttribute('id');
+            } else { break; }
+        }
+
+        links.forEach(link => {
+            link.classList.remove('active');
+            // @ts-ignore
+            if (link.dataset.target === activeId) {
+                link.classList.add('active');
+                
+                // Scrollowanie wewnątrz spisu treści do aktywnego elementu
+                // Dodano warunek, żeby na mobile nie skakało w trakcie przewijania palcem
+                if (!isMobile && listWrapper.scrollHeight > listWrapper.clientHeight) {
+                     link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+            }
+        });
+    };
+
+    let isTicking = false;
+    window.addEventListener('scroll', () => {
+        if (!isTicking) {
+            window.requestAnimationFrame(() => {
+                updateActiveLink();
+                isTicking = false;
+            });
+            isTicking = true;
+        }
+    }, { passive: true });
+    
+    // Inicjalizacja na start
+    updateActiveLink();
+
+    // Dodatkowa obsługa linków na mobile - zamykanie spisu po kliknięciu
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+             // @ts-ignore
+            const isMobile = window.getComputedStyle(chevronMobile).display !== 'none';
+            if (isMobile && isMobileOpen) {
+                // Symulujemy kliknięcie w nagłówek, żeby zamknąć spis
+                // Jest to bezpieczniejsze niż ręczna manipulacja stylami
+                headerMobile.click();
+            }
+        });
+    });
+  });
+</script>

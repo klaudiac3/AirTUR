@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroSearch from '../components/baza-wiedzy/HeroSearch.astro';
+import WiedzaGrid from '../components/baza-wiedzy/WiedzaGrid.astro';
+
+// Uwaga: Komponent FAQ nie jest tutaj importowany, 
+// ponieważ został przeniesiony bezpośrednio do wnętrza HeroSearch.
+---
+
+<Layout title="Baza Wiedzy - AirTUR">
+  <main>
+    <!-- 
+      Sekcja Hero zawiera teraz:
+      - Nagłówek na całą szerokość
+      - FAQ (lewa kolumna)
+      - Wyszukiwarkę (prawa kolumna)
+    -->
+    <HeroSearch />
+
+    <!-- 
+      Sekcja Bloga (WiedzaGrid) wyświetla się 
+      bezpośrednio pod nowym układem gridowym.
+    -->
+    <WiedzaGrid />
+  </main>
+</Layout>

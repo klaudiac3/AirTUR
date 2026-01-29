@@ -1,0 +1,103 @@
+---
+// src/components/oferta/Analiza.astro
+---
+
+<!-- Zredukowano górny padding (pt-2 md:pt-4), aby sekcja "podjechała" pod formularz -->
+<section id="analiza" class="pt-2 pb-12 md:pt-4 md:pb-20 bg-white scroll-mt-24">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- CZĘŚĆ 1: MERYTORYKA (JEDNA KOLUMNA) -->
+    <!-- Zmniejszono mb-12 na mb-8, aby szybciej przejść do konkretów -->
+    <div class="text-center mb-8 md:mb-12">
+      
+      <!-- Ikona Kalkulatora - mniejszy margines dolny mb-4 -->
+      <div class="flex justify-center mb-4 md:mb-6">
+        <div class="p-3 md:p-4 bg-airtur-blue/10 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 md:w-10 md:h-10 text-airtur-blue">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM6.375 5.457c.003-.538.042-1.178.168-1.668.293-1.145 1.385-2.036 2.563-2.036h7.788c1.178 0 2.27.89 2.563 2.036.126.49.165 1.13.168 1.668h-13.25Zm0 0v15.086c0 1.178.89 2.27 2.036 2.564.49.125 1.13.164 1.668.167h7.788c.538-.003 1.178-.042 1.668-.167 1.146-.293 2.036-1.386 2.036-2.564V5.457h-13.25Z" />
+            </svg>
+        </div>
+      </div>
+
+      <h2 class="text-2xl md:text-4xl font-bold text-airtur-dark mb-4 md:mb-6">
+        Bezpłatna Analiza i Doradztwo Inwestycyjne
+      </h2>
+      
+      <p class="text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+        Każda mądra decyzja zaczyna się od dobrych danych. Zanim zaproponujemy Ci jakiekolwiek urządzenie, chcemy dać Ci coś znacznie cenniejszego: pełne zrozumienie Twoich możliwości. Nasza bezpłatna konsultacja to sesja analityczna, podczas której nasz ekspert pomoże Ci zrozumieć, jak technologia może pracować dla Twojego domowego budżetu.
+      </p>
+    </div>
+
+    <!-- CZĘŚĆ 2: CIEMNY BLOK "CO OTRZYMASZ" -->
+    <div class="bg-airtur-dark rounded-3xl p-6 md:p-12 text-white shadow-2xl">
+      
+      <h3 class="text-xl md:text-2xl font-bold text-center mb-8 md:mb-10">
+        Co otrzymasz podczas konsultacji?
+      </h3>
+
+      <!-- Lista z ptaszkami -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 md:gap-y-6 gap-x-12 mb-8 md:mb-12">
+        
+        <!-- Punkt 1 -->
+        <div class="flex items-start gap-3 md:gap-4">
+          <div class="flex-shrink-0 mt-1">
+            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-airtur-blue flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3 md:w-3.5 md:h-3.5 text-white">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+            </div>
+          </div>
+          <p class="text-sm md:text-base text-gray-200">Szczegółowe obliczenie Twojego zapotrzebowania na moc grzewczą i chłodniczą.</p>
+        </div>
+
+        <!-- Punkt 2 -->
+        <div class="flex items-start gap-3 md:gap-4">
+          <div class="flex-shrink-0 mt-1">
+            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-airtur-blue flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3 md:w-3.5 md:h-3.5 text-white">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+            </div>
+          </div>
+          <p class="text-sm md:text-base text-gray-200">Jasną, szacunkową kalkulację potencjalnego zwrotu z inwestycji (ROI).</p>
+        </div>
+
+        <!-- Punkt 3 -->
+        <div class="flex items-start gap-3 md:gap-4">
+          <div class="flex-shrink-0 mt-1">
+            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-airtur-blue flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3 md:w-3.5 md:h-3.5 text-white">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+            </div>
+          </div>
+          <p class="text-sm md:text-base text-gray-200">Dane porównawcze kosztów eksploatacji w odniesieniu do tradycyjnych źródeł ciepła.</p>
+        </div>
+
+        <!-- Punkt 4 -->
+        <div class="flex items-start gap-3 md:gap-4">
+          <div class="flex-shrink-0 mt-1">
+            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-airtur-blue flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3 md:w-3.5 md:h-3.5 text-white">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+            </div>
+          </div>
+          <p class="text-sm md:text-base text-gray-200">Rekomendację 3 sprawdzonych systemów, które najlepiej odpowiadają Twoim celom.</p>
+        </div>
+
+      </div>
+
+      <!-- GŁÓWNE CTA -->
+      <div class="text-center border-t border-white/10 pt-8 md:pt-10">
+        <h4 class="text-lg md:text-xl font-bold text-white mb-6">Zacznij od najważniejszego kroku.</h4>
+        
+        <a href="/kontakt" class="inline-block w-full sm:w-auto bg-airtur-blue text-white px-8 py-3.5 md:px-10 md:py-4 rounded-lg font-bold text-sm md:text-base tracking-wide hover:bg-opacity-90 transition shadow-lg uppercase transform hover:-translate-y-1">
+            ZAMÓW BEZPŁATNĄ ANALIZĘ I WYCENĘ
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+</section>

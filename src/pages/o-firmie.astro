@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroO from '../components/o-firmie/HeroO.astro';
+import Manifest from '../components/o-firmie/Manifest.astro';
+import Wartosci from '../components/o-firmie/Wartosci.astro';
+// Importujemy ostatnią część
+import MisjaCTA from '../components/o-firmie/MisjaCTA.astro';
+---
+
+<Layout title="O Firmie - Nasza Historia i Wartości - AirTUR">
+  
+  <main>
+    <!-- Sekcja 1: Hero -->
+    <HeroO />
+
+    <!-- Sekcja 2: Manifest Założycielski -->
+    <Manifest />
+
+    <!-- Sekcja 3: Wartości -->
+    <Wartosci />
+
+    <!-- Sekcja 4 i 5: Misja i CTA -->
+    <MisjaCTA />
+  </main>
+
+</Layout>

@@ -1,0 +1,42 @@
+---
+// src/components/Narzedzia.astro
+---
+
+<!-- Sekcja na tło, bez nakładki CSS -->
+<section class="relative py-24 md:py-32 overflow-hidden">
+  
+  <!-- ZDJĘCIE W TLE (już z nakładką) -->
+  <div class="absolute inset-0 z-0">
+    <img 
+      src="/narzedzia.jpg" 
+      alt="Osoba analizująca dane na laptopie" 
+      class="w-full h-full object-cover"
+    />
+  </div>
+
+  <!-- TREŚĆ (Zawsze na wierzchu) -->
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- ZMIANA: Usunięto mx-auto i text-center. Dodano max-w-4xl, by treść nie była za szeroka -->
+    <div class="max-w-4xl text-white text-left">
+      
+      <!-- Nagłówek H2 - ZWIĘKSZONY, POGRUBIONY Z PODZIAŁEM NA DWIE LINIE -->
+      <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+        Dane mówią więcej niż słowa.<br />
+        Sam oblicz swój zwrot z inwestycji.
+      </h2>
+      
+      <!-- Tekst pod nagłówkiem - ZWIĘKSZONY -->
+      <p class="text-xl text-gray-200 mb-10 leading-relaxed font-light">
+        Przygotowaliśmy proste narzędzia, które pomogą Ci zrozumieć, jaki system będzie dla Ciebie optymalny i jak szybko Twoja inwestycja zacznie na siebie zarabiać. Przejmij stery i podejmij decyzję w oparciu o konkretne liczby.
+      </p>
+
+      <!-- Przycisk CTA -->
+      <a href="/narzedzia" class="inline-block bg-airtur-blue text-white px-10 py-5 rounded font-bold text-base tracking-wide hover:bg-opacity-90 transition shadow-lg uppercase transform hover:-translate-y-0.5">
+        PRZEJDŹ DO NARZĘDZI I POZNAJ KONKRETY →
+      </a>
+      
+    </div>
+    
+  </div>
+</section>

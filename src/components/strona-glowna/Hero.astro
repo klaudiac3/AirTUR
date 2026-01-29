@@ -1,0 +1,49 @@
+---
+// src/components/Hero.astro
+---
+
+<!-- ZMIANA: min-h-screen (pełna wysokość ekranu) oraz pt-24 (duży odstęp od góry pod menu) -->
+<section class="relative w-full min-h-screen flex items-center pt-24 pb-12">
+  
+  <!-- 1. ZDJĘCIE W TLE -->
+  <div class="absolute inset-0 z-0">
+    <img 
+      src="/hero.jpg" 
+      alt="Nowoczesny salon z klimatyzacją" 
+      class="w-full h-full object-cover"
+    />
+  </div>
+
+  <!-- 2. CIEMNA NAKŁADKA -->
+  <div class="absolute inset-0 bg-airtur-dark opacity-75 z-10"></div>
+
+  <!-- 3. TREŚĆ -->
+  <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div class="max-w-4xl"> 
+      
+      <!-- Nagłówek H1 - Łamanie linii wg Twoich wytycznych -->
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-8">
+        Odzyskaj kontrolę <br />
+        nad rachunkami. Komfort <br />
+        i przewidywalność <br />
+        finansowa przez 365 dni <br />
+        w roku.
+      </h1>
+
+      <!-- Tekst pod nagłówkiem - Skrócony wg wytycznych -->
+      <p class="text-lg md:text-xl text-gray-200 mb-10 leading-relaxed max-w-3xl">
+        Nowoczesna klimatyzacja z funkcją grzania to strategiczna inwestycja <br class="hidden md:block" />
+        w niezależność energetyczną. Zapewnij swojej rodzinie idealny komfort, <br class="hidden md:block" />
+         i zyskaj przewidywalność finansową, uniezależniając się od chaosu cen energii.
+      </p>
+
+      <!-- Przycisk CTA -->
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="/kontakt" class="bg-airtur-blue text-white px-8 py-4 rounded font-bold text-sm tracking-wide hover:bg-opacity-90 transition shadow-lg uppercase text-center inline-block">
+          ZAMÓW BEZPŁATNĄ ANALIZĘ I WYCENĘ
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>

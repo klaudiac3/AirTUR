@@ -1,0 +1,134 @@
+<div id="step-2" class="hidden step-content transition-opacity duration-500 relative">
+  
+  <div class="flex justify-end mb-4">
+    <button class="reset-btn text-sm text-gray-400 hover:text-red-500 underline decoration-dotted">Zacznij od nowa</button>
+  </div>
+
+  <h2 class="text-2xl font-bold text-airtur-dark mb-2 text-center">Krok 2: Precyzyjny Dobór Mocy</h2>
+  <p class="text-gray-500 text-center mb-10 max-w-2xl mx-auto">
+    Zbyt mała moc to brak efektu. Zbyt duża to częste włączanie ("taktowanie") i wyższe rachunki. Dobierzemy punkt pracy idealnie do Twojej strefy.
+  </p>
+
+  <!-- 1. Powierzchnia -->
+  <div class="mb-8 bg-gray-50 p-6 rounded-2xl border border-gray-200">
+    <label class="block text-lg font-bold text-airtur-dark mb-2 text-center">
+        Jaką powierzchnię chcesz obsłużyć urządzeniem?
+    </label>
+    <p class="text-sm text-gray-500 text-center mb-6">
+        Jeśli chcesz schłodzić tylko <strong>salon</strong>, wpisz jego metraż (np. 25 m²).<br>
+        Jeśli planujesz system na <strong>całe mieszkanie</strong>, wpisz łączny metraż.
+    </p>
+
+    <div class="flex items-center gap-4 mb-4">
+        <!-- ZMIANA: max="500" -->
+        <input type="number" id="area-input" value="25" min="10" max="500" class="w-24 px-3 py-2 text-2xl font-bold text-airtur-blue text-center bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-airtur-blue">
+        <!-- ZMIANA: max="500" -->
+        <input type="range" id="area-slider" min="10" max="500" value="25" class="flex-grow h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-airtur-blue">
+    </div>
+  </div>
+
+  <!-- 2. Nasłonecznienie -->
+  <div class="mb-8">
+    <p class="text-lg font-bold text-airtur-dark mb-4 text-center md:text-left">Poziom nasłonecznienia:</p>
+    <div class="grid grid-cols-3 gap-4">
+      <label class="cursor-pointer">
+        <input type="radio" name="sun" value="0.08" class="peer sr-only">
+        <div class="p-4 rounded-xl border-2 border-gray-200 text-center peer-checked:border-airtur-blue peer-checked:bg-blue-50 transition-all h-full flex items-center justify-center">
+          <div class="font-bold text-airtur-dark">NISKI</div>
+        </div>
+      </label>
+      <label class="cursor-pointer">
+        <input type="radio" name="sun" value="0.10" class="peer sr-only" checked>
+        <div class="p-4 rounded-xl border-2 border-gray-200 text-center peer-checked:border-airtur-blue peer-checked:bg-blue-50 transition-all h-full flex items-center justify-center">
+          <div class="font-bold text-airtur-dark">ŚREDNI</div>
+        </div>
+      </label>
+      <label class="cursor-pointer">
+        <input type="radio" name="sun" value="0.13" class="peer sr-only">
+        <div class="p-4 rounded-xl border-2 border-gray-200 text-center peer-checked:border-airtur-blue peer-checked:bg-blue-50 transition-all h-full flex items-center justify-center">
+          <div class="font-bold text-airtur-dark">WYSOKI</div>
+        </div>
+      </label>
+    </div>
+    <p id="sun-desc" class="mt-3 text-sm text-gray-500 italic text-center">
+        Okna od zachodu, standardowe mieszkanie, brak rolet zewnętrznych.
+    </p>
+  </div>
+
+  <!-- 3. Liczba osób -->
+  <div class="mb-10">
+    <p class="text-lg font-bold text-airtur-dark mb-4 text-center md:text-left">Stała liczba osób w pomieszczeniu:</p>
+    <div class="grid grid-cols-3 gap-4">
+      <label class="cursor-pointer">
+        <input type="radio" name="people" value="0" class="peer sr-only" checked>
+        <div class="p-4 rounded-xl border-2 border-gray-200 text-center peer-checked:border-airtur-blue peer-checked:bg-blue-50 transition-all">
+          <div class="font-bold text-airtur-dark">1-2</div>
+        </div>
+      </label>
+      <label class="cursor-pointer">
+        <input type="radio" name="people" value="0.3" class="peer sr-only">
+        <div class="p-4 rounded-xl border-2 border-gray-200 text-center peer-checked:border-airtur-blue peer-checked:bg-blue-50 transition-all">
+          <div class="font-bold text-airtur-dark">3-4</div>
+        </div>
+      </label>
+      <label class="cursor-pointer">
+        <input type="radio" name="people" value="0.6" class="peer sr-only">
+        <div class="p-4 rounded-xl border-2 border-gray-200 text-center peer-checked:border-airtur-blue peer-checked:bg-blue-50 transition-all">
+          <div class="font-bold text-airtur-dark">5+</div>
+        </div>
+      </label>
+    </div>
+    <p class="mt-3 text-sm text-gray-500 italic text-center">
+        Każda osoba to "grzejnik" (ok. 100W), który urządzenie musi zneutralizować.
+    </p>
+  </div>
+
+  <button id="calculate-btn" class="w-full bg-airtur-blue text-white font-bold py-5 rounded-xl hover:bg-opacity-90 transition shadow-lg text-xl uppercase tracking-wide transform hover:-translate-y-1 mb-6">
+    OBLICZ POTRZEBNĄ MOC
+  </button>
+
+  <div id="intermediate-result" class="hidden animate-fade-in mt-12">
+    
+    <div class="bg-[#E0F7FA] border-2 border-airtur-blue rounded-2xl p-8 text-center mb-10">
+        <p class="text-gray-600 uppercase tracking-widest text-sm mb-2">Twoje zapotrzebowanie:</p>
+        <p class="text-4xl font-extrabold text-airtur-dark mb-2"><span id="temp-result-power">0.0</span> kW</p>
+        <p class="text-gray-500 text-sm">Na podstawie powierzchni, nasłonecznienia i osób.</p>
+    </div>
+
+    <div class="max-w-3xl mx-auto bg-white border-2 border-airtur-dark rounded-2xl overflow-hidden shadow-2xl mb-10">
+        <div class="bg-airtur-dark p-4 text-center">
+          <p class="text-white font-bold uppercase tracking-wider text-sm">Rekomendacja Eksperta AirTUR</p>
+        </div>
+        <div class="p-8 md:p-10 text-center">
+          
+          <h3 class="text-3xl font-bold text-airtur-dark mb-3" id="model-name">Wybieramy model...</h3>
+          <div class="inline-block bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-bold mb-6" id="model-category">Kategoria</div>
+          
+          <p class="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8" id="model-desc">
+              Tutaj pojawi się opis urządzenia idealnie dopasowanego do Twojego celu.
+          </p>
+
+          <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-airtur-blue text-left">
+            <h4 class="font-bold text-airtur-dark mb-2">Dlaczego ten wybór?</h4>
+            <p class="text-sm text-gray-600 italic" id="expert-explanation">
+                Analizujemy Twój wybór...
+            </p>
+          </div>
+
+        </div>
+    </div>
+    
+    <div class="text-center">
+        <p class="text-gray-600 mb-4 font-medium">Mamy sprzęt. Teraz sprawdźmy, ile pieniędzy zaoszczędzisz na ogrzewaniu.</p>
+        <button id="go-to-roi-btn" class="w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide text-lg">
+            PRZEJDŹ DO KALKULATORA OSZCZĘDNOŚCI (ROI)
+        </button>
+    </div>
+
+  </div>
+
+  <div class="mt-8 text-center">
+    <button class="back-btn text-gray-400 hover:text-airtur-dark underline text-sm" data-prev="1">← Wróć do Profilu</button>
+  </div>
+
+</div>

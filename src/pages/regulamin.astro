@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+// Importujemy centralną konfigurację firmy
+import { companyConfig } from '../data/companyConfig';
+---
+
+<Layout title="Regulamin Serwisu - AirTUR" description="Zasady korzystania z serwisu internetowego AirTUR oraz narzędzi diagnostycznych.">
+  <main class="pt-32 pb-24 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <header class="mb-12 border-b border-gray-100 pb-8">
+        <h1 class="text-4xl font-extrabold text-airtur-dark mb-4">Regulamin Serwisu</h1>
+        <p class="text-gray-500 italic">Obowiązuje od dnia: 27 stycznia 2026 r.</p>
+      </header>
+
+      <div class="prose prose-blue prose-lg max-w-none text-gray-700 space-y-8">
+        
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§1. Postanowienia ogólne</h2>
+          <p>
+            Niniejszy regulamin określa zasady korzystania z serwisu internetowego dostępnego pod adresem airtur.pl, zwanego dalej „Serwisem”. Właścicielem Serwisu jest {companyConfig.fullName} z siedzibą w miejscowości {companyConfig.address.city}.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§2. Usługi świadczone drogą elektroniczną</h2>
+          <p>W ramach Serwisu Użytkownik może korzystać z następujących bezpłatnych usług:</p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li><strong>Formularz kontaktowy:</strong> umożliwiający przesłanie zapytania do Administratora.</li>
+            <li><strong>Kalkulatory techniczne:</strong> narzędzia do szacunkowego doboru mocy urządzeń i wyliczania oszczędności.</li>
+            <li><strong>Baza Wiedzy:</strong> dostęp do merytorycznych artykułów i poradników.</li>
+          </ul>
+        </section>
+
+        <section class="bg-blue-50 p-8 rounded-2xl border border-blue-100">
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§3. Odpowiedzialność za wyniki kalkulacji</h2>
+          <p>
+            Wszelkie wyniki generowane przez Kalkulatory dostępne w Serwisie mają charakter wyłącznie <strong>poglądowy i szacunkowy</strong>. Nie stanowią one oficjalnego projektu inżynieryjnego ani oferty handlowej w rozumieniu Art. 66 par. 1 Kodeksu Cywilnego.
+          </p>
+          <p class="mt-4">
+            Ostateczny dobór mocy oraz wiążąca wycena są możliwe wyłącznie po przeprowadzeniu bezpłatnej wizji lokalnej przez specjalistę {companyConfig.name}.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§4. Prawa autorskie</h2>
+          <p>
+            Wszelkie treści, zdjęcia oraz algorytmy narzędzi diagnostycznych są własnością firmy {companyConfig.name}. Kopiowanie lub wykorzystywanie ich bez pisemnej zgody jest zabronione.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§5. Kontakt i Reklamacje</h2>
+          <p>
+            Wszelkie uwagi dotyczące działania serwisu należy kierować na adres e-mail: 
+            <a href={companyConfig.contact.emailLink} class="text-airtur-blue font-bold">{companyConfig.contact.email}</a>.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</Layout>

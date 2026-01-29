@@ -1,0 +1,70 @@
+<div id="step-4" class="hidden step-content transition-opacity duration-500 relative">
+      
+    <!-- Przyciski Nawigacyjne (Góra) -->
+    <div class="flex justify-end mb-4">
+        <button class="reset-btn text-sm text-gray-400 hover:text-red-500 underline decoration-dotted">Zacznij od nowa</button>
+    </div>
+
+    <!-- PODSUMOWANIE FINANSOWE (DASHBOARD) -->
+    <div class="bg-gray-900 rounded-3xl p-8 mb-12 text-white shadow-2xl relative overflow-hidden">
+        <!-- Tło ozdobne -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-airtur-blue opacity-10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+
+        <!-- ZMIANA: Nagłówek skupiony na efektywności, a nie skali -->
+        <h3 class="text-xl font-bold text-center mb-8 opacity-90">KOSZT WYTWORZENIA <span class="text-airtur-blue">TEJ SAMEJ ILOŚCI CIEPŁA</span>:</h3>
+
+        <!-- WYKRES PORÓWNAWCZY -->
+        <div class="mb-10 space-y-6">
+            <!-- Stary system -->
+            <div>
+                <div class="flex justify-between text-sm mb-2 opacity-80">
+                    <span>Twój obecny system</span>
+                    <span id="cost-old">0 zł</span>
+                </div>
+                <div class="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
+                    <div class="h-full bg-red-500 w-full"></div> <!-- Zawsze 100% jako baza -->
+                </div>
+            </div>
+            <!-- AirTUR -->
+            <div>
+                <div class="flex justify-between text-sm mb-2 font-bold text-airtur-blue">
+                    <span>Klimatyzacja</span>
+                    <span id="cost-new">0 zł</span>
+                </div>
+                <div class="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
+                    <div id="bar-new" class="h-full bg-airtur-blue w-0 transition-all duration-1000 ease-out"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GŁÓWNY LICZNIK OSZCZĘDNOŚCI -->
+        <div class="text-center border-t border-gray-700 pt-8">
+            <p class="text-gray-400 uppercase tracking-widest text-sm mb-2">Potencjalna Oszczędność Roczna</p>
+            <p class="text-4xl md:text-5xl font-extrabold text-green-400">
+                NAWET <span id="savings-year">0</span> ZŁ
+            </p>
+            <!-- ZMIANA: Zabezpieczenie prawne/logiczne -->
+            <p class="text-xs text-gray-500 mt-2">*Szacunek dla sezonu grzewczego przy zastąpieniu obecnego źródła.</p>
+        </div>
+    </div>
+
+    <!-- Małe przypomnienie co wybraliśmy (bez detali) -->
+    <div class="text-center mb-8 bg-blue-50 border border-airtur-blue/30 rounded-xl p-4">
+        <p class="text-gray-600 text-sm">Rekomendowane urządzenie do Twoich warunków:</p>
+        <p class="font-bold text-airtur-dark text-lg" id="final-model-name">Model...</p>
+    </div>
+
+    <!-- Sekcja CTA -->
+    <div class="text-center">
+        <h3 class="text-xl font-bold text-airtur-dark mb-6">Chcesz poznać dokładną wycenę z montażem?</h3>
+        <a href="/kontakt" class="inline-block bg-airtur-dark text-white px-12 py-5 rounded-xl font-bold hover:bg-opacity-90 transition shadow-lg uppercase text-lg transform hover:-translate-y-1">
+            UMÓW MONTAŻ TEGO MODELU
+        </a>
+    </div>
+
+    <!-- Nawigacja Dół -->
+    <div class="mt-8 text-center">
+        <button class="back-btn text-gray-400 hover:text-airtur-dark underline text-sm" data-prev="3">← Wróć do Analizy</button>
+    </div>
+
+</div>

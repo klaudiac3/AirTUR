@@ -1,0 +1,494 @@
+---
+// src/components/narzedzia/Kalkulator.astro
+
+// Importujemy poszczególne kroki (upewnij się, że pliki StepX.astro są w folderze src/components/narzedzia/kalkulator/)
+import Step1 from './kalkulator/Step1.astro';
+import Step2 from './kalkulator/Step2.astro';
+import Step3 from './kalkulator/Step3.astro';
+import Step4 from './kalkulator/Step4.astro';
+---
+
+<section id="kalkulator-app" class="relative bg-white min-h-[600px] transition-all duration-300 pb-24">
+  
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Kontener na Kroki (Pasek postępu jest teraz we Wprowadzenie.astro) -->
+    <div class="relative pt-8">
+        
+        <!-- Importowane komponenty kroków -->
+        <Step1 />
+        <Step2 />
+        <Step3 />
+        <Step4 />
+
+        <!-- EKRAN ŁADOWANIA (Wspólny dla wszystkich kroków) -->
+        <div id="step-loading" class="hidden absolute inset-0 bg-white/95 backdrop-blur-sm z-30 flex flex-col items-center justify-center text-center min-h-[400px]">
+            <div class="relative w-24 h-24 mb-6">
+               <div class="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
+               <div class="absolute inset-0 border-4 border-airtur-blue rounded-full border-t-transparent animate-spin"></div>
+               <div class="absolute inset-0 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-airtur-blue">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 1.043 3.296 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                  </svg>
+               </div>
+            </div>
+            <h3 class="text-xl font-bold text-airtur-dark mb-1 animate-pulse">Przetwarzanie danych...</h3>
+            <p class="text-sm text-gray-500">Analiza fizyki budynku i kosztów energii</p>
+        </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  // IMPORT Z PLIKU KONFIGURACYJNEGO (Baza danych)
+  // Upewnij się, że plik models.js zawiera export const MARKET_DATA
+  import { models, MARKET_DATA } from './kalkulator/models.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // --- STAN APLIKACJI (Global State) ---
+    let state = {
+      buildingType: '',
+      buildingFactor: 1.0,
+      goal: '',
+      area: 25,          // Domyślna powierzchnia (salon)
+      sunFactor: 0.10,   // Domyślne nasłonecznienie
+      peopleLoad: 0,     // Domyślnie 0 kW dodatkowo
+      calculatedPower: 0,
+      billAmount: 800,   // Domyślny rachunek
+      
+      // Nowe pola dla zaawansowanej logiki:
+      selectedFuel: null, // Klucz paliwa (np. 'coal_old')
+      comfortLevel: 'standard', // 'low', 'standard', 'high'
+      
+      recommendedModel: '' 
+    };
+
+    // --- ELEMENTY DOM ---
+    const steps = [
+      document.getElementById('step-1'),
+      document.getElementById('step-2'),
+      document.getElementById('step-3'),
+      document.getElementById('step-4')
+    ];
+    const stepLoading = document.getElementById('step-loading');
+    // Pasek postępu (znajduje się fizycznie we Wprowadzenie.astro, ale sterujemy nim stąd)
+    const progressLine = document.getElementById('progress-line');
+
+    // ============================================================
+    // 1. SYNCHRONIZACJA Z FORMULARZEM (KONWERSJA.ASTRO)
+    // ============================================================
+    function syncWithConversionForm() {
+        const goalBtn = document.querySelector(`.goal-btn[data-goal="${state.goal}"]`);
+        // Pobieramy sam tytuł celu (pierwsza linia tekstu w przycisku)
+        const goalLabel = goalBtn ? goalBtn.innerText.split('\n')[0] : state.goal; 
+        const savingsValue = document.getElementById('savings-year')?.innerText || "0";
+        
+        // --- Tłumaczenie danych technicznych na język ludzki ---
+        
+        // 1. Paliwo
+        const fuelData = state.selectedFuel ? MARKET_DATA.fuels[state.selectedFuel] : null;
+        const fuelName = fuelData ? fuelData.name : 'Nieznane';
+
+        // 2. Słońce
+        let sunLabel = "Średnie";
+        if(state.sunFactor === 0.08) sunLabel = "Niskie";
+        if(state.sunFactor === 0.13) sunLabel = "Wysokie";
+
+        // 3. Komfort
+        let comfortLabel = "Standardowy (21°C)";
+        if(state.comfortLevel === 'low') comfortLabel = "Oszczędny (<20°C)";
+        if(state.comfortLevel === 'high') comfortLabel = "Wysoki (>22°C)";
+
+        // --- Wypełnianie ukrytych pól w Konwersja.astro ---
+        const setVal = (selector, val) => {
+            document.querySelectorAll(selector).forEach(el => el.value = val);
+        };
+
+        // Stare pola (kompatybilność)
+        setVal('.calc-field-area', state.area);
+        setVal('.calc-field-power', state.calculatedPower);
+        setVal('.calc-field-goal', goalLabel);
+        setVal('.calc-field-savings', savingsValue);
+        setVal('.calc-field-model', state.recommendedModel);
+        
+        // Nowe pola (szczegółowy raport)
+        setVal('.calc-field-bill', state.billAmount + " zł");
+        setVal('.calc-field-fuel', fuelName);
+        setVal('.calc-field-comfort', comfortLabel);
+        setVal('.calc-field-sun', sunLabel);
+        setVal('.calc-field-people', state.peopleLoad > 0 ? "3+" : "1-2");
+        setVal('.calc-field-building', state.buildingType ? state.buildingType.toUpperCase() : '');
+    }
+
+    // ============================================================
+    // 2. NAWIGACJA I UI
+    // ============================================================
+    function goToStep(stepIndex) {
+      if(!steps[stepIndex]) return;
+      
+      // Ukryj wszystko, pokaż wybrane
+      steps.forEach(s => s && s.classList.add('hidden'));
+      steps[stepIndex].classList.remove('hidden');
+      
+      // Scroll do góry
+      document.getElementById('kalkulator-app')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      
+      // Aktualizacja paska postępu
+      updateProgress(stepIndex + 1);
+    }
+
+    function updateProgress(stepNumber) {
+      // 1. Aktualizacja linii
+      if(progressLine) {
+          if(stepNumber === 1) progressLine.style.width = '0%';
+          if(stepNumber === 2) progressLine.style.width = '50%';
+          if(stepNumber >= 3) progressLine.style.width = '100%';
+      }
+      
+      // 2. Aktualizacja kółek (Szukamy ich po klasach z Wprowadzenie.astro)
+      const circles = document.querySelectorAll('.w-10.h-10.rounded-full'); 
+      
+      circles.forEach((circle, idx) => {
+          // Jeśli jesteśmy na danym kroku lub wyższym -> Aktywuj
+          if(idx + 1 <= stepNumber || (stepNumber === 4 && idx === 2)) {
+              circle.classList.remove('bg-white', 'text-gray-400', 'border-2', 'border-gray-200');
+              circle.classList.add('bg-airtur-blue', 'text-white');
+          } else {
+              // Dezaktywuj
+              circle.classList.remove('bg-airtur-blue', 'text-white');
+              circle.classList.add('bg-white', 'text-gray-400', 'border-2', 'border-gray-200');
+          }
+      });
+    }
+
+    // Obsługa przycisków WSTECZ
+    document.querySelectorAll('.back-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+          const prevStep = parseInt(btn.dataset.prev);
+          goToStep(prevStep - 1);
+      });
+    });
+
+    // Obsługa przycisków RESET
+    document.querySelectorAll('.reset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+          if(confirm("Czy na pewno chcesz zresetować kalkulator i zacząć od początku?")) {
+              location.reload(); 
+          }
+      });
+    });
+
+    // ============================================================
+    // 3. KROK 1: PROFIL BUDYNKU
+    // ============================================================
+    const typeBtns = document.querySelectorAll('.type-btn');
+    const goalBtns = document.querySelectorAll('.goal-btn');
+
+    typeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+          // Reset wizualny
+          typeBtns.forEach(b => {
+              b.classList.remove('border-airtur-blue', 'bg-blue-50');
+              b.classList.add('border-gray-200');
+              b.querySelector('svg')?.classList.remove('text-airtur-blue');
+              b.querySelector('svg')?.classList.add('text-gray-400');
+          });
+          // Aktywacja
+          btn.classList.remove('border-gray-200');
+          btn.classList.add('border-airtur-blue', 'bg-blue-50');
+          btn.querySelector('svg')?.classList.remove('text-gray-400');
+          btn.querySelector('svg')?.classList.add('text-airtur-blue');
+          
+          state.buildingType = btn.dataset.value;
+          state.buildingFactor = parseFloat(btn.dataset.factor);
+          checkStep1Completion();
+      });
+    });
+
+    goalBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+          if(!state.buildingType) {
+              alert("Proszę najpierw wybrać typ budynku.");
+              return;
+          }
+          goalBtns.forEach(b => {
+              b.classList.remove('border-airtur-blue', 'bg-blue-50');
+              b.classList.add('border-gray-200');
+          });
+          btn.classList.remove('border-gray-200');
+          btn.classList.add('border-airtur-blue', 'bg-blue-50');
+          state.goal = btn.dataset.goal;
+          checkStep1Completion();
+      });
+    });
+
+    function checkStep1Completion() {
+      if(state.buildingType && state.goal) {
+          // Symulacja "myślenia"
+          setTimeout(() => {
+              steps[0].classList.add('hidden');
+              if(stepLoading) stepLoading.classList.remove('hidden');
+              
+              setTimeout(() => {
+                  if(stepLoading) stepLoading.classList.add('hidden');
+                  setupStep2Defaults();
+                  goToStep(1);
+              }, 1000); 
+          }, 300);
+      }
+    }
+
+    // ============================================================
+    // 4. KROK 2: DOBÓR MOCY (FIZYKA)
+    // ============================================================
+    function setupStep2Defaults() {
+      const sunRadios = document.querySelectorAll('input[name="sun"]');
+      sunRadios.forEach(r => { if(r.value === "0.10") r.checked = true; });
+      
+      // Poddasze = więcej słońca
+      if(state.buildingType === 'poddasze') {
+          sunRadios.forEach(r => { if(r.value === "0.13") r.click(); });
+      } else {
+          updateSunDescription(0.10);
+      }
+    }
+    
+    function updateSunDescription(factor) {
+        const desc = document.getElementById('sun-desc');
+        if(desc) {
+            if(factor === 0.08) desc.innerText = "Okna od północy/wschodu, parter, dobra izolacja.";
+            if(factor === 0.10) desc.innerText = "Okna od zachodu, standardowe mieszkanie.";
+            if(factor === 0.13) desc.innerText = "Okna od południa, duże przeszklenia, poddasze.";
+        }
+    }
+
+    const areaSlider = document.getElementById('area-slider');
+    const areaInput = document.getElementById('area-input');
+    
+    // Obsługa Slidera (Limit 500m2)
+    areaSlider?.addEventListener('input', (e) => {
+      if(areaInput) areaInput.value = e.target.value;
+      state.area = parseInt(e.target.value);
+    });
+    areaInput?.addEventListener('input', (e) => {
+      let val = parseInt(e.target.value);
+      if(val > 500) val = 500; // LIMIT 500
+      if(val < 10) val = 10;
+      if(areaSlider) areaSlider.value = val;
+      state.area = val;
+    });
+
+    // Listenery
+    document.querySelectorAll('input[name="sun"]').forEach(r => {
+      r.addEventListener('change', (e) => { 
+          state.sunFactor = parseFloat(e.target.value);
+          updateSunDescription(state.sunFactor);
+      });
+    });
+    document.querySelectorAll('input[name="people"]').forEach(r => {
+      r.addEventListener('change', (e) => { state.peopleLoad = parseFloat(e.target.value); });
+    });
+
+    // PRZYCISK: OBLICZ MOC
+    document.getElementById('calculate-btn')?.addEventListener('click', () => {
+      // Wzór: (m2 * W/m2) + Ludzie
+      let basePower = (state.area * state.sunFactor) + state.peopleLoad;
+      // Korekta o typ budynku
+      let finalPower = basePower * state.buildingFactor;
+      
+      state.calculatedPower = finalPower.toFixed(1);
+
+      // Wyświetlenie wyniku
+      const tempRes = document.getElementById('temp-result-power');
+      if(tempRes) tempRes.innerText = state.calculatedPower;
+      
+      // Dobór modelu
+      calculateAndShowModelRecommendation();
+
+      // Pokazanie sekcji wynikowej
+      const interResult = document.getElementById('intermediate-result');
+      if(interResult) {
+          interResult.classList.remove('hidden');
+          interResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      syncWithConversionForm();
+    });
+
+    document.getElementById('go-to-roi-btn')?.addEventListener('click', () => {
+        goToStep(2);
+    });
+
+    // ============================================================
+    // 5. KROK 3: FINANSE (ZAAWANSOWANA LOGIKA)
+    // ============================================================
+    const billSlider = document.getElementById('bill-slider');
+    const billInput = document.getElementById('bill-input');
+    const heatBtns = document.querySelectorAll('.heat-btn');
+    const comfortRadios = document.querySelectorAll('input[name="comfort"]');
+
+    // Slider Rachunku
+    billSlider?.addEventListener('input', (e) => {
+      if(billInput) billInput.value = e.target.value;
+      state.billAmount = parseInt(e.target.value);
+    });
+    billInput?.addEventListener('input', (e) => {
+      let val = parseInt(e.target.value);
+      if(val > 10000) val = 10000;
+      if(val < 100) val = 100;
+      if(billSlider) billSlider.value = val;
+      state.billAmount = val;
+    });
+
+    // Wybór Paliwa (zapisujemy KLUCZ np. 'coal_old')
+    heatBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+          heatBtns.forEach(b => {
+              b.classList.remove('border-airtur-blue', 'bg-blue-50');
+              b.classList.add('border-gray-200');
+          });
+          btn.classList.remove('border-gray-200');
+          btn.classList.add('border-airtur-blue', 'bg-blue-50');
+          
+          state.selectedFuel = btn.dataset.fuel;
+      });
+    });
+
+    // Wybór Komfortu
+    comfortRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            state.comfortLevel = e.target.value;
+        });
+    });
+
+    // PRZYCISK: PRZELICZ ROI
+    document.getElementById('roi-btn')?.addEventListener('click', () => {
+      if(!state.selectedFuel) {
+          alert("Proszę wybrać obecne źródło ogrzewania.");
+          return;
+      }
+      calculateAdvancedFinancials(); 
+      syncWithConversionForm();
+      goToStep(3);
+    });
+
+    // ============================================================
+    // 6. FUNKCJE BIZNESOWE
+    // ============================================================
+
+    // A. DOBÓR MODELU (Według mocy)
+    function calculateAndShowModelRecommendation() {
+      const power = parseFloat(state.calculatedPower);
+      let basket = '2.5';
+      
+      if(power <= 2.8) basket = '2.5';
+      else if(power <= 3.8) basket = '3.5';
+      else if(power <= 5.5) basket = '5.0';
+      else if(power <= 7.2) basket = '7.0';
+      else basket = 'MULTI';
+
+      const modelName = document.getElementById('model-name');
+      const modelCat = document.getElementById('model-category');
+      const modelDesc = document.getElementById('model-desc');
+      const finalModelName = document.getElementById('final-model-name');
+
+      if(basket === 'MULTI' || power > 8.0) {
+          state.recommendedModel = "System Multi-Split / Komercyjny";
+          if(modelName) modelName.innerText = "Konsultacja Indywidualna (System Multi)";
+          if(modelCat) modelCat.innerText = "Rozwiązanie Dedykowane";
+          if(modelDesc) modelDesc.innerText = "Twoje zapotrzebowanie przekracza standardowe jednostki ścienne. Rekomendujemy system Multi-Split lub jednostkę komercyjną.";
+          if(finalModelName) finalModelName.innerText = "System Multi-Split";
+      } else {
+          let mData = { name: `AirTUR Standard ${basket}kW`, cat: 'Standard', desc: 'Wydajne i ciche urządzenie.' };
+          
+          // Pobranie danych z importowanego pliku models.js
+          if (typeof models !== 'undefined' && models[state.goal] && models[state.goal][basket]) {
+             mData = models[state.goal][basket];
+          }
+
+          state.recommendedModel = mData.name;
+          if(modelName) modelName.innerText = mData.name;
+          if(modelCat) modelCat.innerText = mData.cat;
+          if(modelDesc) modelDesc.innerText = mData.desc;
+          if(finalModelName) finalModelName.innerText = mData.name;
+      }
+    }
+
+    // B. FIZYKA FINANSOWA (The Advanced Math)
+    function calculateAdvancedFinancials() {
+        const bill = state.billAmount; 
+        
+        // Pobieramy dane o paliwie z MARKET_DATA
+        const fuel = MARKET_DATA.fuels[state.selectedFuel]; 
+        
+        if (!fuel) return;
+
+        // 1. Ile "jednostek" paliwa kupił klient?
+        // (np. 800 zł / 2 zł/kg = 400 kg węgla)
+        const fuelUnits = bill / fuel.price; 
+
+        // 2. Ile energii TEORETYCZNEJ kupił? (Wartość opałowa)
+        // (np. 400 kg * 8 kWh/kg = 3200 kWh)
+        const theoreticalEnergy = fuelUnits * fuel.value;
+
+        // 3. Ile energii REALNEJ trafiło do pokoju? (Sprawność)
+        // (np. 3200 kWh * 0.60 = 1920 kWh efektywnego ciepła)
+        let effectiveHeat = theoreticalEnergy * fuel.efficiency;
+
+        // 4. KOREKTA NA KOMFORT (The Comfort Trap)
+        // Jeśli teraz oszczędza ('low'), to żeby mieć ciepło z pompy, zużyje więcej energii.
+        if (state.comfortLevel === 'low') {
+            effectiveHeat = effectiveHeat * 1.25; // +25% zapotrzebowania
+        } else if (state.comfortLevel === 'standard') {
+            effectiveHeat = effectiveHeat * 1.05; // +5% na wygodę
+        }
+        // Przy 'high' nie zmieniamy (klient już grzeje na maksa)
+
+        // 5. Ile PRĄDU zużyje AirTUR?
+        // SCOP 4.0 = z 1 kWh prądu mamy 4 kWh ciepła
+        const electricityNeeded = effectiveHeat / MARKET_DATA.airturSCOP;
+
+        // 6. Ile to kosztuje?
+        const costAirTUR = Math.round(electricityNeeded * MARKET_DATA.electricityPrice);
+        const costOld = bill;
+
+        // 7. Wyniki
+        const savingsMonth = costOld - costAirTUR;
+        const savingsYear = savingsMonth * 5; // Sezon grzewczy
+
+        // Aktualizacja DOM
+        const costOldEl = document.getElementById('cost-old');
+        const costNewEl = document.getElementById('cost-new');
+        
+        if(costOldEl) costOldEl.innerText = `${costOld} zł`;
+        if(costNewEl) costNewEl.innerText = `~${costAirTUR} zł`;
+        
+        const barWidth = Math.min((costAirTUR / costOld) * 100, 100);
+        setTimeout(() => {
+            const barNew = document.getElementById('bar-new');
+            if(barNew) barNew.style.width = `${barWidth}%`;
+        }, 500);
+
+        // Licznik nie może być ujemny wizualnie (chyba że chcemy pokazać stratę)
+        animateValue('savings-year', 0, Math.max(0, savingsYear), 2000);
+    }
+
+    function animateValue(id, start, end, duration) {
+      const obj = document.getElementById(id);
+      if(!obj) return;
+      let startTimestamp = null;
+      const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          obj.innerHTML = Math.floor(progress * (end - start) + start);
+          if (progress < 1) {
+              window.requestAnimationFrame(step);
+          }
+      };
+      window.requestAnimationFrame(step);
+    }
+  });
+</script>

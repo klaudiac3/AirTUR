@@ -1,0 +1,72 @@
+---
+// src/components/ProblemRozwiazanie.astro
+---
+
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- NAGŁÓWEK SEKCJI -->
+    <div class="text-center mb-10">
+      <h2 class="text-3xl md:text-4xl font-bold text-airtur-dark">
+        Koniec z nieprzewidywalnymi rachunkami za ogrzewanie.
+      </h2>
+    </div>
+
+    <!-- DWIE KOLUMNY -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+      
+      <!-- KOLUMNA LEWA: PROBLEM (Czerwona) -->
+      <div class="bg-red-50 border-l-8 border-red-500 p-8 rounded-xl flex flex-col justify-start h-full shadow-sm hover:shadow-md transition-shadow duration-300">
+        
+        <div class="flex items-center gap-4 mb-4">
+            <!-- Ikona X -->
+            <div class="flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-10 h-10 text-red-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </div>
+            <!-- Tytuł -->
+            <h3 class="text-xl font-bold text-airtur-dark">
+                Rosnące koszty i niepewność
+            </h3>
+        </div>
+
+        <p class="text-gray-700 leading-relaxed pl-14">
+          Rosnące ceny gazu i prądu sprawiają, że tracisz kontrolę nad domowym budżetem. Każdy sezon grzewczy to stres i niepewność. Poleganie na jednym, tradycyjnym źródle ciepła to ogromne ryzyko finansowe.
+        </p>
+      </div>
+
+      <!-- KOLUMNA PRAWA: ROZWIĄZANIE (Niebieska) -->
+      <div class="bg-[#E0F7FA] border-l-8 border-airtur-blue p-8 rounded-xl flex flex-col justify-start h-full shadow-md hover:shadow-lg transition-shadow duration-300">
+        
+        <div class="flex items-center gap-4 mb-4">
+            <!-- Ikona Ptaszek -->
+            <div class="flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-10 h-10 text-airtur-blue">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+            </div>
+            <!-- Tytuł -->
+            <h3 class="text-xl font-bold text-airtur-dark">
+                Strategiczna inwestycja
+            </h3>
+        </div>
+
+        <p class="text-gray-700 leading-relaxed mb-4 pl-14">
+          Nowoczesna klimatyzacja z funkcją grzania to sprawdzona technologia, która strategicznie uniezależnia Cię od wahań cen gazu czy ekogroszku. To mądry wybór, pozwalający odzyskać poczucie finansowego bezpieczeństwa i zapewnić rodzinie komfort na lata, niezależnie od pory roku.
+        </p>
+
+        <!-- Link CTA -->
+        <div class="pl-14 mt-auto">
+            <a href="/baza-wiedzy" class="inline-flex items-center font-bold text-sm text-airtur-blue hover:text-airtur-navy transition border-b border-airtur-blue pb-0.5">
+                Dowiedz się więcej o ogrzewaniu klimatyzacją
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3 ml-1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

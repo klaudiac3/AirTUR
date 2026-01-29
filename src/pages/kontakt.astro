@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Wprowadzenie from '../components/kontakt/Wprowadzenie.astro';
+import FormularzKontaktowy from '../components/kontakt/FormularzKontaktowy.astro';
+// Import nowej sekcji
+import CzegoOczekiwac from '../components/kontakt/CzegoOczekiwac.astro';
+import ObszarDzialania from '../components/kontakt/ObszarDzialania.astro';
+---
+
+<Layout title="Kontakt - Zamów Analizę - AirTUR">
+  
+  <main>
+    <!-- Sekcja 1: Wprowadzenie -->
+    <Wprowadzenie />
+
+    <!-- Sekcja 2: Główny Formularz i Dane -->
+    <FormularzKontaktowy />
+
+    <!-- Sekcja 3: Czego możesz się spodziewać -->
+    <CzegoOczekiwac />
+
+    <!-- Sekcja 4: Obszar Działania (Mapa) -->
+    <ObszarDzialania />
+  </main>
+
+</Layout>

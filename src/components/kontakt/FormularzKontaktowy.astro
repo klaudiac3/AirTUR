@@ -1,0 +1,257 @@
+---
+// src/components/kontakt/FormularzKontaktowy.astro
+import { companyConfig } from '../../data/companyConfig';
+---
+
+<section class="pt-8 pb-16 md:pb-24 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Kontener Główny -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 bg-white shadow-2xl rounded-3xl overflow-hidden">
+      
+      <!-- LEWA KOLUMNA: FORMULARZ -->
+      <div class="lg:col-span-3 p-8 md:p-12 lg:p-16">
+        
+        <h2 class="text-3xl font-bold text-airtur-dark mb-8">Formularz Kontaktowy</h2>
+        
+        <form 
+          id="main-contact-form"
+          name="kontakt-glowny" 
+          method="POST" 
+          data-netlify="true" 
+          action="/podziekowanie?cel=kontakt"
+          class="space-y-6"
+          novalidate
+        >
+          <!-- UKRYTE POLA TECHNICZNE -->
+          <input type="hidden" name="form-name" value="kontakt-glowny" />
+          <input type="hidden" name="source" value="strona_kontaktowa_glowna" />
+          
+          <!-- Imię i Nazwisko -->
+          <div>
+            <label for="name" class="block text-sm font-bold text-gray-700 mb-1">Imię i Nazwisko <span class="text-airtur-blue">*</span></label>
+            <input type="text" id="name" name="name" required 
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
+              placeholder="Jan Kowalski">
+          </div>
+
+          <!-- Grid na Email i Telefon -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+            <!-- Email -->
+            <div>
+              <label for="email" class="block text-sm font-bold text-gray-700 mb-1">Adres e-mail</label>
+              <input type="email" id="email" name="email" 
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
+                placeholder="jan@przyklad.pl">
+              <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Wygodna opcja dla zapytań ofertowych</p>
+            </div>
+            
+            <!-- Telefon -->
+            <div>
+              <label for="phone" class="block text-sm font-bold text-gray-700 mb-1">Numer telefonu</label>
+              <input type="tel" id="phone" name="phone" 
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
+                placeholder="+48 000 000 000">
+              <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Dla szybkiego kontaktu telefonicznego</p>
+            </div>
+
+            <!-- Komunikat błędu (dynamiczny) -->
+            <div id="contact-error" class="hidden absolute -bottom-5 left-0 text-red-500 text-[10px] font-bold italic">
+                Proszę podać przynajmniej jedną, poprawną formę kontaktu.
+            </div>
+          </div>
+
+          <!-- Wiadomość -->
+          <div>
+            <label for="message" class="block text-sm font-bold text-gray-700 mb-1">Treść wiadomości (Opcjonalne)</label>
+            <textarea id="message" name="message" rows="5" 
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
+              placeholder="Dzień dobry, interesuje mnie [montaż / serwis] w miejscowości…&#10;Mój przybliżony metraż to..."></textarea>
+          </div>
+
+          <!-- Zgody -->
+          <div class="flex items-start pt-2">
+            <div class="flex items-center h-5">
+              <input id="consent" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
+            </div>
+            <div class="ml-3 text-sm">
+              <label for="consent" class="text-gray-600 cursor-pointer">
+                Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu obsługi przesłanego zapytania.
+              </label>
+            </div>
+          </div>
+
+          <!-- Przycisk CTA -->
+          <div class="pt-4">
+            <button type="submit" class="w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide transform hover:-translate-y-0.5 cursor-pointer">
+              WYŚLIJ WIADOMOŚĆ
+            </button>
+            <p class="text-xs text-gray-400 text-center mt-4">
+              * Imię i Nazwisko oraz przynajmniej jedna forma kontaktu są wymagane.
+            </p>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- PRAWA KOLUMNA: PANEL BEZPOŚREDNI -->
+      <div class="lg:col-span-2 flex flex-col">
+        
+        <!-- CZĘŚĆ GÓRNA: CIEMNA -->
+        <div class="bg-airtur-dark p-8 md:p-10 text-white">
+          <h2 class="text-2xl md:text-3xl font-bold mb-4">Zadzwoń już teraz</h2>
+          <p class="text-gray-300 mb-8 text-sm md:text-base">Wolisz kontakt bezpośredni? Zadzwoń do nas lub napisz e-mail.</p>
+          
+          <div class="space-y-6">
+            <!-- Telefon -->
+            <a href={companyConfig.contact.phoneLink} class="flex items-center gap-4 group">
+              <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-airtur-blue transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-0.5">Telefon</p>
+                <p class="text-xl font-bold text-white group-hover:text-airtur-blue transition-colors">{companyConfig.contact.phoneFull}</p>
+              </div>
+            </a>
+
+            <!-- E-mail -->
+            <a href={companyConfig.contact.emailLink} class="flex items-center gap-4 group">
+              <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-airtur-blue transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25 2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-0.5">E-mail</p>
+                <p class="text-xl font-bold text-white group-hover:text-airtur-blue transition-colors">{companyConfig.contact.email}</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- CZĘŚĆ DOLNA: BIAŁA -->
+        <div class="bg-white p-8 md:p-10 flex-grow flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-gray-100">
+          
+          <div class="space-y-8">
+            <!-- Adres -->
+            <div>
+              <h3 class="text-xl font-bold text-airtur-dark mb-4">Dane Firmy:</h3>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-airtur-blue">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                  </svg>
+                </div>
+                <div class="text-gray-600 text-sm leading-relaxed">
+                  <p class="font-bold text-airtur-dark text-base">{companyConfig.name}</p>
+                  <p>{companyConfig.address.street}</p>
+                  <p>{companyConfig.address.postCode} {companyConfig.address.city}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Godziny otwarcia -->
+            <div>
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-airtur-blue">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-bold text-airtur-dark mb-1 text-base">Godziny otwarcia biura:</p>
+                  <div class="text-gray-600 text-sm space-y-1">
+                    <p><span class="font-medium">Pn – Pt:</span> {companyConfig.workingHours.weekdays}</p>
+                    <p><span class="font-medium">Sobota:</span> {companyConfig.workingHours.saturday}</p>
+                    <p><span class="font-medium">Niedziela:</span> {companyConfig.workingHours.sunday}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dane Rejestrowe -->
+          <div class="mt-10 pt-6 border-t border-gray-100">
+            <p class="font-bold text-airtur-dark mb-2">{companyConfig.fullName}</p>
+            <div class="flex flex-col gap-1 text-xs text-gray-500">
+              <p>NIP: {companyConfig.nip}</p>
+              <p>REGON: {companyConfig.regon}</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('main-contact-form');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      const errorMsg = document.getElementById('contact-error');
+
+      // Funkcja pomocnicza do walidacji emaila
+      const isValidEmail = (email) => {
+          return String(email)
+            .toLowerCase()
+            .match(
+              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+      };
+
+      // Funkcja pomocnicza do walidacji telefonu (min. 9 cyfr po oczyszczeniu)
+      const isValidPhone = (phone) => {
+          const digits = phone.replace(/\D/g, ""); // usuwa wszystko co nie jest cyfrą
+          return digits.length >= 9;
+      };
+
+      form?.addEventListener('submit', (e) => {
+          const emailVal = emailInput.value.trim();
+          const phoneVal = phoneInput.value.trim();
+
+          let hasError = false;
+          let message = "";
+
+          // 1. Sprawdzamy czy cokolwiek wpisano (email LUB telefon)
+          if (!emailVal && !phoneVal) {
+              hasError = true;
+              message = "Proszę podać przynajmniej jedną formę kontaktu (E-mail lub Telefon).";
+          } 
+          // 2. Jeśli wpisano email, sprawdź format
+          else if (emailVal && !isValidEmail(emailVal)) {
+              hasError = true;
+              message = "Podany adres e-mail ma nieprawidłowy format.";
+              emailInput.classList.add('border-red-400', 'bg-red-50');
+          }
+          // 3. Jeśli wpisano telefon, sprawdź czy ma min. 9 cyfr
+          else if (phoneVal && !isValidPhone(phoneVal)) {
+              hasError = true;
+              message = "Numer telefonu powinien zawierać minimum 9 cyfr.";
+              phoneInput.classList.add('border-red-400', 'bg-red-50');
+          }
+
+          if (hasError) {
+              e.preventDefault(); 
+              errorMsg.innerText = message;
+              errorMsg.classList.remove('hidden');
+              if (emailVal && !isValidEmail(emailVal)) emailInput.focus();
+              else if (phoneVal && !isValidPhone(phoneVal)) phoneInput.focus();
+          }
+      });
+
+      // Ukryj błąd, gdy użytkownik zacznie pisać
+      [emailInput, phoneInput].forEach(input => {
+          input?.addEventListener('input', () => {
+              errorMsg?.classList.add('hidden');
+              input.classList.remove('border-red-400', 'bg-red-50', 'border-red-300');
+          });
+      });
+  });
+</script>

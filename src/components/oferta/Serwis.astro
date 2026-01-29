@@ -1,0 +1,304 @@
+---
+// src/components/oferta/Serwis.astro
+import { companyConfig } from '../../data/companyConfig';
+---
+
+<section id="serwis" class="py-12 md:py-20 bg-white scroll-mt-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- 1. NAGŁÓWEK -->
+    <div class="text-center mb-10">
+      <h2 class="text-3xl md:text-4xl font-bold text-airtur-dark">
+        Opieka Techniczna i Serwis – Ochrona Twojej Inwestycji
+      </h2>
+    </div>
+
+    <!-- 2. KOLUMNY: TEKST (Lewa) vs KORZYŚCI (Prawa) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-16">
+      
+      <!-- LEWA: Narracja -->
+      <div class="flex flex-col justify-center h-full">
+        <p class="text-lg text-gray-600 leading-relaxed">
+          Zakup nowoczesnego systemu klimatyzacji to mądra decyzja finansowa. Regularny serwis to fundament, by ta decyzja przynosiła maksymalne korzyści przez wiele lat. <br><br>
+          Nasz zespół dba o to, by Twój system pracował z najwyższą wydajnością, zapewniając niskie koszty eksploatacji i czyste, zdrowe powietrze dla Twojej rodziny. To nie koszt – to utrzymanie pełnej kontroli nad Twoją inwestycją.
+        </p>
+      </div>
+
+      <!-- PRAWA: Korzyści z ikonami -->
+      <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 shadow-sm">
+        <ul class="space-y-6">
+          
+          <!-- Korzyść 1 -->
+          <li class="flex items-start gap-4">
+            <div class="flex-shrink-0 mt-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-airtur-dark text-lg">Maksymalna wydajność</h4>
+              <p class="text-sm text-gray-600">Utrzymanie niskiego zużycia energii.</p>
+            </div>
+          </li>
+
+          <!-- Korzyść 2 -->
+          <li class="flex items-start gap-4">
+            <div class="flex-shrink-0 mt-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-airtur-dark text-lg">Czystość i Zdrowie</h4>
+              <p class="text-sm text-gray-600">Eliminacja drobnoustrojów i alergenów z filtrów.</p>
+            </div>
+          </li>
+
+          <!-- Korzyść 3 -->
+          <li class="flex items-start gap-4">
+            <div class="flex-shrink-0 mt-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.702.127 1.597 1.097 1.896 1.966 1.896 1.966M8.685 2.25l-1.904 1.904m4.034-3.834l-1.132 2.768m4.935-2.203L12.55 4.509" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-airtur-dark text-lg">Niezawodność</h4>
+              <p class="text-sm text-gray-600">Proaktywne unikanie niespodziewanych awarii.</p>
+            </div>
+          </li>
+
+          <!-- Korzyść 4 -->
+          <li class="flex items-start gap-4">
+            <div class="flex-shrink-0 mt-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0 1 18 0z" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-airtur-dark text-lg">Dłuższa żywotność</h4>
+              <p class="text-sm text-gray-600">Zwiększenie trwałości i sprawności całego systemu.</p>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- 3. FORMULARZ KONTAKTOWY (Z integracją techniczną) -->
+    <div class="max-w-3xl mx-auto mt-16">
+      
+      <div class="text-center mb-8">
+        <h3 class="text-2xl font-bold text-airtur-dark text-balance">
+          Chcesz umówić serwis lub przegląd? Wybierz formę kontaktu:
+        </h3>
+      </div>
+
+      <!-- TABY -->
+      <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+        <button id="tab-email-serwis" class="w-full sm:w-auto px-6 py-3 rounded-lg border-2 border-airtur-dark text-sm font-bold uppercase tracking-wide transition-all bg-airtur-dark text-white shadow-lg cursor-pointer">
+          Chcę napisać e-mail
+        </button>
+        <button id="tab-phone-serwis" class="w-full sm:w-auto px-6 py-3 rounded-lg border-2 border-airtur-dark text-sm font-bold uppercase tracking-wide transition-all bg-white text-airtur-dark hover:bg-gray-100 cursor-pointer">
+          Preferuję kontakt telefoniczny
+        </button>
+      </div>
+
+      <!-- FORMULARZ 1: E-MAIL (SERWIS) -->
+      <div id="form-email-serwis" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
+        <form 
+            id="serwis-form-mail"
+            name="zgloszenie-serwis-mail" 
+            method="POST" 
+            data-netlify="true" 
+            action="/podziekowanie?cel=serwis"
+            class="space-y-4"
+            novalidate
+        >
+          <!-- UKRYTE POLA DLA NETLIFY I SOURCE -->
+          <input type="hidden" name="form-name" value="zgloszenie-serwis-mail" />
+          <input type="hidden" name="source" value="podstrona_oferta_sekcja_serwis_email" />
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="name-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
+              <input type="text" id="name-serwis" name="name" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
+            </div>
+            <div>
+              <label for="email-field-serwis" class="block text-sm font-bold text-airtur-dark mb-1">E-mail</label>
+              <input type="email" id="email-field-serwis" name="email" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="twoj@email.pl">
+            </div>
+          </div>
+          
+          <div>
+            <label for="message-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Treść wiadomości</label>
+            <textarea 
+              id="message-serwis" 
+              name="message"
+              rows="5" 
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50 text-gray-700 placeholder-gray-400"
+              placeholder="Dzień dobry,&#10;Proszę o kontakt w sprawie serwisu.&#10;Problem: [np. Klimatyzacja słabo chłodzi / Czas na przegląd]&#10;Marka urządzenia (jeśli znana): [np. Mitsubishi]&#10;Moja lokalizacja: [Miejscowość]"
+            ></textarea>
+          </div>
+
+          <!-- BŁĄD WALIDACJI MAIL -->
+          <div id="error-serwis-mail" class="hidden text-red-500 text-xs font-bold italic py-1">Proszę podać poprawny adres e-mail.</div>
+
+          <!-- ZGODA RODO + REGULAMIN (Serwis) -->
+<div class="flex items-start pt-2">
+    <div class="flex items-center h-5">
+      <input 
+        id="consent-serwis-mail" 
+        name="consent-serwis-mail" 
+        type="checkbox" 
+        required 
+        class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer"
+      >
+    </div>
+    <div class="ml-3 text-sm leading-snug">
+      <label for="consent-serwis-mail" class="text-gray-600 cursor-pointer">
+        Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu umówienia serwisu urządzenia.
+      </label>
+    </div>
+</div>
+
+          <button type="submit" class="w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide cursor-pointer">
+            WYŚLIJ ZGŁOSZENIE
+          </button>
+        </form>
+      </div>
+
+      <!-- FORMULARZ 2: TELEFON (SERWIS - Ukryty) -->
+      <div id="form-phone-serwis" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
+        <form 
+            id="serwis-form-phone"
+            name="zgloszenie-serwis-phone" 
+            method="POST" 
+            data-netlify="true" 
+            action="/podziekowanie?cel=serwis"
+            class="space-y-4"
+            novalidate
+        >
+          <input type="hidden" name="form-name" value="zgloszenie-serwis-phone" />
+          <input type="hidden" name="source" value="podstrona_oferta_sekcja_serwis_telefon" />
+
+          <div class="text-center mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
+              <p class="text-airtur-dark font-medium text-sm">Zostaw numer. Oddzwonimy, by ustalić termin serwisu.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="name-phone-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
+                <input type="text" id="name-phone-serwis" name="name" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
+              </div>
+              <div>
+                <label for="phone-field-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Numer telefonu</label>
+                <input type="tel" id="phone-field-serwis" name="phone" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="+48 ...">
+              </div>
+          </div>
+
+          <!-- BŁĄD WALIDACJI TELEFON -->
+          <div id="error-serwis-phone" class="hidden text-red-500 text-xs font-bold italic py-1">Numer telefonu powinien zawierać minimum 9 cyfr.</div>
+
+          <!-- ZGODA RODO (Telefon Serwis) -->
+          <div class="flex items-start pt-2">
+              <div class="flex items-center h-5">
+                <input id="consent-serwis-phone" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
+              </div>
+              <div class="ml-3 text-sm leading-snug">
+                <label for="consent-serwis-phone" class="text-gray-600 cursor-pointer">
+                  Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> na kontakt telefoniczny w celu ustalenia szczegółów serwisu. 
+                </label>
+              </div>
+          </div>
+
+          <button type="submit" class="w-full bg-airtur-dark text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide cursor-pointer">
+            UMÓW SERWIS TERAZ
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  // 1. LOGIKA TABÓW (TWOJA ORYGINALNA + POPRAWIONE NAZWY)
+  const tabEmailSerwis = document.getElementById('tab-email-serwis');
+  const tabPhoneSerwis = document.getElementById('tab-phone-serwis');
+  const formEmailSerwis = document.getElementById('form-email-serwis');
+  const formPhoneSerwis = document.getElementById('form-phone-serwis');
+
+  const activeClassS = ['bg-airtur-dark', 'text-white'];
+  const activeRemoveS = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
+  const inactiveClassS = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
+  const inactiveRemoveS = ['bg-airtur-dark', 'text-white'];
+
+  if(tabEmailSerwis && tabPhoneSerwis && formEmailSerwis && formPhoneSerwis) {
+      tabEmailSerwis.addEventListener('click', () => {
+        formEmailSerwis.classList.remove('hidden');
+        formPhoneSerwis.classList.add('hidden');
+        tabEmailSerwis.classList.add(...activeClassS);
+        tabEmailSerwis.classList.remove(...activeRemoveS);
+        tabPhoneSerwis.classList.add(...inactiveClassS);
+        tabPhoneSerwis.classList.remove(...inactiveRemoveS);
+      });
+
+      tabPhoneSerwis.addEventListener('click', () => {
+        formPhoneSerwis.classList.remove('hidden');
+        formEmailSerwis.classList.add('hidden');
+        tabPhoneSerwis.classList.add(...activeClassS);
+        tabPhoneSerwis.classList.remove(...activeRemoveS);
+        tabEmailSerwis.classList.add(...inactiveClassS);
+        tabEmailSerwis.classList.remove(...inactiveRemoveS);
+      });
+  }
+
+  // 2. LOGIKA WALIDACJI (NOWA DLA SERWISU)
+  document.addEventListener('DOMContentLoaded', () => {
+    const emailForm = document.getElementById('serwis-form-mail');
+    const phoneForm = document.getElementById('serwis-form-phone');
+
+    const isValidEmail = (email) => {
+        return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(String(email).toLowerCase());
+    };
+
+    const isValidPhone = (phone) => {
+        const digits = phone.replace(/\D/g, "");
+        return digits.length >= 9;
+    };
+
+    // Obsługa Formularza E-mail Serwis
+    emailForm?.addEventListener('submit', (e) => {
+        const emailInput = document.getElementById('email-field-serwis');
+        const errorMsg = document.getElementById('error-serwis-mail');
+        if (emailInput && !isValidEmail(emailInput.value)) {
+            e.preventDefault();
+            errorMsg?.classList.remove('hidden');
+            emailInput.classList.add('border-red-400', 'bg-red-50');
+            emailInput.focus();
+        }
+    });
+
+    // Obsługa Formularza Telefon Serwis
+    phoneForm?.addEventListener('submit', (e) => {
+        const phoneInput = document.getElementById('phone-field-serwis');
+        const errorMsg = document.getElementById('error-serwis-phone');
+        if (phoneInput && !isValidPhone(phoneInput.value)) {
+            e.preventDefault();
+            errorMsg?.classList.remove('hidden');
+            phoneInput.classList.add('border-red-400', 'bg-red-50');
+            phoneInput.focus();
+        }
+    });
+
+    // Usuwanie błędów przy wpisywaniu
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', () => {
+            input.classList.remove('border-red-400', 'bg-red-50');
+            document.getElementById('error-serwis-mail')?.classList.add('hidden');
+            document.getElementById('error-serwis-phone')?.classList.add('hidden');
+        });
+    });
+  });
+</script>

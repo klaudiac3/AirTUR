@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Mapa witryny pomaga robotom wyszukiwarek szybciej znajdować Twoje podstrony
+Sitemap: https://airtur.pl/sitemap-index.xml
+```
