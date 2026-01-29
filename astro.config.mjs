@@ -5,11 +5,14 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // Adres Twojej strony - niezbędny do poprawnego generowania sitemapy i linków kanonicznych
   site: 'https://airtur.pl',
   
+  // DODAJ TO: Wymusza dodawanie ukośnika na końcu (np. /kontakt/) 
+  // lub jego brak. Dla Netlify najbezpieczniej ustawić 'always'.
+  trailingSlash: 'always',
+
   integrations: [
-    sitemap() // Automatyczna generacja mapy strony dla Google
+    sitemap()
   ],
 
   vite: {
