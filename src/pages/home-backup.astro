@@ -1,0 +1,38 @@
+---
+// Importujemy główny szablon (Layout)
+import Layout from '../layouts/Layout.astro';
+
+// Importy komponentów ze specyficznego folderu strony głównej
+import Hero from '../components/strona-glowna/Hero.astro';
+import Fundamenty from '../components/strona-glowna/Fundamenty.astro';
+import ProblemRozwiazanie from '../components/strona-glowna/ProblemRozwiazanie.astro';
+import Opinie from '../components/strona-glowna/Opinie.astro';
+import Narzedzia from '../components/strona-glowna/Narzedzia.astro';
+import OstatnieCTA from '../components/strona-glowna/OstatnieCTA.astro';
+
+// Header, Footer i MobileStickyBar są już wewnątrz Layout.astro, więc tu ich nie wstawiamy!
+---
+
+<Layout title="Strona Główna">
+	
+	<main>
+		<!-- Sekcja 1: HERO -->
+		<Hero />
+		
+		<!-- Sekcja 2: FUNDAMENTY -->
+		<Fundamenty />
+		
+		<!-- Sekcja 3: PROBLEM I ROZWIĄZANIE -->
+		<ProblemRozwiazanie />
+		
+		<!-- Sekcja 4: OPINIE -->
+		<Opinie />
+		
+		<!-- Sekcja 5: NARZĘDZIA -->
+		<Narzedzia />
+		
+		<!-- Sekcja 6: OSTATNIE CTA -->
+		<OstatnieCTA />
+	</main>
+
+</Layout>
