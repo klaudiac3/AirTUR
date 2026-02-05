@@ -6,10 +6,8 @@ import { companyConfig } from '../../data/companyConfig';
 <section class="pt-8 pb-16 md:pb-24 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- Kontener Główny -->
     <div class="grid grid-cols-1 lg:grid-cols-5 bg-white shadow-2xl rounded-3xl overflow-hidden">
       
-      <!-- LEWA KOLUMNA: FORMULARZ -->
       <div class="lg:col-span-3 p-8 md:p-12 lg:p-16">
         
         <h2 class="text-3xl font-bold text-airtur-dark mb-8">Formularz Kontaktowy</h2>
@@ -19,25 +17,21 @@ import { companyConfig } from '../../data/companyConfig';
           name="kontakt-glowny" 
           method="POST" 
           data-netlify="true" 
-          action="/podziekowanie/index.html?cel=kontakt"
           class="space-y-6"
           novalidate
         >
-          <!-- UKRYTE POLA TECHNICZNE -->
           <input type="hidden" name="form-name" value="kontakt-glowny" />
           <input type="hidden" name="source" value="strona_kontaktowa_glowna" />
+          <input type="hidden" name="cel" value="kontakt" />
           
-          <!-- Imię i Nazwisko -->
           <div>
             <label for="name" class="block text-sm font-bold text-gray-700 mb-1">Imię i Nazwisko <span class="text-airtur-blue">*</span></label>
-            <input type="text" id="name" name="name" required 
+            <input type="text" id="name" name="imie" required 
               class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
               placeholder="Jan Kowalski">
           </div>
 
-          <!-- Grid na Email i Telefon -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-            <!-- Email -->
             <div>
               <label for="email" class="block text-sm font-bold text-gray-700 mb-1">Adres e-mail</label>
               <input type="email" id="email" name="email" 
@@ -46,44 +40,39 @@ import { companyConfig } from '../../data/companyConfig';
               <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Wygodna opcja dla zapytań ofertowych</p>
             </div>
             
-            <!-- Telefon -->
             <div>
               <label for="phone" class="block text-sm font-bold text-gray-700 mb-1">Numer telefonu</label>
-              <input type="tel" id="phone" name="phone" 
+              <input type="tel" id="phone" name="telefon" 
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
                 placeholder="+48 000 000 000">
               <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Dla szybkiego kontaktu telefonicznego</p>
             </div>
 
-            <!-- Komunikat błędu (dynamiczny) -->
             <div id="contact-error" class="hidden absolute -bottom-5 left-0 text-red-500 text-[10px] font-bold italic">
                 Proszę podać przynajmniej jedną, poprawną formę kontaktu.
             </div>
           </div>
 
-          <!-- Wiadomość -->
           <div>
             <label for="message" class="block text-sm font-bold text-gray-700 mb-1">Treść wiadomości (Opcjonalne)</label>
-            <textarea id="message" name="message" rows="5" 
+            <textarea id="message" name="wiadomosc" rows="5" 
               class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
               placeholder="Dzień dobry, interesuje mnie [montaż / serwis] w miejscowości…&#10;Mój przybliżony metraż to..."></textarea>
           </div>
 
-          <!-- Zgody -->
           <div class="flex items-start pt-2">
             <div class="flex items-center h-5">
-              <input id="consent" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
+              <input id="consent" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
             </div>
             <div class="ml-3 text-sm">
               <label for="consent" class="text-gray-600 cursor-pointer">
-                Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu obsługi przesłanego zapytania.
+                Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a>.
               </label>
             </div>
           </div>
 
-          <!-- Przycisk CTA -->
           <div class="pt-4">
-            <button type="submit" class="w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide transform hover:-translate-y-0.5 cursor-pointer">
+            <button type="submit" class="submit-btn w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide transform hover:-translate-y-0.5 cursor-pointer">
               WYŚLIJ WIADOMOŚĆ
             </button>
             <p class="text-xs text-gray-400 text-center mt-4">
@@ -94,16 +83,13 @@ import { companyConfig } from '../../data/companyConfig';
         </form>
       </div>
 
-      <!-- PRAWA KOLUMNA: PANEL BEZPOŚREDNI -->
       <div class="lg:col-span-2 flex flex-col">
         
-        <!-- CZĘŚĆ GÓRNA: CIEMNA -->
         <div class="bg-airtur-dark p-8 md:p-10 text-white">
           <h2 class="text-2xl md:text-3xl font-bold mb-4">Zadzwoń już teraz</h2>
           <p class="text-gray-300 mb-8 text-sm md:text-base">Wolisz kontakt bezpośredni? Zadzwoń do nas lub napisz e-mail.</p>
           
           <div class="space-y-6">
-            <!-- Telefon -->
             <a href={companyConfig.contact.phoneLink} class="flex items-center gap-4 group">
               <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-airtur-blue transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
@@ -116,7 +102,6 @@ import { companyConfig } from '../../data/companyConfig';
               </div>
             </a>
 
-            <!-- E-mail -->
             <a href={companyConfig.contact.emailLink} class="flex items-center gap-4 group">
               <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-airtur-blue transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
@@ -131,11 +116,8 @@ import { companyConfig } from '../../data/companyConfig';
           </div>
         </div>
 
-        <!-- CZĘŚĆ DOLNA: BIAŁA -->
         <div class="bg-white p-8 md:p-10 flex-grow flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-gray-100">
-          
           <div class="space-y-8">
-            <!-- Adres -->
             <div>
               <h3 class="text-xl font-bold text-airtur-dark mb-4">Dane Firmy:</h3>
               <div class="flex items-start gap-4">
@@ -153,7 +135,6 @@ import { companyConfig } from '../../data/companyConfig';
               </div>
             </div>
 
-            <!-- Godziny otwarcia -->
             <div>
               <div class="flex items-start gap-4">
                 <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
@@ -173,7 +154,6 @@ import { companyConfig } from '../../data/companyConfig';
             </div>
           </div>
 
-          <!-- Dane Rejestrowe -->
           <div class="mt-10 pt-6 border-t border-gray-100">
             <p class="font-bold text-airtur-dark mb-2">{companyConfig.fullName}</p>
             <div class="flex flex-col gap-1 text-xs text-gray-500">
@@ -181,11 +161,8 @@ import { companyConfig } from '../../data/companyConfig';
               <p>REGON: {companyConfig.regon}</p>
             </div>
           </div>
-
         </div>
-
       </div>
-
     </div>
   </div>
 </section>
@@ -197,60 +174,76 @@ import { companyConfig } from '../../data/companyConfig';
       const phoneInput = document.getElementById('phone');
       const errorMsg = document.getElementById('contact-error');
 
-      // Funkcja pomocnicza do walidacji emaila
-      const isValidEmail = (email) => {
-          return String(email)
-            .toLowerCase()
-            .match(
-              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            );
-      };
+      const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
 
-      // Funkcja pomocnicza do walidacji telefonu (min. 9 cyfr po oczyszczeniu)
-      const isValidPhone = (phone) => {
-          const digits = phone.replace(/\D/g, ""); // usuwa wszystko co nie jest cyfrą
-          return digits.length >= 9;
-      };
+      form?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const targetForm = e.target;
+          const submitBtn = targetForm.querySelector('.submit-btn');
 
-      form?.addEventListener('submit', (e) => {
           const emailVal = emailInput.value.trim();
           const phoneVal = phoneInput.value.trim();
 
           let hasError = false;
-          let message = "";
+          let validationMessage = "";
 
-          // 1. Sprawdzamy czy cokolwiek wpisano (email LUB telefon)
+          // 1. Walidacja (Imię i przynajmniej jedna forma kontaktu)
           if (!emailVal && !phoneVal) {
               hasError = true;
-              message = "Proszę podać przynajmniej jedną formę kontaktu (E-mail lub Telefon).";
-          } 
-          // 2. Jeśli wpisano email, sprawdź format
-          else if (emailVal && !isValidEmail(emailVal)) {
+              validationMessage = "Proszę podać przynajmniej jedną formę kontaktu (E-mail lub Telefon).";
+          } else if (emailVal && !isValidEmail(emailVal)) {
               hasError = true;
-              message = "Podany adres e-mail ma nieprawidłowy format.";
+              validationMessage = "Podany adres e-mail ma nieprawidłowy format.";
               emailInput.classList.add('border-red-400', 'bg-red-50');
-          }
-          // 3. Jeśli wpisano telefon, sprawdź czy ma min. 9 cyfr
-          else if (phoneVal && !isValidPhone(phoneVal)) {
+          } else if (phoneVal && !isValidPhone(phoneVal)) {
               hasError = true;
-              message = "Numer telefonu powinien zawierać minimum 9 cyfr.";
+              validationMessage = "Numer telefonu powinien zawierać minimum 9 cyfr.";
               phoneInput.classList.add('border-red-400', 'bg-red-50');
           }
 
           if (hasError) {
-              e.preventDefault(); 
-              errorMsg.innerText = message;
+              errorMsg.innerText = validationMessage;
               errorMsg.classList.remove('hidden');
-              if (emailVal && !isValidEmail(emailVal)) emailInput.focus();
-              else if (phoneVal && !isValidPhone(phoneVal)) phoneInput.focus();
+              return;
+          }
+
+          // 2. Wysyłka (Senior Level Flow)
+          if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.innerText = "PRZETWARZANIE...";
+          }
+
+          const formData = new FormData(targetForm);
+          const dataObj = Object.fromEntries(formData.entries());
+
+          try {
+              // Sprawdzanie środowiska
+              if (import.meta.env.DEV) {
+                  console.log("Tryb DEV: Symulacja wysyłki", dataObj);
+                  await new Promise(r => setTimeout(r, 1000));
+              } else {
+                  const response = await fetch('/api/generate-report', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(dataObj)
+                  });
+                  if (!response.ok) throw new Error('Błąd serwera');
+              }
+          } catch (error) {
+              console.error("Submission Error:", error);
+              alert("Wystąpił błąd podczas wysyłania. Spróbuj ponownie lub zadzwoń bezpośrednio.");
+          } finally {
+              // GWARANCJA PRZEKIEROWANIA
+              window.location.assign('/podziekowanie/index.html?cel=kontakt');
           }
       });
 
-      // Ukryj błąd, gdy użytkownik zacznie pisać
+      // Usuwanie stanów błędu
       [emailInput, phoneInput].forEach(input => {
           input?.addEventListener('input', () => {
               errorMsg?.classList.add('hidden');
-              input.classList.remove('border-red-400', 'bg-red-50', 'border-red-300');
+              input.classList.remove('border-red-400', 'bg-red-50');
           });
       });
   });

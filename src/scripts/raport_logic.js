@@ -1,65 +1,85 @@
-// Logika dopasowująca treści do wyników kalkulatora AirTUR
-export const getDynamicReportContent = (data) => {
-    const power = parseFloat(data.calculatedPower);
-    const people = parseFloat(data.peopleCount);
-    const building = data.typ_budynku; // poddasze, mieszkanie, dom, biuro
-    const goal = data.goal; // cisza, zdrowie, oszczednosc
+/**
+ * LOGIKA RAPORTU AIRTUR - Wersja Senior
+ * Odpowiada za interpretację wyników i generowanie treści merytorycznej.
+ */
 
-    // 1. LOGIKA ODRZUCONYCH ROZWIĄZAŃ (Dlaczego nie mniejszy?)
-    let rejectedPowerClass = "1.5 - 2.0";
-    if (power > 2.6 && power <= 3.8) rejectedPowerClass = "2.5";
-    else if (power > 3.8 && power <= 5.5) rejectedPowerClass = "3.5";
-    else if (power > 5.5) rejectedPowerClass = "5.0";
+const getDynamicReportContent = (data) => {
+    // 1. BEZPIECZNE POBIERANIE DANYCH (Fallbacki zapobiegają błędom NaN)
+    const power = parseFloat(data.wynik_moc || data.calculatedPower || 0);
+    const people = data.wynik_ludzie || "standard";
+    const building = data.wynik_typ_budynku || "dom";
+    const goalRaw = (data.wynik_cel || "").toLowerCase();
+    const savingsBase = parseInt(data.wynik_oszczednosci?.toString().replace(/\D/g, '') || 0);
+    const sunFactorValue = data.wynik_slonce || "0.10"; // Domyślnie standard
 
-    // 2. DYNAMICZNA PORADA EKSPERTA (Zależna od osób i budynku)
+    // 2. LOGIKA ODRZUCONYCH ROZWIĄZAŃ
+    let rejectedPowerClass = "1.5 - 2.0 kW";
+    if (power > 2.6 && power <= 3.8) rejectedPowerClass = "2.5 kW";
+    else if (power > 3.8 && power <= 5.5) rejectedPowerClass = "3.5 kW";
+    else if (power > 5.5) rejectedPowerClass = "5.0 kW";
+
+    // 3. DYNAMICZNA PORADA EKSPERTA
     let expertTipDynamic = "";
-    
-    // Warunek: Liczba osób (założenie: peopleFactor 0.2 = 1 osoba, 1.0 = 5 osób)
-    if (people >= 0.8) {
-        expertTipDynamic = "Przy 5+ domownikach kluczowa jest sterylizacja filtrów. Rekomendujemy model z lampą UV-C lub jonizacją, aby neutralizować wirusy i bakterie w obiegu ciągłym. ";
+    if (people.includes('5') || people.includes('duża')) {
+        expertTipDynamic = "Przy dużej liczbie domowników kluczowa jest sterylizacja filtrów. Rekomendujemy model z lampą UV-C lub jonizacją, aby neutralizować wirusy i bakterie. ";
     } else {
-        expertTipDynamic = "Dla 1-2 użytkowników system będzie pracował na niskich obrotach (inwerter), co drastycznie wydłuża żywotność sprężarki. ";
+        expertTipDynamic = "Dla mniejszej liczby użytkowników system będzie pracował głównie na niskich obrotach (inwerter), co drastycznie wydłuża żywotność sprężarki. ";
     }
 
-    // Warunek: Budynek
     if (building === 'poddasze') {
-        expertTipDynamic += "Specyfika poddasza sprawia, że ciepło kumuluje się pod skosami. Wybrany model posiada funkcję 3D Airflow, która 'rozbija' poduszkę ciepłego powietrza przy suficie.";
+        expertTipDynamic += "Specyfika poddasza sprawia, że ciepło kumuluje się pod skosami. Funkcja 3D Airflow w wybranym modelu skutecznie 'rozbije' te strefy.";
     } else if (building === 'biuro') {
-        expertTipDynamic += "W przestrzeni biurowej skupiliśmy się na czystości nawiewu, aby uniknąć efektu 'suchego oka' u pracowników.";
+        expertTipDynamic += "W przestrzeni biurowej skupiliśmy się na cichym nawiewie, aby zapewnić komfort pracy bez efektu 'ciągu powietrza'.";
     }
 
-    // 3. OPIS CELU (Wizualizacja komfortu)
+    // 4. MAPOWANIE CELU
     const goalMap = {
         'cisza': {
             label: 'Maksymalna Cisza i Regeneracja',
-            desc: 'Twój priorytet to spokój. Wybraliśmy system o poziomie głośności od 19dB – to ciszej niż szept w bibliotece. Twoje oszczędności pozwolą na lata spokojnego snu bez obaw o rachunki.'
+            desc: 'Twój priorytet to spokój. Wybraliśmy system o poziomie głośności od 19dB – to ciszej niż szept. Idealne do sypialni i pokoju dziecka.'
         },
         'zdrowie': {
-            label: 'Czyste Powietrze i Zdrowie Domowników',
-            desc: 'Skupiamy się na filtracji PM2.5. Dzięki wyliczonej mocy, urządzenie nie będzie przesuszać powietrza, utrzymując optymalną wilgotność dla Twoich dróg oddechowych.'
+            label: 'Czyste Powietrze (Zdrowie)',
+            desc: 'Skupiamy się na filtracji PM2.5 i jonizacji. Dzięki precyzyjnej mocy, urządzenie nie przesusza powietrza, dbając o Twoje drogi oddechowe.'
         },
         'oszczednosc': {
-            label: 'Maksymalna Efektywność Energetyczna',
-            desc: 'Inwestujesz w najniższy koszt eksploatacji. Wybrany model zwróci się najszybciej, wykorzystując pełen potencjał technologii inwerterowej przy Twoim metrażu.'
+            label: 'Maksymalna Efektywność',
+            desc: 'Inwestujesz w najniższy koszt eksploatacji. Wybrany model inwerterowy zwróci się najszybciej przy Twoim metrażu.'
         }
     };
 
-    const currentGoal = goalMap[goal] || { label: 'Komfort Termiczny', desc: 'Dopasowaliśmy system tak, aby utrzymać stałą temperaturę przy minimalnym zużyciu energii.' };
+    let currentGoal = goalMap['oszczednosc']; 
+    if (goalRaw.includes('cisz')) currentGoal = goalMap['cisza'];
+    if (goalRaw.includes('zdrow')) currentGoal = goalMap['zdrowie'];
 
-    // 4. MAPOWANIE ETYKIET (Dla tabeli danych)
-    const buildingMap = { 'poddasze': 'Poddasze / Ostatnie piętro', 'mieszkanie': 'Mieszkanie (Blok/Apartament)', 'dom': 'Dom Jednorodzinny', 'biuro': 'Przestrzeń Biurowa' };
-    const sunMap = { '0.08': 'Niskie (północ/wschód)', '0.10': 'Standardowe (zachód)', '0.13': 'Wysokie (południe/witryny)' };
+    // 5. MAPOWANIE ETYKIET (Dodane Nasłonecznienie!)
+    const buildingMap = { 
+        'poddasze': 'Poddasze / Skosy', 
+        'mieszkanie': 'Mieszkanie w bloku', 
+        'dom': 'Dom Jednorodzinny', 
+        'biuro': 'Biuro / Firma' 
+    };
 
+    const sunMap = {
+        '0.08': 'Niskie (Północ / Wschód)',
+        '0.10': 'Standardowe (Zachód)',
+        '0.13': 'Wysokie (Południe / Witryny)'
+    };
+
+    // 6. FINALNY OBIEKT WYNIKOWY
     return {
         reportId: `AT-${Math.floor(1000 + Math.random() * 9000)}`,
         goalLabel: currentGoal.label,
-        cel_opis: currentGoal.desc,
+        expertExplanation: currentGoal.desc,
         buildingType: buildingMap[building] || building,
-        sunFactorLabel: sunMap[data.sunFactor] || 'Standardowe',
+        sunFactorLabel: sunMap[sunFactorValue] || 'Standardowe', // <--- TO DODALIŚMY
         rejectedPowerClass: rejectedPowerClass,
         expertTipDynamic: expertTipDynamic,
-        savings5Years: (parseInt(data.savingsYear) * 5).toLocaleString('pl-PL'),
-        savings10Years: (parseInt(data.savingsYear) * 10).toLocaleString('pl-PL'),
-        date: new Date().toLocaleDateString('pl-PL')
+        savings5Years: (savingsBase * 5).toLocaleString('pl-PL'),
+        savings10Years: (savingsBase * 10).toLocaleString('pl-PL'),
+        date: new Date().toLocaleDateString('pl-PL'),
+        modelPower: power > 0 ? `${power} kW` : '3.5 kW'
     };
 };
+
+module.exports = { getDynamicReportContent };

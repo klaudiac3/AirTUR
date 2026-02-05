@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"  # <--- TEGO BRAKOWAŁO! Kluczowe dla backendu.
+  node_bundle = true
+  node_version = "20"              # Dla stabilności (googleapis wymaga nowszego Node)
+
+# To przekierowanie jest idealne - sprawia, że frontend widzi /api/
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200

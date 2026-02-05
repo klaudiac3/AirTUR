@@ -6,26 +6,52 @@ const querystring = require('querystring');
 const { getDynamicReportContent } = require('../../src/scripts/raport_logic.js');
 
 exports.handler = async (event) => {
-  if (event.httpMethod !== "POST") return { statusCode: 405, body: "Method Not Allowed" };
+  // 0. Walidacja metody HTTP
+  if (event.httpMethod !== "POST") {
+      return { statusCode: 405, body: "Method Not Allowed" };
+  }
 
-  // 1. INTELIGENTNE PARSOWANIE DANYCH (JSON lub FORMULARZ)
+  // 1. INTELIGENTNE PARSOWANIE DANYCH
   let data;
   try {
-      // Próbujemy jako JSON
       data = JSON.parse(event.body);
   } catch (e) {
-      // Jeśli nie JSON, to parsujemy jako formularz (x-www-form-urlencoded)
-      // To kluczowe, bo Konwersja.astro wysyła dane w ten sposób
       data = querystring.parse(event.body);
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
-
-  // 2. URUCHAMIAMY MÓZG RAPORTU (Logika backendowa)
+  
+  // Logika biznesowa raportu (działa zawsze, nawet dla zwykłego kontaktu zwróci domyślne wartości)
   const dynamicContent = getDynamicReportContent(data);
 
+  // 2. PRZETWARZANIE PDF (Jeśli został przesłany)
+  let attachments = [];
+  let pdfStatus = 'BRAK';
+
+  if (data.pdf_base64) {
+      try {
+          const base64Data = data.pdf_base64.split('base64,').pop();
+          const pdfBuffer = Buffer.from(base64Data, 'base64');
+          
+          attachments.push({
+              filename: `Raport_AirTUR_${dynamicContent.reportId}.pdf`,
+              content: pdfBuffer,
+              contentType: 'application/pdf'
+          });
+          pdfStatus = 'WYGENEROWANO';
+      } catch (pdfError) {
+          console.error("Błąd przetwarzania PDF:", pdfError);
+          pdfStatus = 'BŁĄD_DANYCH';
+      }
+  }
+
+  // Zmienne do śledzenia statusu operacji
+  let googleSheetStatus = 'PENDING';
+  let emailStatus = 'PENDING';
+  let logs = []; // Zbieramy błędy do logów
+
+  // 3. OPERACJA A: ZAPIS DO GOOGLE SHEETS (Izolowana)
   try {
-    // 3. WPIS DO GOOGLE SHEETS
     const auth = new google.auth.JWT(
         process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
         null,
@@ -34,67 +60,69 @@ exports.handler = async (event) => {
     );
     const sheets = google.sheets({ version: 'v4', auth });
     
-    // ZAPISUJEMY DANE ZGODNIE Z TWOJĄ NOWĄ STRUKTURĄ KOLUMN (A-AD)
     await sheets.spreadsheets.values.append({
         spreadsheetId: process.env.GOOGLE_SHEET_ID,
         range: 'A:AD',
         valueInputOption: 'USER_ENTERED',
         requestBody: {
             values: [[
-                new Date().toLocaleString('pl-PL'),         // A: Timestamp
-                data.source || 'kalkulator_premium',        // B: Source
-                'raport_wyslany',                           // C: Cel
-                data.imie,                                  // D: Imie
-                data.email,                                 // E: Email
-                data.telefon || '-',                        // F: Telefon
-                '',                                         // G: Wiadomosc (Puste techniczne)
-                'TAK',                                      // H: Zgoda
-                data.wynik_typ_budynku || dynamicContent.buildingType, // I: Typ Budynku
-                data.wynik_slonce || dynamicContent.sunFactorLabel,    // J: Nasłonecznienie
-                data.wynik_ludzie || data.peopleCount,      // K: Liczba Osób
-                data.wynik_paliwo || "Nieznane",            // L: Obecne Ciepło (NOWE)
-                data.wynik_rachunek || "0 zł",              // M: Rachunek (NOWE)
-                data.wynik_komfort || "Standardowy",        // N: Komfort (NOWE)
-                data.wynik_metraz || data.area,             // O: Metraż
-                data.wynik_moc || data.calculatedPower,     // P: Moc
-                data.wynik_cel || dynamicContent.goalLabel, // Q: Cel
-                data.wynik_oszczednosci || data.savingsYear,// R: Oszczędność
-                data.wynik_model || data.modelName,         // S: Model
-                data.expertExplanation,                     // T: Wyjaśnienie
-                // Pola PDF (kopia dla backupu)
-                data.wynik_metraz || data.area,             // U
-                data.wynik_moc || data.calculatedPower,     // V
-                data.wynik_cel || dynamicContent.goalLabel, // W
-                data.wynik_oszczednosci || data.savingsYear,// X
-                data.wynik_model || data.modelName,         // Y
-                new Date().toISOString(),                   // Z: Generated At
-                'TAK',                                      // AA: Email Sent
-                'TAK',                                      // AB: PDF Sent
-                `Raport_AirTUR_${dynamicContent.reportId}.pdf`, // AC: Filename
-                'new'                                       // AD: Status
+                new Date().toLocaleString('pl-PL'),                 // A: Timestamp
+                data.source || 'nieznane',                          // B: Source
+                data.cel || 'kontakt',                              // C: Cel
+                data.imie || '-',                                   // D: Imie
+                data.email || '-',                                  // E: Email
+                data.telefon || '-',                                // F: Telefon
+                data.wiadomosc || '-',                              // G: Wiadomosc
+                data.zgoda || 'TAK',                                // H: Zgoda
+                data.wynik_typ_budynku || '-',                      // I
+                data.wynik_slonce || '-',                           // J
+                data.wynik_ludzie || '-',                           // K
+                data.wynik_paliwo || '-',                           // L
+                data.wynik_rachunek || '-',                         // M
+                data.wynik_komfort || '-',                          // N
+                data.wynik_metraz || '-',                           // O
+                data.wynik_moc || '-',                              // P
+                data.wynik_cel || '-',                              // Q
+                data.wynik_oszczednosci || '-',                     // R
+                data.wynik_model || '-',                            // S
+                dynamicContent.expertExplanation || '-',            // T
+                // Dane PDF (kopia)
+                data.wynik_metraz || '-',                           // U
+                data.wynik_moc || '-',                              // V
+                data.wynik_cel || '-',                              // W
+                data.wynik_oszczednosci || '-',                     // X
+                data.wynik_model || '-',                            // Y
+                new Date().toISOString(),                           // Z
+                'PENDING',                                          // AA (Email status - wstępnie)
+                pdfStatus,                                          // AB
+                pdfStatus === 'WYGENEROWANO' ? `Raport_${dynamicContent.reportId}.pdf` : '-', // AC
+                'new'                                               // AD
             ]]
         }
     });
+    googleSheetStatus = 'SUCCESS';
+  } catch (sheetErr) {
+    console.error("Google Sheets Error:", sheetErr);
+    googleSheetStatus = 'FAILED';
+    logs.push(`Sheets error: ${sheetErr.message}`);
+  }
 
-    // 4. GENEROWANIE TREŚCI HTML DO PDF/MAILA
+  // 4. OPERACJA B: WYSYŁKA EMAIL (Izolowana)
+  try {
+    // Generowanie HTML
     let htmlTemplate = fs.readFileSync(path.resolve(__dirname, '../../src/templates/report-template.html'), 'utf8');
     
-    // Podmieniamy tagi na dane (priorytet mają dane z formularza 'wynik_xxx')
     const finalHtml = htmlTemplate
         .replace(/{{reportId}}/g, dynamicContent.reportId)
-        .replace(/{{name}}/g, data.imie)
+        .replace(/{{name}}/g, data.imie || 'Kliencie')
         .replace(/{{goalLabel}}/g, data.wynik_cel || dynamicContent.goalLabel)
         .replace(/{{buildingType}}/g, data.wynik_typ_budynku || dynamicContent.buildingType)
         .replace(/{{area}}/g, data.wynik_metraz || data.area)
         .replace(/{{sunFactorLabel}}/g, data.wynik_slonce || dynamicContent.sunFactorLabel)
         .replace(/{{peopleCount}}/g, data.wynik_ludzie || data.peopleCount)
-        
-        // NOWE POLA W RAPORCIE
         .replace(/{{currentHeatSource}}/g, data.wynik_paliwo || "Nieznane") 
-        
         .replace(/{{calculatedPower}}/g, data.wynik_moc || data.calculatedPower)
         .replace(/{{modelName}}/g, data.wynik_model || data.modelName)
-        // Pola obliczane przez raport_logic.js
         .replace(/{{modelPower}}/g, dynamicContent.modelPower || '3.5') 
         .replace(/{{expertExplanation}}/g, dynamicContent.expertExplanation)
         .replace(/{{rejectedPowerClass}}/g, dynamicContent.rejectedPowerClass)
@@ -104,21 +132,40 @@ exports.handler = async (event) => {
         .replace(/{{expertTipDynamic}}/g, dynamicContent.expertTipDynamic)
         .replace(/{{date}}/g, dynamicContent.date);
 
-    // 5. WYSYŁKA PRZEZ RESEND
+    // Wysyłka
     await resend.emails.send({
         from: 'AirTUR <kontakt@airtur.pl>',
         to: [data.email],
+        bcc: 'kontakt@airtur.pl', // KOPIA ZAPASOWA DLA CIEBIE
         subject: `Twoja Osobista Karta Diagnostyczna AirTUR (ID: ${dynamicContent.reportId})`,
-        html: finalHtml
+        html: finalHtml,
+        attachments: attachments
     });
+    emailStatus = 'SUCCESS';
 
-    return {
-        statusCode: 200,
-        body: JSON.stringify({ message: "Sukces", reportId: dynamicContent.reportId })
-    };
-
-  } catch (err) {
-    console.error("Critical Error:", err);
-    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
+  } catch (emailErr) {
+    console.error("Email Error:", emailErr);
+    emailStatus = 'FAILED';
+    logs.push(`Email error: ${emailErr.message}`);
   }
+
+  // 5. PODSUMOWANIE I ODPOWIEDŹ DLA FRONTENDU
+  // Jeśli wszystko padło -> Błąd 500
+  if (googleSheetStatus === 'FAILED' && emailStatus === 'FAILED') {
+      return {
+          statusCode: 500,
+          body: JSON.stringify({ error: "Critical failure. Both Sheets and Email failed.", details: logs })
+      };
+  }
+
+  // Jeśli chociaż jedno zadziałało -> Sukces 200 (żeby nie straszyć klienta)
+  return {
+      statusCode: 200,
+      body: JSON.stringify({ 
+          message: "Process completed", 
+          sheets: googleSheetStatus, 
+          email: emailStatus,
+          reportId: dynamicContent.reportId
+      })
+  };
 };

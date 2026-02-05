@@ -7,9 +7,14 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://airtur.pl',
   
-  // DODAJ TO: Wymusza dodawanie ukośnika na końcu (np. /kontakt/) 
-  // lub jego brak. Dla Netlify najbezpieczniej ustawić 'always'.
+  // SENIOR TIP: Wymuszamy spójność adresów URL. 
+  // Netlify domyślnie preferuje strukturę folderów, więc '/' na końcu jest najbardziej naturalne.
   trailingSlash: 'always',
+
+  // Wymusza generowanie adresów bez .html (czyste linki)
+  build: {
+    format: 'directory'
+  },
 
   integrations: [
     sitemap()

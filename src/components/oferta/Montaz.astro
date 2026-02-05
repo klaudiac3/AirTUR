@@ -7,17 +7,14 @@ import { companyConfig } from '../../data/companyConfig';
   
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- 1. NAGŁÓWEK NA CAŁĄ SZEROKOŚĆ -->
     <div class="text-center mb-10">
       <h2 class="text-3xl md:text-4xl font-bold text-airtur-dark">
         Precyzyjny Montaż i Zasada Idealnego Porządku
       </h2>
     </div>
 
-    <!-- 2. ZDJĘCIE I OPIS -->
     <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 mb-16 items-stretch">
       
-      <!-- Lewa: Zdjęcie -->
       <div class="w-full lg:w-1/2 min-h-[300px]">
         <img 
           src="/montaz.jpg" 
@@ -26,7 +23,6 @@ import { companyConfig } from '../../data/companyConfig';
         />
       </div>
 
-      <!-- Prawa: Tekst -->
       <div class="w-full lg:w-1/2 flex flex-col justify-center">
         <p class="text-lg text-gray-600 leading-relaxed">
           Nasza filozofia montażu opiera się na trzech filarach: precyzji, porządku i terminowości. Doświadczenie zdobyte na najbardziej wymagających rynkach europejskich nauczyło nas, że jakość tkwi w detalach. <br><br>
@@ -38,7 +34,6 @@ import { companyConfig } from '../../data/companyConfig';
 
   </div>
 
-  <!-- 3. PROCES W 5 KROKACH -->
   <div class="bg-gray-50 py-12 border-y border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       
@@ -83,7 +78,6 @@ import { companyConfig } from '../../data/companyConfig';
     </div>
   </div>
 
-  <!-- 4. FORMULARZE Z WYRAŹNYM PRZEŁĄCZNIKIEM -->
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
     
     <div class="text-center mb-8">
@@ -92,7 +86,6 @@ import { companyConfig } from '../../data/companyConfig';
       </h3>
     </div>
 
-    <!-- TABY -->
     <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
       
       <button id="tab-email" class="w-full sm:w-auto px-6 py-3 rounded-lg border-2 border-airtur-dark text-sm font-bold uppercase tracking-wide transition-all bg-airtur-dark text-white shadow-lg cursor-pointer">
@@ -105,24 +98,22 @@ import { companyConfig } from '../../data/companyConfig';
 
     </div>
 
-    <!-- FORMULARZ 1: E-MAIL (Domyślny) -->
     <div id="form-email" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
       <form 
         id="montaz-form-mail"
         name="zapytanie-montaz-mail" 
         method="POST" 
-        data-netlify="true" 
-        action="/podziekowanie/index.html?cel=montaz"
         class="space-y-4"
         novalidate
       >
         <input type="hidden" name="form-name" value="zapytanie-montaz-mail" />
-        <input type="hidden" name="source" value="podstrona_oferta_sekcja_montaz_email" />
+        <input type="hidden" name="source" value="oferta_montaz_email" />
+        <input type="hidden" name="cel" value="montaz" />
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label for="name-mail" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
-            <input type="text" id="name-mail" name="name" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
+            <input type="text" id="name-mail" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
           </div>
           <div>
             <label for="email-field" class="block text-sm font-bold text-airtur-dark mb-1">E-mail</label>
@@ -134,53 +125,49 @@ import { companyConfig } from '../../data/companyConfig';
           <label for="message-mail" class="block text-sm font-bold text-airtur-dark mb-1">Treść wiadomości</label>
           <textarea 
             id="message-mail" 
-            name="message"
+            name="wiadomosc"
             rows="5" 
             class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50 text-gray-700 placeholder-gray-400"
             placeholder="Dzień dobry,&#10;Proszę o przygotowanie analizy i oferty na montaż.&#10;Moja lokalizacja: [np. Dom w okolicy Nowego Sącza]&#10;Powierzchnia pomieszczenia: [np. ok. 30 m²]&#10;Mój główny cel to: [np. Oszczędność na ogrzewaniu / Chłodzenie latem]"
           ></textarea>
         </div>
 
-        <!-- BŁĄD WALIDACJI MAIL -->
         <div id="error-mail" class="hidden text-red-500 text-xs font-bold italic py-1">Proszę podać poprawny adres e-mail.</div>
 
-        <!-- ZGODA RODO + REGULAMIN (Montaż) -->
-<div class="flex items-start pt-2">
-    <div class="flex items-center h-5">
-      <input 
-        id="consent-montaz-mail" 
-        name="consent-montaz-mail" 
-        type="checkbox" 
-        required 
-        class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer"
-      >
-    </div>
-    <div class="ml-3 text-sm leading-snug">
-      <label for="consent-montaz-mail" class="text-gray-600 cursor-pointer">
-        Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu obsługi zapytania ofertowego.
-      </label>
-    </div>
-</div>
+        <div class="flex items-start pt-2">
+            <div class="flex items-center h-5">
+              <input 
+                id="consent-montaz-mail" 
+                name="zgoda" 
+                type="checkbox" 
+                required 
+                class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer"
+              >
+            </div>
+            <div class="ml-3 text-sm leading-snug">
+              <label for="consent-montaz-mail" class="text-gray-600 cursor-pointer">
+                Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu obsługi zapytania ofertowego.
+              </label>
+            </div>
+        </div>
 
-        <button type="submit" class="w-full bg-airtur-blue text-white font-bold py-3 rounded-lg hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
+        <button type="submit" class="submit-btn w-full bg-airtur-blue text-white font-bold py-3 rounded-lg hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
           WYŚLIJ WIADOMOŚĆ
         </button>
       </form>
     </div>
 
-    <!-- FORMULARZ 2: TELEFON (Ukryty) -->
     <div id="form-phone" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
       <form 
         id="montaz-form-phone"
         name="zapytanie-montaz-phone" 
         method="POST" 
-        data-netlify="true" 
-        action="/podziekowanie/index.html?cel=montaz"
         class="space-y-4"
         novalidate
       >
         <input type="hidden" name="form-name" value="zapytanie-montaz-phone" />
-        <input type="hidden" name="source" value="podstrona_oferta_sekcja_montaz_telefon" />
+        <input type="hidden" name="source" value="oferta_montaz_telefon" />
+        <input type="hidden" name="cel" value="montaz" />
 
         <div class="text-center mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
             <p class="text-airtur-dark font-medium text-sm">Zostaw swój numer. Oddzwonimy, by omówić szczegóły montażu.</p>
@@ -188,21 +175,19 @@ import { companyConfig } from '../../data/companyConfig';
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
             <label for="name-phone" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
-            <input type="text" id="name-phone" name="name" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
+            <input type="text" id="name-phone" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
             </div>
             <div>
             <label for="phone-field" class="block text-sm font-bold text-airtur-dark mb-1">Numer telefonu</label>
-            <input type="tel" id="phone-field" name="phone" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="+48 ...">
+            <input type="tel" id="phone-field" name="telefon" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="+48 ...">
             </div>
         </div>
 
-        <!-- BŁĄD WALIDACJI TELEFON -->
         <div id="error-phone" class="hidden text-red-500 text-xs font-bold italic py-1">Numer telefonu powinien zawierać minimum 9 cyfr.</div>
 
-        <!-- ZGODA RODO (Telefon) -->
         <div class="flex items-start pt-2">
             <div class="flex items-center h-5">
-              <input id="consent-montaz-phone" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
+              <input id="consent-montaz-phone" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
             </div>
             <div class="ml-3 text-sm leading-snug">
               <label for="consent-montaz-phone" class="text-gray-600 cursor-pointer">
@@ -211,7 +196,7 @@ import { companyConfig } from '../../data/companyConfig';
             </div>
         </div>
 
-        <button type="submit" class="w-full bg-airtur-dark text-white font-bold py-3 rounded-lg hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
+        <button type="submit" class="submit-btn w-full bg-airtur-dark text-white font-bold py-3 rounded-lg hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
           PROSZĘ O TELEFON
         </button>
       </form>
@@ -221,7 +206,7 @@ import { companyConfig } from '../../data/companyConfig';
 </section>
 
 <script>
-  // 1. LOGIKA TABÓW (TWOJA ORYGINALNA)
+  // 1. LOGIKA TABÓW (BEZ ZMIAN - DZIAŁA DOBRZE)
   const tabEmail = document.getElementById('tab-email');
   const tabPhone = document.getElementById('tab-phone');
   const formEmailContainer = document.getElementById('form-email');
@@ -250,46 +235,85 @@ import { companyConfig } from '../../data/companyConfig';
     tabEmail?.classList.remove(...inactiveClassRemove);
   });
 
-  // 2. LOGIKA WALIDACJI (NOWA)
+  // 2. NOWOCZESNA LOGIKA WYSYŁKI (SENIOR LEVEL)
   document.addEventListener('DOMContentLoaded', () => {
-    const emailForm = document.getElementById('montaz-form-mail');
-    const phoneForm = document.getElementById('montaz-form-phone');
+    // Pobieramy oba formularze (Email i Telefon)
+    const forms = document.querySelectorAll('#montaz-form-mail, #montaz-form-phone');
 
-    const isValidEmail = (email) => {
-        return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(String(email).toLowerCase());
-    };
+    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
 
-    const isValidPhone = (phone) => {
-        const digits = phone.replace(/\D/g, "");
-        return digits.length >= 9;
-    };
+    forms.forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Zatrzymujemy standardowe przeładowanie
+            const targetForm = e.target;
+            const submitBtn = targetForm.querySelector('.submit-btn');
+            
+            // Walidacja specyficzna dla formularza
+            if (targetForm.id === 'montaz-form-mail') {
+                const emailInput = targetForm.querySelector('input[name="email"]');
+                const errorMsg = document.getElementById('error-mail');
+                if (emailInput && !isValidEmail(emailInput.value)) {
+                    errorMsg?.classList.remove('hidden');
+                    emailInput.classList.add('border-red-400');
+                    emailInput.focus();
+                    return;
+                }
+            } else if (targetForm.id === 'montaz-form-phone') {
+                const phoneInput = targetForm.querySelector('input[name="telefon"]');
+                const errorMsg = document.getElementById('error-phone');
+                if (phoneInput && !isValidPhone(phoneInput.value)) {
+                    errorMsg?.classList.remove('hidden');
+                    phoneInput.classList.add('border-red-400');
+                    phoneInput.focus();
+                    return;
+                }
+            }
 
-    // Obsługa Formularza E-mail
-    emailForm?.addEventListener('submit', (e) => {
-        const emailInput = document.getElementById('email-field');
-        const errorMsg = document.getElementById('error-mail');
-        if (!isValidEmail(emailInput.value)) {
-            e.preventDefault();
-            errorMsg?.classList.remove('hidden');
-            emailInput.classList.add('border-red-400');
-            emailInput.focus();
-        }
-    });
+            // Blokujemy przycisk
+            const originalBtnText = submitBtn.innerText;
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = "WYSYŁANIE...";
+            }
 
-    // Obsługa Formularza Telefon
-    phoneForm?.addEventListener('submit', (e) => {
-        const phoneInput = document.getElementById('phone-field');
-        const errorMsg = document.getElementById('error-phone');
-        if (!isValidPhone(phoneInput.value)) {
-            e.preventDefault();
-            errorMsg?.classList.remove('hidden');
-            phoneInput.classList.add('border-red-400');
-            phoneInput.focus();
-        }
+            const formData = new FormData(targetForm);
+            const dataObj = Object.fromEntries(formData.entries());
+
+            try {
+                // *** SPRAWDZANIE ŚRODOWISKA (Astro Standard) ***
+                if (import.meta.env.DEV) {
+                    console.log("Tryb DEV: Symulacja API success (Montaż)");
+                    await new Promise(r => setTimeout(r, 1000)); 
+                } else {
+                    // Produkcja: Prawdziwy strzał do API
+                    const response = await fetch('/api/generate-report', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dataObj)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                }
+
+                // Sukces -> Przekierowanie
+                window.location.assign('/podziekowanie/index.html?cel=montaz');
+
+            } catch (error) {
+                console.error("Submission Error:", error);
+                alert("Wystąpił błąd podczas wysyłania. Spróbuj ponownie lub zadzwoń do nas.");
+                if(submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalBtnText; // Przywracamy tekst
+                }
+            }
+        });
     });
 
     // Usuwanie błędów przy wpisywaniu
-    document.querySelectorAll('input').forEach(input => {
+    document.querySelectorAll('input, textarea').forEach(input => {
         input.addEventListener('input', () => {
             input.classList.remove('border-red-400');
             document.getElementById('error-mail')?.classList.add('hidden');

@@ -1,388 +1,135 @@
-<!DOCTYPE html>
-<html lang="pl">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        :root {
-            --airtur-blue: #0AB3C6;
-            --airtur-dark: #3A4149;
-            --airtur-navy: #0A3876;
-            --gray-bg: #F8FAFC;
-            --text-main: #2D3748;
-            --success: #059669;
-        }
-        body {
-            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: var(--text-main);
-            line-height: 1.5;
-            margin: 0; padding: 0;
-            background-color: #f0f2f5;
-        }
-        .wrapper {
-            width: 750px; /* Optymalne pod A4 */
-            margin: 0 auto;
-            background: white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        .header {
-            padding: 30px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 5px solid var(--airtur-blue);
-        }
-        .logo-container { flex: 0 0 auto; }
-        .logo { height: 60px; display: block; }
-        .header-title { text-align: right; flex: 1; }
-        .header-title h1 {
-            font-size: 20px;
-            font-weight: 900;
-            margin: 0;
-            color: var(--airtur-dark);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .header-id { font-size: 11px; color: var(--airtur-blue); font-weight: 800; margin-top: 4px; }
-
-        /* Hero section */
-        .hero {
-            background: linear-gradient(135deg, var(--airtur-dark) 0%, var(--airtur-navy) 100%);
-            color: white;
-            padding: 40px;
-        }
-        .hero h2 { margin: 0; font-size: 26px; color: var(--airtur-blue); }
-        .hero p { margin: 15px 0 0; font-size: 15px; opacity: 0.9; line-height: 1.4; }
-
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Analiza Inwestycyjna AirTUR</title>
+    <style type="text/css">
+        body { margin: 0; padding: 0; min-width: 100%; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2D3748; background-color: #f0f2f5; }
+        .wrapper { width: 100%; table-layout: fixed; background-color: #f0f2f5; padding-bottom: 40px; }
+        .main-table { width: 100%; max-width: 750px; margin: 0 auto; background-color: #ffffff; border-spacing: 0; }
+        .header { padding: 30px 40px; border-bottom: 5px solid #0AB3C6; }
+        .hero { background: #3A4149; background: linear-gradient(135deg, #3A4149 0%, #0A3876 100%); color: #ffffff; padding: 40px; }
         .content { padding: 40px; }
-
-        .section-title {
-            font-size: 13px;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--airtur-navy);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            background: var(--gray-bg);
-            padding: 8px 15px;
-            border-radius: 6px;
-            letter-spacing: 0.5px;
-        }
-
-        /* 01. Tabela Danych */
-        .input-data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            border: 1px solid #E2E8F0;
-        }
-        .input-data-table td {
-            padding: 10px 15px;
-            border-bottom: 1px solid #E2E8F0;
-            font-size: 13px;
-        }
-        .input-data-table .label {
-            background: #F8FAFC;
-            font-weight: bold;
-            color: #4A5568;
-            width: 40%;
-        }
-        .input-data-table .value { color: var(--airtur-dark); font-weight: 700; }
-
-        /* 02. Zapotrzebowanie */
-        .power-result {
-            text-align: center;
-            padding: 20px;
-            background: #F0FDFF;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            border: 2px solid var(--airtur-blue);
-        }
-        .power-result span { font-size: 42px; font-weight: 900; color: var(--airtur-navy); }
-
-        /* 03. Rekomendacja */
-        .recommendation-box {
-            background: white;
-            border: 1px solid #E2E8F0;
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-        .model-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .model-name { font-size: 22px; font-weight: 900; color: var(--airtur-dark); margin: 0; }
-        .badge { background: var(--airtur-blue); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-        
-        .justification {
-            background: var(--gray-bg);
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 13px;
-            border-left: 5px solid var(--airtur-blue);
-            margin-bottom: 15px;
-        }
-        .rejection-note { 
-            background: #FFF5F5;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 12px; 
-            color: #C53030; 
-            border-left: 5px solid #FC8181;
-        }
-
-        /* 04. ROI */
-        .roi-section {
-            background: #E6FFFA;
-            border: 1px solid #B2F5EA;
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .roi-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .roi-item {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .roi-item h4 { font-size: 9px; color: #2C7A7B; margin: 0 0 5px 0; text-transform: uppercase; font-weight: 800; }
-        .roi-item .value { font-size: 18px; font-weight: 900; color: var(--success); }
-
-        .expert-advice {
-            background: #FFFBEB;
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 5px solid #F59E0B;
-            margin-bottom: 30px;
-            font-size: 13px;
-        }
-
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 11px;
-        }
-        .comparison-table th { background: var(--airtur-dark); text-align: left; padding: 10px; color: white; border: 1px solid #E2E8F0; }
-        .comparison-table td { padding: 10px; border: 1px solid #E2E8F0; }
-        .check { color: var(--airtur-blue); font-weight: 900; text-align: center; font-size: 14px; }
-
-        .notes-area {
-            border: 2px dashed #CBD5E0;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            background: #FAFAFA;
-        }
-        .notes-area h3 { font-size: 12px; margin: 0 0 10px 0; color: #718096; text-transform: uppercase; }
-        .notes-line { border-bottom: 1px solid #E2E8F0; height: 25px; }
-
-        .client-steps {
-            background: var(--airtur-dark);
-            color: white;
-            padding: 25px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-        }
-        .client-steps h3 { margin-top: 0; color: var(--airtur-blue); font-size: 16px; font-weight: 900; }
-        .step-list { list-style: none; padding: 0; font-size: 12px; margin: 0; }
-        .step-list li { margin-bottom: 10px; display: flex; align-items: flex-start; }
-        .step-number { background: var(--airtur-blue); min-width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-weight: 900; font-size: 11px; color: white; }
-
-        .footer {
-            padding: 30px 40px;
-            background: #F8FAFC;
-            text-align: center;
-            font-size: 10px;
-            color: #94A3B8;
-            border-top: 1px solid #E2E8F0;
-        }
-        
-        @media print {
-            body { background: white; }
-            .wrapper { box-shadow: none; width: 100%; }
-        }
+        .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #0A3876; background-color: #F8FAFC; padding: 8px 15px; border-radius: 6px; margin-bottom: 15px; }
+        .data-table { width: 100%; border: 1px solid #E2E8F0; margin-bottom: 30px; border-collapse: collapse; }
+        .data-table td { padding: 12px 15px; border-bottom: 1px solid #E2E8F0; font-size: 13px; }
+        .label { background-color: #F8FAFC; font-weight: bold; color: #4A5568; width: 40%; }
+        .value { color: #3A4149; font-weight: 700; text-align: right; }
+        .power-result { text-align: center; padding: 30px; background-color: #F0FDFF; border: 2px solid #0AB3C6; border-radius: 15px; margin-bottom: 30px; }
+        .power-value { font-size: 42px; font-weight: 900; color: #0A3876; }
+        .recommendation-box { border: 1px solid #E2E8F0; border-radius: 20px; padding: 25px; margin-bottom: 30px; }
+        .justification { background-color: #F8FAFC; padding: 18px; border-radius: 12px; font-size: 13px; border-left: 5px solid #0AB3C6; margin-bottom: 15px; }
+        .rejection-note { background-color: #FFF5F5; padding: 15px; border-radius: 12px; font-size: 12px; color: #C53030; border-left: 5px solid #FC8181; }
+        .roi-section { background-color: #E6FFFA; border: 1px solid #B2F5EA; border-radius: 20px; padding: 25px; margin-bottom: 30px; text-align: center; }
+        .roi-card { background-color: #ffffff; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #B2F5EA; }
+        .expert-advice { background-color: #FFFBEB; padding: 20px; border-radius: 15px; border-left: 5px solid #F59E0B; margin-bottom: 30px; font-size: 13px; }
+        .footer { padding: 30px 40px; background-color: #F8FAFC; text-align: center; font-size: 10px; color: #94A3B8; border-top: 1px solid #E2E8F0; }
+        .btn { background-color: #0AB3C6; color: #ffffff; padding: 15px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; }
     </style>
 </head>
 <body>
+    <div class="wrapper">
+        <table class="main-table">
+            <tr>
+                <td class="header">
+                    <table width="100%">
+                        <tr>
+                            <td width="50%"><img src="https://airtur.pl/logo.svg" height="50" alt="AirTUR" /></td>
+                            <td width="50%" align="right">
+                                <p style="margin:0; font-size:16px; font-weight:900; color:#3A4149; text-transform:uppercase;">Analiza Inwestycyjna</p>
+                                <p style="margin:0; font-size:10px; color:#0AB3C6; font-weight:bold;">RAPORT: {{reportId}}</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
 
-<div class="wrapper">
-    <!-- NAGŁÓWEK -->
-    <div class="header">
-        <div class="logo-container">
-            <img src="https://airtur.pl/logo.svg" class="logo" alt="AirTUR Logo">
-        </div>
-        <div class="header-title">
-            <h1>Analiza Inwestycyjna AirTUR</h1>
-            <div class="header-id">NUMER RAPORTU: {{reportId}}</div>
-        </div>
-    </div>
+            <tr>
+                <td class="hero">
+                    <h2 style="margin:0; font-size:24px; color:#0AB3C6;">Cel: {{goalLabel}}</h2>
+                    <p style="margin:15px 0 0; font-size:15px; line-height:1.4;">Witaj <strong>{{name}}</strong>! Przygotowaliśmy Twoją Osobistą Kartę Diagnostyki Termicznej. To dokument inżynieryjny, który pokazuje, jak nowoczesna technologia wpłynie na Twój komfort i domowy budżet.</p>
+                </td>
+            </tr>
 
-    <!-- HERO -->
-    <div class="hero">
-        <h2>Cel: {{goalLabel}}</h2>
-        <p>Witaj <strong>{{name}}</strong>! Przygotowaliśmy Twoją Osobistą Kartę Diagnostyki Termicznej. To dokument inżynieryjny, który pokazuje, jak nowoczesna technologia inwerterowa wpłynie na Twój komfort i domowy budżet.</p>
-    </div>
+            <tr>
+                <td class="content">
+                    
+                    <div class="section-title">01. Parametry Wejściowe</div>
+                    <table class="data-table">
+                        <tr><td class="label">Typ Pomieszczenia</td><td class="value">{{buildingType}}</td></tr>
+                        <tr><td class="label">Powierzchnia</td><td class="value">{{area}} m²</td></tr>
+                        <tr><td class="label">Nasłonecznienie</td><td class="value">{{sunFactorLabel}}</td></tr>
+                        <tr><td class="label">Liczba Użytkowników</td><td class="value">{{peopleCount}}</td></tr>
+                        <tr><td class="label">Obecne Ogrzewanie</td><td class="value">{{currentHeatSource}}</td></tr>
+                    </table>
 
-    <div class="content">
-        <!-- SEKCJA 01: TWOJE DANE -->
-        <div class="section-title">01. Parametry Wejściowe (Profil Inwestora)</div>
-        <table class="input-data-table">
-            <tr>
-                <td class="label">Typ Pomieszczenia</td>
-                <td class="value">{{buildingType}}</td>
+                    <div class="section-title">02. Wyliczone Zapotrzebowanie</div>
+                    <div class="power-result">
+                        <p style="margin:0 0 10px; font-size:11px; font-weight:800; color:#718096; text-transform:uppercase;">Moc obliczeniowa dla Twojego profilu:</p>
+                        <span class="power-value">{{calculatedPower}} kW</span>
+                    </div>
+
+                    <div class="section-title">03. Rekomendacja Systemu</div>
+                    <div class="recommendation-box">
+                        <h3 style="margin:0 0 15px; font-size:20px; font-weight:900; color:#3A4149;">{{modelName}} <span style="font-size:12px; color:#0AB3C6;">(Typoszereg: {{modelPower}})</span></h3>
+                        <div class="justification">
+                            <strong>Uzasadnienie Wyboru:</strong><br/>
+                            {{expertExplanation}}
+                        </div>
+                        <div class="rejection-note">
+                            <strong>Audyt Odrzuconych Rozwiązań:</strong><br/>
+                            Odrzuciliśmy modele o mocy {{rejectedPowerClass}} kW. Przy Twoim metrażu ({{area}} m²) mniejsza jednostka pracowałaby w trybie przeciążenia, co drastycznie zwiększyłoby zużycie prądu.
+                        </div>
+                    </div>
+
+                    <div class="section-title">04. Prognoza Oszczędności (ROI)</div>
+                    <div style="background-color:#E6FFFA; padding:20px; border-radius:20px; text-align:center;">
+                        <p style="margin:0 0 15px; font-size:12px; font-weight:900; color:#234E52; text-transform:uppercase;">Szacowane oszczędności względem: {{currentHeatSource}}</p>
+                        <table width="100%" border="0" cellspacing="10" cellpadding="0">
+                            <tr>
+                                <td width="33%">
+                                    <div class="roi-card">
+                                        <p style="margin:0; font-size:9px; font-weight:800; color:#2C7A7B; text-transform:uppercase;">Rocznie</p>
+                                        <p style="margin:5px 0 0; font-size:16px; font-weight:900; color:#059669;">~{{savingsYear}} zł</p>
+                                    </div>
+                                </td>
+                                <td width="33%">
+                                    <div class="roi-card">
+                                        <p style="margin:0; font-size:9px; font-weight:800; color:#2C7A7B; text-transform:uppercase;">5 Lat</p>
+                                        <p style="margin:5px 0 0; font-size:16px; font-weight:900; color:#059669;">~{{savings5Years}} zł</p>
+                                    </div>
+                                </td>
+                                <td width="33%">
+                                    <div class="roi-card">
+                                        <p style="margin:0; font-size:9px; font-weight:800; color:#2C7A7B; text-transform:uppercase;">10 Lat</p>
+                                        <p style="margin:5px 0 0; font-size:16px; font-weight:900; color:#059669;">~{{savings10Years}} zł</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="margin-top:30px;" class="section-title">05. Zalecenia Inżynierskie</div>
+                    <div class="expert-advice">
+                        <strong>💡 Zalecenie dla Twojego profilu:</strong><br/>
+                        {{expertTipDynamic}}
+                    </div>
+
+                    <div style="text-align:center; padding:20px 0;">
+                        <a href="https://airtur.pl/kontakt/" class="btn">UMÓW BEZPŁATNĄ WIZJĘ LOKALNĄ</a>
+                    </div>
+                </td>
             </tr>
+
             <tr>
-                <td class="label">Powierzchnia Analizy</td>
-                <td class="value">{{area}} m²</td>
-            </tr>
-            <tr>
-                <td class="label">Poziom Nasłonecznienia</td>
-                <td class="value">{{sunFactorLabel}}</td>
-            </tr>
-            <tr>
-                <td class="label">Liczba Użytkowników</td>
-                <td class="value">{{peopleCount}}</td>
-            </tr>
-            <tr>
-                <td class="label">Obecne Ogrzewanie</td>
-                <td class="value">{{currentHeatSource}}</td>
+                <td class="footer">
+                    <p><strong>F.H.U. Krzysztof Turek | AirTUR - Inżynieria Komfortu</strong></p>
+                    <p>Zarzecze 9, 33-390 Łącko | <a href="mailto:kontakt@airtur.pl" style="color:#0AB3C6; text-decoration:none;">kontakt@airtur.pl</a></p>
+                    <p style="margin-top:20px; opacity:0.7;">Niniejsza analiza ma charakter szacunkowy. Pełny raport PDF został dołączony do tego e-maila jako załącznik.</p>
+                </td>
             </tr>
         </table>
-
-        <!-- SEKCJA 02: WYNIK MOCY -->
-        <div class="section-title">02. Wyliczone Zapotrzebowanie Energetyczne</div>
-        <div class="power-result">
-            <p style="margin: 0; font-size: 11px; color: #718096; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Moc obliczeniowa dla Twojego profilu:</p>
-            <span>{{calculatedPower}} kW</span>
-            <p style="margin: 8px 0 0 0; font-size: 11px; color: #4A5568; font-style: italic; opacity: 0.8;">
-                Wynik optymalny. Zapewnia stabilną pracę bez efektu "taktowania" sprężarki.
-            </p>
-        </div>
-
-        <!-- SEKCJA 03: REKOMENDACJA -->
-        <div class="section-title">03. Rekomendacja Systemu i Audyt Odrzuceń</div>
-        <div class="recommendation-box">
-            <div class="model-header">
-                <h3 class="model-name">{{modelName}}</h3>
-                <span class="badge">Typoszereg: {{modelPower}} kW</span>
-            </div>
-            <div class="justification">
-                <strong>Uzasadnienie Wyboru:</strong><br>
-                {{expertExplanation}} Model ten oferuje najwyższy współczynnik SCOP, co jest kluczowe przy Twoim celu: {{goalLabel}}.
-            </div>
-            <div class="rejection-note">
-                <strong>Audyt Odrzuconych Rozwiązań:</strong><br>
-                Odrzuciliśmy modele o mocy {{rejectedPowerClass}} kW. Przy Twoich parametrach (metraż {{area}} m², nasłonecznienie {{sunFactorLabel}}) mniejsza jednostka pracowałaby w trybie ciągłego przeciążenia, co drastycznie zwiększyłoby zużycie prądu i skróciło żywotność systemu o min. 40%.
-            </div>
-        </div>
-
-        <!-- SEKCJA 04: ROI -->
-        <div class="section-title">04. Skalowanie Korzyści (Prognoza ROI)</div>
-        <div class="roi-section">
-            <p style="margin-top: 0; font-size: 12px; font-weight: 900; color: #234E52; text-transform: uppercase;">
-                Szacowane oszczędności względem: {{currentHeatSource}}
-            </p>
-            <div class="roi-grid">
-                <div class="roi-item">
-                    <h4>Rocznie</h4>
-                    <div class="value">~ {{savingsYear}} zł</div>
-                </div>
-                <div class="roi-item">
-                    <h4>5 Lat</h4>
-                    <div class="value">~ {{savings5Years}} zł</div>
-                </div>
-                <div class="roi-item">
-                    <h4>10 Lat</h4>
-                    <div class="value">~ {{savings10Years}} zł</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SEKCJA 05: PORADY EKSPERTA -->
-        <div class="section-title">05. Zalecenia Inżynierskie AirTUR</div>
-        <div class="expert-advice">
-            <strong>💡 Zalecenie dla Twojego profilu:</strong><br>
-            {{expertTipDynamic}} Ponadto rekomendujemy montaż jednostki wewnętrznej min. 15 cm od sufitu, aby zapewnić swobodną cyrkulację i najwyższą wydajność filtrowania powietrza.
-        </div>
-
-        <!-- SEKCJA 06: PORÓWNANIE -->
-        <div class="section-title">06. AirTUR vs Standard Rynkowy</div>
-        <table class="comparison-table">
-            <thead>
-                <tr>
-                    <th>Parametr Jakościowy</th>
-                    <th>Standard AirTUR</th>
-                    <th>Inni Wykonawcy</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Metoda Doboru Mocy</td>
-                    <td class="check">Audyt Kalkulatorem ROI ({{calculatedPower}} kW)</td>
-                    <td>"Na oko" lub standardowe 3.5 kW</td>
-                </tr>
-                <tr>
-                    <td>Czystość Montażu</td>
-                    <td class="check">Zasada Idealnego Porządku (Odkurzacz)</td>
-                    <td>Zależna od ekipy</td>
-                </tr>
-                <tr>
-                    <td>Wycena</td>
-                    <td class="check">Transparentna i stała</td>
-                    <td>Często ruchoma "po robocie"</td>
-                </tr>
-                <tr>
-                    <td>Ochrona Inwestycji</td>
-                    <td class="check">Dedykowany serwisant AirTUR</td>
-                    <td>Brak stałej opieki</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- SEKCJA 07: NOTATKI -->
-        <div class="notes-area">
-            <h3>Twoje pytania do eksperta podczas wizji lokalnej:</h3>
-            <div class="notes-line"></div>
-            <div class="notes-line"></div>
-            <div class="notes-line"></div>
-        </div>
-
-        <!-- SEKCJA 08: TWOJA ROLA -->
-        <div class="client-steps">
-            <h3>3 proste kroki przed wizytą Inżyniera:</h3>
-            <ul class="step-list">
-                <li>
-                    <span class="step-number">1</span>
-                    <div>Zlokalizuj gniazdko elektryczne w pobliżu planowanego montażu (ułatwi to prowadzenie zasilania).</div>
-                </li>
-                <li>
-                    <span class="step-number">2</span>
-                    <div>Zastanów się nad miejscem jednostki zewnętrznej (balkon, elewacja, czy podłoże).</div>
-                </li>
-                <li>
-                    <span class="step-number">3</span>
-                    <div>Przygotuj ten raport – oszczędzi nam to 30 minut na pomiary wstępne.</div>
-                </li>
-            </ul>
-        </div>
     </div>
-
-    <!-- STOPKA -->
-    <div class="footer">
-        <p><strong>F.H.U. Krzysztof Turek | AirTUR - Inżynieria Komfortu</strong></p>
-        <p>Zarzecze 9, 33-390 Łącko | kontakt@airtur.pl | www.airtur.pl</p>
-        <p style="margin-top: 15px; opacity: 0.7;">Niniejsza analiza ma charakter szacunkowy. To nie jest oferta handlowa w rozumieniu Art. 66 par. 1 Kodeksu Cywilnego. Wiążący dobór mocy zostanie potwierdzony bezpłatnie przez specjalistę AirTUR podczas wizji lokalnej.</p>
-    </div>
-</div>
-
 </body>
 </html>
