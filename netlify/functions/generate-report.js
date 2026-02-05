@@ -1,17 +1,18 @@
-const { google } = require('googleapis');
-const { Resend } = require('resend');
-const fs = require('fs');
-const path = require('path');
-const querystring = require('querystring');
-const { getDynamicReportContent } = require('../../src/scripts/raport_logic.js');
+import { google } from 'googleapis';
+import { Resend } from 'resend';
+import fs from 'fs';
+import path from 'path';
+import querystring from 'querystring';
+// Importujemy logikę jako moduł (zwróć uwagę na .js na końcu)
+import { getDynamicReportContent } from '../../src/scripts/raport_logic.js';
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   // 0. Walidacja metody HTTP
   if (event.httpMethod !== "POST") {
       return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  // 1. INTELIGENTNE PARSOWANIE DANYCH
+  // 1. PARSOWANIE DANYCH
   let data;
   try {
       data = JSON.parse(event.body);
@@ -21,10 +22,10 @@ exports.handler = async (event) => {
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   
-  // Logika biznesowa raportu (działa zawsze, nawet dla zwykłego kontaktu zwróci domyślne wartości)
+  // Logika biznesowa
   const dynamicContent = getDynamicReportContent(data);
 
-  // 2. PRZETWARZANIE PDF (Jeśli został przesłany)
+  // 2. PRZETWARZANIE PDF
   let attachments = [];
   let pdfStatus = 'BRAK';
 
@@ -45,12 +46,11 @@ exports.handler = async (event) => {
       }
   }
 
-  // Zmienne do śledzenia statusu operacji
   let googleSheetStatus = 'PENDING';
   let emailStatus = 'PENDING';
-  let logs = []; // Zbieramy błędy do logów
+  let logs = [];
 
-  // 3. OPERACJA A: ZAPIS DO GOOGLE SHEETS (Izolowana)
+  // 3. OPERACJA A: ZAPIS DO GOOGLE SHEETS
   try {
     const auth = new google.auth.JWT(
         process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
@@ -66,37 +66,36 @@ exports.handler = async (event) => {
         valueInputOption: 'USER_ENTERED',
         requestBody: {
             values: [[
-                new Date().toLocaleString('pl-PL'),                 // A: Timestamp
-                data.source || 'nieznane',                          // B: Source
-                data.cel || 'kontakt',                              // C: Cel
-                data.imie || '-',                                   // D: Imie
-                data.email || '-',                                  // E: Email
-                data.telefon || '-',                                // F: Telefon
-                data.wiadomosc || '-',                              // G: Wiadomosc
-                data.zgoda || 'TAK',                                // H: Zgoda
-                data.wynik_typ_budynku || '-',                      // I
-                data.wynik_slonce || '-',                           // J
-                data.wynik_ludzie || '-',                           // K
-                data.wynik_paliwo || '-',                           // L
-                data.wynik_rachunek || '-',                         // M
-                data.wynik_komfort || '-',                          // N
-                data.wynik_metraz || '-',                           // O
-                data.wynik_moc || '-',                              // P
-                data.wynik_cel || '-',                              // Q
-                data.wynik_oszczednosci || '-',                     // R
-                data.wynik_model || '-',                            // S
-                dynamicContent.expertExplanation || '-',            // T
-                // Dane PDF (kopia)
-                data.wynik_metraz || '-',                           // U
-                data.wynik_moc || '-',                              // V
-                data.wynik_cel || '-',                              // W
-                data.wynik_oszczednosci || '-',                     // X
-                data.wynik_model || '-',                            // Y
-                new Date().toISOString(),                           // Z
-                'PENDING',                                          // AA (Email status - wstępnie)
-                pdfStatus,                                          // AB
-                pdfStatus === 'WYGENEROWANO' ? `Raport_${dynamicContent.reportId}.pdf` : '-', // AC
-                'new'                                               // AD
+                new Date().toLocaleString('pl-PL'),                 
+                data.source || 'nieznane',                          
+                data.cel || 'kontakt',                              
+                data.imie || '-',                                   
+                data.email || '-',                                  
+                data.telefon || '-',                                
+                data.wiadomosc || '-',                              
+                data.zgoda || 'TAK',                                
+                data.wynik_typ_budynku || '-',                      
+                data.wynik_slonce || '-',                           
+                data.wynik_ludzie || '-',                           
+                data.wynik_paliwo || '-',                           
+                data.wynik_rachunek || '-',                         
+                data.wynik_komfort || '-',                          
+                data.wynik_metraz || '-',                           
+                data.wynik_moc || '-',                              
+                data.wynik_cel || '-',                              
+                data.wynik_oszczednosci || '-',                     
+                data.wynik_model || '-',                            
+                dynamicContent.expertExplanation || '-',            
+                data.wynik_metraz || '-',                           
+                data.wynik_moc || '-',                              
+                data.wynik_cel || '-',                              
+                data.wynik_oszczednosci || '-',                     
+                data.wynik_model || '-',                            
+                new Date().toISOString(),                           
+                'PENDING',                                          
+                pdfStatus,                                          
+                pdfStatus === 'WYGENEROWANO' ? `Raport_${dynamicContent.reportId}.pdf` : '-', 
+                'new'                                               
             ]]
         }
     });
@@ -107,36 +106,36 @@ exports.handler = async (event) => {
     logs.push(`Sheets error: ${sheetErr.message}`);
   }
 
-  // 4. OPERACJA B: WYSYŁKA EMAIL (Izolowana)
+  // 4. OPERACJA B: WYSYŁKA EMAIL
   try {
-    // Generowanie HTML
-    let htmlTemplate = fs.readFileSync(path.resolve(__dirname, '../../src/templates/report-template.html'), 'utf8');
+    // Odczyt szablonu (musimy użyć process.cwd() w środowisku Serverless)
+    const templatePath = path.resolve(process.cwd(), 'src/templates/report-template.html');
+    let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
     
     const finalHtml = htmlTemplate
         .replace(/{{reportId}}/g, dynamicContent.reportId)
         .replace(/{{name}}/g, data.imie || 'Kliencie')
-        .replace(/{{goalLabel}}/g, data.wynik_cel || dynamicContent.goalLabel)
-        .replace(/{{buildingType}}/g, data.wynik_typ_budynku || dynamicContent.buildingType)
-        .replace(/{{area}}/g, data.wynik_metraz || data.area)
-        .replace(/{{sunFactorLabel}}/g, data.wynik_slonce || dynamicContent.sunFactorLabel)
-        .replace(/{{peopleCount}}/g, data.wynik_ludzie || data.peopleCount)
+        .replace(/{{goalLabel}}/g, dynamicContent.goalLabel)
+        .replace(/{{buildingType}}/g, dynamicContent.buildingType)
+        .replace(/{{area}}/g, data.wynik_metraz || '---')
+        .replace(/{{sunFactorLabel}}/g, dynamicContent.sunFactorLabel)
+        .replace(/{{peopleCount}}/g, data.wynik_ludzie || 'Standard')
         .replace(/{{currentHeatSource}}/g, data.wynik_paliwo || "Nieznane") 
-        .replace(/{{calculatedPower}}/g, data.wynik_moc || data.calculatedPower)
-        .replace(/{{modelName}}/g, data.wynik_model || data.modelName)
-        .replace(/{{modelPower}}/g, dynamicContent.modelPower || '3.5') 
+        .replace(/{{calculatedPower}}/g, data.wynik_moc || dynamicContent.modelPower)
+        .replace(/{{modelName}}/g, data.wynik_model || 'Model Premium')
+        .replace(/{{modelPower}}/g, dynamicContent.modelPower) 
         .replace(/{{expertExplanation}}/g, dynamicContent.expertExplanation)
         .replace(/{{rejectedPowerClass}}/g, dynamicContent.rejectedPowerClass)
-        .replace(/{{savingsYear}}/g, data.wynik_oszczednosci || data.savingsYear)
+        .replace(/{{savingsYear}}/g, data.wynik_oszczednosci || '---')
         .replace(/{{savings5Years}}/g, dynamicContent.savings5Years)
         .replace(/{{savings10Years}}/g, dynamicContent.savings10Years)
         .replace(/{{expertTipDynamic}}/g, dynamicContent.expertTipDynamic)
         .replace(/{{date}}/g, dynamicContent.date);
 
-    // Wysyłka
     await resend.emails.send({
         from: 'AirTUR <kontakt@airtur.pl>',
         to: [data.email],
-        bcc: 'kontakt@airtur.pl', // KOPIA ZAPASOWA DLA CIEBIE
+        bcc: 'kontakt@airtur.pl',
         subject: `Twoja Osobista Karta Diagnostyczna AirTUR (ID: ${dynamicContent.reportId})`,
         html: finalHtml,
         attachments: attachments
@@ -149,23 +148,19 @@ exports.handler = async (event) => {
     logs.push(`Email error: ${emailErr.message}`);
   }
 
-  // 5. PODSUMOWANIE I ODPOWIEDŹ DLA FRONTENDU
-  // Jeśli wszystko padło -> Błąd 500
   if (googleSheetStatus === 'FAILED' && emailStatus === 'FAILED') {
       return {
           statusCode: 500,
-          body: JSON.stringify({ error: "Critical failure. Both Sheets and Email failed.", details: logs })
+          body: JSON.stringify({ error: "Critical failure.", details: logs })
       };
   }
 
-  // Jeśli chociaż jedno zadziałało -> Sukces 200 (żeby nie straszyć klienta)
   return {
       statusCode: 200,
       body: JSON.stringify({ 
           message: "Process completed", 
           sheets: googleSheetStatus, 
-          email: emailStatus,
-          reportId: dynamicContent.reportId
+          email: emailStatus 
       })
   };
 };
