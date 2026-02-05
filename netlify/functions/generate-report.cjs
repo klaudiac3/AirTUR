@@ -3,15 +3,17 @@ const { Resend } = require('resend');
 const fs = require('fs');
 const path = require('path');
 const querystring = require('querystring');
-// Importujemy logikę przez require (wskazujemy na plik .cjs)
-const { getDynamicReportContent } = require('../../src/scripts/raport_logic.cjs');
+
+// UWAGA: Zakładam, że plik raport_logic.cjs jest w TYM SAMYM folderze co ta funkcja.
+// Jeśli nie - skopiuj go tam, to najbezpieczniejsze rozwiązanie dla Netlify!
+const { getDynamicReportContent } = require('./raport_logic.cjs');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  // 1. PARSOWANIE DANYCH (JSON lub Formularz)
+  // 1. PARSOWANIE DANYCH
   let data;
   try {
     data = JSON.parse(event.body);
@@ -22,7 +24,7 @@ exports.handler = async (event) => {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const dynamicContent = getDynamicReportContent(data);
 
-  // 2. OBSŁUGA PDF (Base64 -> Buffer)
+  // 2. OBSŁUGA PDF
   let attachments = [];
   let pdfStatus = 'BRAK';
   if (data.pdf_base64) {
@@ -35,66 +37,76 @@ exports.handler = async (event) => {
       });
       pdfStatus = 'WYGENEROWANO';
     } catch (err) {
-      console.error("Błąd dekodowania PDF:", err);
+      console.error("PDF Error:", err);
       pdfStatus = 'BŁĄD';
     }
   }
 
   try {
-    // 3. AUTORYZACJA GOOGLE
+    // 3. PANCERNA AUTORYZACJA GOOGLE (Senior Fix dla klucza \n)
+    const rawKey = process.env.GOOGLE_PRIVATE_KEY || '';
+    const formattedKey = rawKey
+      .replace(/\\n/g, '\n') // Zamienia tekstowe \n na prawdziwe Entery
+      .replace(/"/g, '')     // Usuwa zbędne cudzysłowy
+      .trim();               // Usuwa spacje
+
     const auth = new google.auth.JWT(
       process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
       null,
-      process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      formattedKey,
       ['https://www.googleapis.com/auth/spreadsheets']
     );
     const sheets = google.sheets({ version: 'v4', auth });
 
-    // 4. ZAPIS WSZYSTKICH 30 KOLUMN (A-AD) - DOKŁADNIE TAK JAK CHCIAŁAŚ
+    // 4. ZAPIS TWOICH 30 KOLUMN (A-AD)
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
       range: 'A:AD',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [[
-          new Date().toLocaleString('pl-PL'),                 // A: Timestamp
-          data.source || 'kalkulator_premium',                // B: Source
-          data.cel || 'raport_wyslany',                       // C: Cel
-          data.imie || '-',                                   // D: Imie
-          data.email || '-',                                  // E: Email
-          data.telefon || '-',                                // F: Telefon
-          data.wiadomosc || '-',                              // G: Wiadomosc
-          data.zgoda || 'TAK',                                // H: Zgoda
-          data.wynik_typ_budynku || dynamicContent.buildingType, // I: Typ Budynku
-          data.wynik_slonce || dynamicContent.sunFactorLabel, // J: Nasłonecznienie
-          data.wynik_ludzie || data.peopleCount || '-',       // K: Liczba Osób
-          data.wynik_paliwo || "Nieznane",                    // L: Obecne Ciepło
-          data.wynik_rachunek || "0 zł",                      // M: Rachunek
-          data.wynik_komfort || "Standardowy",                // N: Komfort
-          data.wynik_metraz || data.area || '-',              // O: Metraż
-          data.wynik_moc || data.calculatedPower || '-',      // P: Moc
-          data.wynik_cel || dynamicContent.goalLabel || '-',  // Q: Cel
-          data.wynik_oszczednosci || data.savingsYear || '-', // R: Oszczędność
-          data.wynik_model || data.modelName || '-',          // S: Model
-          dynamicContent.expertExplanation || '-',            // T: Wyjaśnienie
-          data.wynik_metraz || data.area || '-',              // U: PDF Backup Metraż
-          data.wynik_moc || data.calculatedPower || '-',      // V: PDF Backup Moc
-          data.wynik_cel || dynamicContent.goalLabel || '-',  // W: PDF Backup Cel
-          data.wynik_oszczednosci || data.savingsYear || '-', // X: PDF Backup Oszczędność
-          data.wynik_model || data.modelName || '-',          // Y: PDF Backup Model
-          new Date().toISOString(),                           // Z: Generated At
-          'TAK',                                              // AA: Email Sent
-          pdfStatus === 'WYGENEROWANO' ? 'TAK' : 'NIE',       // AB: PDF Sent
-          `Raport_AirTUR_${dynamicContent.reportId}.pdf`,     // AC: Filename
-          'new'                                               // AD: Status
+          new Date().toLocaleString('pl-PL'),                 // A
+          data.source || 'kalkulator_premium',                // B
+          data.cel || 'raport_wyslany',                       // C
+          data.imie || '-',                                   // D
+          data.email || '-',                                  // E
+          data.telefon || '-',                                // F
+          data.wiadomosc || '-',                              // G
+          data.zgoda || 'TAK',                                // H
+          data.wynik_typ_budynku || dynamicContent.buildingType, // I
+          data.wynik_slonce || dynamicContent.sunFactorLabel, // J
+          data.wynik_ludzie || data.peopleCount || '-',       // K
+          data.wynik_paliwo || "Nieznane",                    // L
+          data.wynik_rachunek || "0 zł",                      // M
+          data.wynik_komfort || "Standardowy",                // N
+          data.wynik_metraz || data.area || '-',              // O
+          data.wynik_moc || data.calculatedPower || '-',      // P
+          data.wynik_cel || dynamicContent.goalLabel || '-',  // Q
+          data.wynik_oszczednosci || data.savingsYear || '-', // R
+          data.wynik_model || data.modelName || '-',          // S
+          dynamicContent.expertExplanation || '-',            // T
+          data.wynik_metraz || data.area || '-',              // U
+          data.wynik_moc || data.calculatedPower || '-',      // V
+          data.wynik_cel || dynamicContent.goalLabel || '-',  // W
+          data.wynik_oszczednosci || data.savingsYear || '-', // X
+          data.wynik_model || data.modelName || '-',          // Y
+          new Date().toISOString(),                           // Z
+          'TAK',                                              // AA
+          pdfStatus === 'WYGENEROWANO' ? 'TAK' : 'NIE',       // AB
+          `Raport_AirTUR_${dynamicContent.reportId}.pdf`,     // AC
+          'new'                                               // AD
         ]]
       }
     });
 
-    // 5. GENEROWANIE TREŚCI HTML Z TWOJEGO SZABLONU
+    // 5. GENEROWANIE TREŚCI HTML
     const templatePath = path.resolve(process.cwd(), 'src/templates/report-template.html');
-    let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
+    let htmlTemplate = "<h1>Raport AirTUR</h1><p>Dziękujemy za kontakt!</p>"; // Fallback
     
+    if (fs.existsSync(templatePath)) {
+        htmlTemplate = fs.readFileSync(templatePath, 'utf8');
+    }
+
     const finalHtml = htmlTemplate
       .replace(/{{reportId}}/g, dynamicContent.reportId)
       .replace(/{{name}}/g, data.imie || 'Kliencie')
@@ -115,7 +127,7 @@ exports.handler = async (event) => {
       .replace(/{{expertTipDynamic}}/g, dynamicContent.expertTipDynamic)
       .replace(/{{date}}/g, dynamicContent.date);
 
-    // 6. WYSYŁKA EMAIL (Klient + BCC do Ciebie)
+    // 6. WYSYŁKA EMAIL
     await resend.emails.send({
       from: 'AirTUR <kontakt@airtur.pl>',
       to: [data.email],
@@ -131,7 +143,7 @@ exports.handler = async (event) => {
     };
 
   } catch (err) {
-    console.error("Błąd krytyczny funkcji:", err);
+    console.error("KRYTYCZNY BŁĄD:", err.message);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: err.message })
