@@ -3,11 +3,19 @@
   publish = "dist"
 
 [functions]
-  directory = "netlify/functions"  # <--- TEGO BRAKOWAŁO! Kluczowe dla backendu.
+  # Wskazuje gdzie fizycznie leżą pliki Twoich funkcji
+  directory = "netlify/functions"
+  
+  # Pozwala na używanie nowoczesnego import/export i pakuje zależności
   node_bundle = true
-  node_version = "20"              # Dla stabilności (googleapis wymaga nowszego Node)
+  node_version = "20"
 
-# To przekierowanie jest idealne - sprawia, że frontend widzi /api/
+  # KLUCZOWE: Mówimy Netlify, żeby dołączyło szablon raportu do "paczki" funkcji.
+  # Dzięki temu funkcja backendowa będzie mogła go odczytać.
+  included_files = ["src/templates/report-template.html"]
+
+# To przekierowanie pozwala frontendowi strzelać do /api/generate-report
+# zamiast długiego adresu /.netlify/functions/...
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
