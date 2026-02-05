@@ -47,18 +47,9 @@ import { companyConfig } from '../../data/companyConfig';
       </div>
 
       <div class="max-w-md mx-auto mb-12">
-        <form 
-            id="tools-form-email"
-            name="kalkulator-raport-email" 
-            method="POST" 
-            data-netlify="true"
-            class="space-y-4"
-            novalidate
-        >
+        <form id="tools-form-email" class="space-y-4" novalidate>
             <input type="hidden" name="pdf_base64" id="pdf_base64_input" value="" />
-            <input type="hidden" name="form-name" value="kalkulator-raport-email" />
             <input type="hidden" name="source" value="narzedzia_kalkulator_raport_email" />
-            
             <input type="hidden" name="wynik_metraz" class="calc-field-area" value="" />
             <input type="hidden" name="wynik_moc" class="calc-field-power" value="" />
             <input type="hidden" name="wynik_cel" class="calc-field-goal" value="" />
@@ -74,7 +65,7 @@ import { companyConfig } from '../../data/companyConfig';
             <div><input type="text" name="imie" required placeholder="Twoje imię" class="w-full px-5 py-4 rounded-xl bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg"></div>
             <div><input type="email" id="email-field-tools" name="email" required placeholder="Adres e-mail" class="w-full px-5 py-4 rounded-xl bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg"></div>
 
-            <div id="error-tools-mail" class="hidden text-red-400 text-xs font-bold italic py-1 text-center">Wprowadź poprawny adres e-mail.</div>
+            <div id="error-tools-mail" class="hidden text-red-400 text-xs font-bold italic py-1 text-center">Wprowadź poprawny adres e-mail i zaakceptuj zgody.</div>
 
             <div class="flex items-start pt-2 px-1">
                 <div class="flex items-center h-5"><input id="consent-tools-mail" type="checkbox" required class="w-5 h-5 text-airtur-blue border-white/20 rounded focus:ring-airtur-blue cursor-pointer bg-white/10"></div>
@@ -96,8 +87,7 @@ import { companyConfig } from '../../data/companyConfig';
         </button>
 
         <div id="phone-form-container" class="hidden mt-6 max-w-md mx-auto animate-fade-in-down">
-            <form id="tools-form-phone" name="kalkulator-raport-phone" method="POST" data-netlify="true" class="space-y-4 bg-white/5 p-6 rounded-xl border border-white/10 text-left" novalidate>
-                <input type="hidden" name="form-name" value="kalkulator-raport-phone" />
+            <form id="tools-form-phone" class="space-y-4 bg-white/5 p-6 rounded-xl border border-white/10 text-left" novalidate>
                 <input type="hidden" name="source" value="narzedzia_kalkulator_raport_telefon" />
                 <input type="hidden" name="wynik_metraz" class="calc-field-area" value="" /><input type="hidden" name="wynik_moc" class="calc-field-power" value="" /><input type="hidden" name="wynik_cel" class="calc-field-goal" value="" /><input type="hidden" name="wynik_oszczednosci" class="calc-field-savings" value="" /><input type="hidden" name="wynik_model" class="calc-field-model" value="" /><input type="hidden" name="wynik_typ_budynku" class="calc-field-building" value="" />
 
@@ -116,31 +106,46 @@ import { companyConfig } from '../../data/companyConfig';
   </div>
 </section>
 
-<div id="report-template" style="position: absolute; left: -9999px; top: 0; width: 800px; background: white; color: black; font-family: sans-serif;">
-    <div class="p-10 border-b-4 border-airtur-blue">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold text-airtur-dark">Raport Inwestycyjny</h1>
-            <span class="text-gray-500 font-semibold">AirTUR</span>
+<div id="report-template" style="position: fixed; top: -10000px; left: 0; width: 750px; background: white; color: black; font-family: sans-serif; opacity: 0; z-index: -1;">
+    <div style="padding: 40px; border-bottom: 5px solid #0AB3C6;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1 style="font-size: 28px; font-weight: bold; color: #3A4149; margin: 0;">Raport Inwestycyjny</h1>
+            <span style="font-weight: bold; color: #0AB3C6; font-size: 20px;">AirTUR</span>
         </div>
-        <div class="mb-6">
-            <p class="text-gray-600 text-sm">Przygotowano dla:</p>
-            <h2 class="text-2xl font-bold" id="pdf-name">Klient</h2>
-            <p class="text-sm text-gray-500" id="pdf-date">Data: 2025-02-05</p>
+        <div>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 5px;">Przygotowano dla:</p>
+            <h2 style="font-size: 22px; font-weight: bold; margin: 0;" id="pdf-name">Klient</h2>
+            <p style="font-size: 12px; color: #94a3b8; margin-top: 5px;" id="pdf-date">Data: -</p>
         </div>
     </div>
-    <div class="p-10">
-        <h3 class="text-xl font-bold text-airtur-blue mb-6 border-b pb-2">Wyniki Analizy</h3>
-        <div class="grid grid-cols-2 gap-6">
-            <div class="bg-gray-50 p-4 rounded-lg"><p class="text-xs text-gray-500 uppercase tracking-wide">Powierzchnia</p><p class="text-xl font-bold" id="pdf-area">-</p></div>
-            <div class="bg-gray-50 p-4 rounded-lg"><p class="text-xs text-gray-500 uppercase tracking-wide">Sugerowana Moc</p><p class="text-xl font-bold" id="pdf-power">-</p></div>
-            <div class="bg-gray-50 p-4 rounded-lg col-span-2"><p class="text-xs text-gray-500 uppercase tracking-wide">Rekomendowany Model</p><p class="text-xl font-bold text-airtur-blue" id="pdf-model">-</p></div>
-            <div class="bg-gray-50 p-4 rounded-lg col-span-2"><p class="text-xs text-gray-500 uppercase tracking-wide">Oszczędności</p><p class="text-xl font-bold text-green-600" id="pdf-savings">-</p></div>
+    <div style="padding: 40px;">
+        <h3 style="font-size: 18px; font-weight: bold; color: #0A3876; border-bottom: 1px solid #E2E8F0; padding-bottom: 10px; margin-bottom: 25px;">Wyniki Analizy Technicznej</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="background: #F8FAFC; padding: 20px; border-radius: 12px;">
+                <p style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold; margin-bottom: 5px;">Powierzchnia Analizy</p>
+                <p style="font-size: 20px; font-weight: bold; margin: 0;" id="pdf-area">-</p>
+            </div>
+            <div style="background: #F8FAFC; padding: 20px; border-radius: 12px;">
+                <p style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: bold; margin-bottom: 5px;">Sugerowana Moc</p>
+                <p style="font-size: 20px; font-weight: bold; margin: 0;" id="pdf-power">-</p>
+            </div>
+            <div style="background: #F0FDFF; padding: 20px; border-radius: 12px; grid-column: span 2; border: 1px solid #0AB3C6;">
+                <p style="font-size: 11px; text-transform: uppercase; color: #0AB3C6; font-weight: bold; margin-bottom: 5px;">Rekomendowany System</p>
+                <p style="font-size: 20px; font-weight: bold; margin: 0; color: #0A3876;" id="pdf-model">-</p>
+            </div>
+            <div style="background: #E6FFFA; padding: 20px; border-radius: 12px; grid-column: span 2; border: 1px solid #B2F5EA;">
+                <p style="font-size: 11px; text-transform: uppercase; color: #2C7A7B; font-weight: bold; margin-bottom: 5px;">Prognozowane Oszczędności Roczne</p>
+                <p style="font-size: 24px; font-weight: bold; margin: 0; color: #059669;" id="pdf-savings">-</p>
+            </div>
+        </div>
+        <div style="margin-top: 40px; font-size: 11px; color: #94a3b8; text-align: center; border-top: 1px solid #E2E8F0; padding-top: 20px;">
+            F.H.U. Krzysztof Turek | AirTUR - Inżynieria Komfortu | www.airtur.pl
         </div>
     </div>
 </div>
 
 <script>
-    // 1. Logika UI (Rozwijanie)
+    // 1. Logika UI (Rozwijanie telefonu)
     const toggleBtn = document.getElementById('toggle-phone-form');
     const phoneContainer = document.getElementById('phone-form-container');
     const arrowIcon = document.getElementById('arrow-icon');
@@ -151,7 +156,7 @@ import { companyConfig } from '../../data/companyConfig';
         arrowIcon?.classList.toggle('rotate-180');
     });
 
-    // 2. Obsługa Formularzy (Senior Core)
+    // 2. Obsługa Formularzy (Senior Engine)
     document.addEventListener('DOMContentLoaded', () => {
         const forms = document.querySelectorAll('#tools-form-email, #tools-form-phone');
         const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -159,14 +164,18 @@ import { companyConfig } from '../../data/companyConfig';
 
         forms.forEach(form => {
             form.addEventListener('submit', async (e) => {
-                e.preventDefault();
+                e.preventDefault(); // Blokujemy domyślne zachowanie od razu
+                
                 const targetForm = e.target;
                 const submitBtn = targetForm.querySelector('.submit-btn');
                 const formData = new FormData(targetForm);
+                const isEmailForm = targetForm.id === 'tools-form-email';
 
-                // Walidacja
-                const emailInput = targetForm.querySelector('input[type="email"]');
-                const phoneInput = targetForm.querySelector('input[type="tel"]');
+                // Walidacja pól
+                const emailInput = targetForm.querySelector('input[name="email"]');
+                const phoneInput = targetForm.querySelector('input[name="telefon"]');
+                const consent = targetForm.querySelector('input[type="checkbox"]');
+
                 if (emailInput && !isValidEmail(emailInput.value)) {
                     document.getElementById('error-tools-mail')?.classList.remove('hidden');
                     return;
@@ -175,79 +184,95 @@ import { companyConfig } from '../../data/companyConfig';
                     document.getElementById('error-tools-phone')?.classList.remove('hidden');
                     return;
                 }
+                if (!consent.checked) {
+                    alert("Proszę zaakceptować regulamin.");
+                    return;
+                }
 
+                // UI Status
                 if (submitBtn) {
                     submitBtn.disabled = true;
-                    submitBtn.innerText = "PRZETWARZANIE...";
+                    submitBtn.style.opacity = "0.7";
+                    submitBtn.innerText = isEmailForm ? "GENEROWANIE RAPORTU..." : "WYSYŁANIE...";
                 }
 
                 try {
-                    // LOGIKA PDF
-                    if (targetForm.id === 'tools-form-email' && window.html2pdf) {
-                         submitBtn.innerText = "GENEROWANIE PDF...";
-                         document.getElementById('pdf-name').innerText = formData.get('imie') || "Klient";
-                         document.getElementById('pdf-date').innerText = new Date().toLocaleDateString('pl-PL');
-                         document.getElementById('pdf-area').innerText = (formData.get('wynik_metraz') || "-") + " m²";
-                         document.getElementById('pdf-power').innerText = formData.get('wynik_moc') || "-";
-                         document.getElementById('pdf-model').innerText = formData.get('wynik_model') || "-";
-                         document.getElementById('pdf-savings').innerText = formData.get('wynik_oszczednosci') || "-";
+                    // LOGIKA PDF (Tylko dla e-maila)
+                    if (isEmailForm && window.html2pdf) {
+                        // Wypełnianie szablonu PDF
+                        document.getElementById('pdf-name').innerText = formData.get('imie') || "Klient";
+                        document.getElementById('pdf-date').innerText = new Date().toLocaleDateString('pl-PL');
+                        document.getElementById('pdf-area').innerText = (formData.get('wynik_metraz') || "-") + " m²";
+                        document.getElementById('pdf-power').innerText = (formData.get('wynik_moc') || "-") + " kW";
+                        document.getElementById('pdf-model').innerText = formData.get('wynik_model') || "-";
+                        document.getElementById('pdf-savings').innerText = (formData.get('wynik_oszczednosci') || "-") + " zł";
 
-                         const opt = {
-                             margin: 0,
-                             filename: `Raport_AirTUR_${formData.get('imie')}.pdf`,
-                             image: { type: 'jpeg', quality: 0.98 },
-                             html2canvas: { scale: 2, useCORS: true },
-                             jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-                         };
-                         const pdfBase64 = await window.html2pdf().set(opt).from(document.getElementById('report-template')).output('datauristring');
-                         formData.set('pdf_base64', pdfBase64);
+                        const opt = {
+                            margin: 0,
+                            filename: `Raport_AirTUR_${formData.get('imie')}.pdf`,
+                            image: { type: 'jpeg', quality: 0.98 },
+                            html2canvas: { scale: 2, useCORS: true, logging: false },
+                            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                        };
+
+                        // Generowanie PDF
+                        const pdfElement = document.getElementById('report-template');
+                        const pdfBase64 = await window.html2pdf().set(opt).from(pdfElement).output('datauristring');
+                        formData.set('pdf_base64', pdfBase64);
                     }
 
+                    // Przygotowanie danych do wysyłki
                     const dataObj = Object.fromEntries(formData.entries());
 
-                    // WYKRYWANIE ŚRODOWISKA (Senior method)
-                    if (import.meta.env.DEV) {
-                        console.log("Tryb DEV: Symulacja", dataObj);
-                        await new Promise(r => setTimeout(r, 1000));
-                    } else {
+                    // WYSYŁKA (Senior Fetch Flow)
+                    if (!import.meta.env.DEV) {
                         const response = await fetch('/api/generate-report', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(dataObj)
                         });
-                        if (!response.ok) throw new Error('Server error');
+                        
+                        if (!response.ok) throw new Error('Błąd komunikacji z serwerem');
+                    } else {
+                        console.log("Tryb DEV: Symulacja wysyłki", dataObj);
+                        await new Promise(r => setTimeout(r, 800));
                     }
 
-                } catch (error) {
-                    console.error("Submission Error:", error);
-                } finally {
-                    // GWARANCJA PRZEKIEROWANIA Z DYNAMICZNYM CELEM
+                    // INTELIGENTNE PODZIĘKOWANIE (Dynamic Redirect)
                     const params = new URLSearchParams();
-                    
-                    // Inteligentne wykrywanie celu dla podziękowań
                     const rawGoal = formData.get('wynik_cel')?.toString().toLowerCase() || '';
-                    let celFinal = 'raport'; 
+                    let celFinal = 'raport';
+                    
                     if (rawGoal.includes('ogrzewanie')) celFinal = 'ogrzewanie';
                     else if (rawGoal.includes('chłodzenie') || rawGoal.includes('chlodzenie')) celFinal = 'chlodzenie';
                     
                     params.append('cel', celFinal);
-
-                    // Przekazywanie wyników do widoku podziękowania
                     ['wynik_metraz', 'wynik_moc', 'wynik_oszczednosci', 'wynik_model'].forEach(key => {
                         const val = formData.get(key);
-                        if(val) params.append(key.replace('wynik_', ''), val);
+                        if (val) params.append(key.replace('wynik_', ''), val);
                     });
 
+                    // Skok na stronę podziękowania
                     window.location.assign(`/podziekowanie/index.html?${params.toString()}`);
+
+                } catch (error) {
+                    console.error("Submission Error:", error);
+                    alert("Wystąpił błąd. Prosimy spróbować ponownie lub skontaktować się telefonicznie.");
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.style.opacity = "1";
+                        submitBtn.innerText = "SPRÓBUJ PONOWNIE";
+                    }
                 }
             });
         });
-    });
 
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', () => {
-            document.getElementById('error-tools-mail')?.classList.add('hidden');
-            document.getElementById('error-tools-phone')?.classList.add('hidden');
+        // Ukrywanie błędów przy pisaniu
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => {
+                document.getElementById('error-tools-mail')?.classList.add('hidden');
+                document.getElementById('error-tools-phone')?.classList.add('hidden');
+            });
         });
     });
 </script>
