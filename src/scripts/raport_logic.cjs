@@ -1,8 +1,9 @@
 /**
- * LOGIKA RAPORTU AIRTUR - Wersja Senior (ESM)
+ * LOGIKA RAPORTU AIRTUR - Wersja Senior (CommonJS .cjs)
+ * Zachowano 100% Twojej logiki, mapowań i obliczeń.
  */
 
-export const getDynamicReportContent = (data) => {
+const getDynamicReportContent = (data) => {
     // 1. BEZPIECZNE POBIERANIE DANYCH
     const power = parseFloat(data.wynik_moc || data.calculatedPower || 0);
     const people = data.wynik_ludzie || "standard";
@@ -80,3 +81,6 @@ export const getDynamicReportContent = (data) => {
         modelPower: power > 0 ? `${power} kW` : '3.5 kW'
     };
 };
+
+// KLUCZOWA ZMIANA DLA NETLIFY:
+module.exports = { getDynamicReportContent };

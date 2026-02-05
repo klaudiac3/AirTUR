@@ -1,11 +1,12 @@
-import { google } from 'googleapis';
-import { Resend } from 'resend';
-import fs from 'fs';
-import path from 'path';
-import querystring from 'querystring';
-import { getDynamicReportContent } from '../../src/scripts/raport_logic.js';
+const { google } = require('googleapis');
+const { Resend } = require('resend');
+const fs = require('fs');
+const path = require('path');
+const querystring = require('querystring');
+// Importujemy logikę przez require (wskazujemy na plik .cjs)
+const { getDynamicReportContent } = require('../../src/scripts/raport_logic.cjs');
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -49,7 +50,7 @@ export const handler = async (event) => {
     );
     const sheets = google.sheets({ version: 'v4', auth });
 
-    // 4. ZAPIS WSZYSTKICH 30 KOLUMN (A-AD)
+    // 4. ZAPIS WSZYSTKICH 30 KOLUMN (A-AD) - DOKŁADNIE TAK JAK CHCIAŁAŚ
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
       range: 'A:AD',
@@ -100,7 +101,7 @@ export const handler = async (event) => {
       .replace(/{{goalLabel}}/g, data.wynik_cel || dynamicContent.goalLabel)
       .replace(/{{buildingType}}/g, data.wynik_typ_budynku || dynamicContent.buildingType)
       .replace(/{{area}}/g, data.wynik_metraz || data.area || '---')
-      .replace(/{{sunFactorLabel}}/g, data.wynik_slonce || dynamicContent.sunFactorLabel)
+      .replace(/{{sunFactorLabel}}/g, dynamicContent.sunFactorLabel)
       .replace(/{{peopleCount}}/g, data.wynik_ludzie || data.peopleCount || '---')
       .replace(/{{currentHeatSource}}/g, data.wynik_paliwo || "Nieznane")
       .replace(/{{calculatedPower}}/g, data.wynik_moc || data.calculatedPower || '---')
