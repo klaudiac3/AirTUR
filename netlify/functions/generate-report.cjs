@@ -3,78 +3,43 @@ const { Resend } = require('resend');
 const fs = require('fs');
 const path = require('path');
 const querystring = require('querystring');
-
-// Pobieranie logiki raportu
 const { getDynamicReportContent } = require('../../src/scripts/raport_logic.cjs');
 
 exports.handler = async (event) => {
-  // 1. TYLKO POST
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method Not Allowed" };
-  }
+  if (event.httpMethod !== "POST") return { statusCode: 405, body: "Method Not Allowed" };
 
-  // 2. PARSOWANIE DANYCH WEJŚCIOWYCH
   let data;
-  try {
-    data = JSON.parse(event.body);
-  } catch (e) {
-    data = querystring.parse(event.body);
-  }
+  try { data = JSON.parse(event.body); } catch (e) { data = querystring.parse(event.body); }
 
-  // Konfiguracja Resend
   const resend = new Resend(process.env.RESEND_API_KEY);
   const dynamicContent = getDynamicReportContent(data);
 
-  // 3. DIAGNOSTYKA (WIDOCZNA W LOGACH NETLIFY)
-  console.log("🔍 --- DIAGNOSTYKA START ---");
-  const rawKey = process.env.GOOGLE_PRIVATE_KEY || '';
-  console.log("- Klucz obecny?:", !!rawKey, rawKey ? `(Długość: ${rawKey.length})` : "(BRAK)");
-  console.log("- Email robota:", process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || "(BRAK)");
-  console.log("- ID arkusza:", process.env.GOOGLE_SHEET_ID || "(BRAK)");
-  console.log("🔍 --- DIAGNOSTYKA KONIEC ---");
-
-  // 4. PRZYGOTOWANIE ZAŁĄCZNIKA PDF
-  let attachments = [];
-  let pdfStatus = 'BRAK';
-  if (data.pdf_base64) {
-    try {
-      const base64Data = data.pdf_base64.split('base64,').pop();
-      attachments.push({
-        filename: `Raport_AirTUR_${dynamicContent.reportId}.pdf`,
-        content: Buffer.from(base64Data, 'base64'),
-        contentType: 'application/pdf'
-      });
-      pdfStatus = 'WYGENEROWANO';
-    } catch (err) {
-      console.error("❌ Błąd PDF:", err.message);
-      pdfStatus = 'BŁĄD';
-    }
-  }
-
   try {
-    // 5. PANCERNA NAPRAWA KLUCZA PRYWATNEGO (Specjalnie pod Netlify i \n)
-    const formattedKey = rawKey
-      .replace(/\\n/g, '\n')     // Zamiana tekstowych \n na fizyczne entery
-      .replace(/^"|"$/g, '')    // Usunięcie ewentualnych cudzysłowów
-      .trim();
+    // 1. PRZYGOTOWANIE POŚWIADCZEŃ
+    const rawKey = process.env.GOOGLE_PRIVATE_KEY || '';
+    const formattedKey = rawKey.replace(/\\n/g, '\n').replace(/^"|"$/g, '').trim();
+    const clientEmail = (process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || '').trim();
+    const spreadsheetId = (process.env.GOOGLE_SHEET_ID || '').trim();
 
-    if (!formattedKey.includes("BEGIN PRIVATE KEY")) {
-      throw new Error("Klucz prywatny jest nieprawidłowy (brak nagłówka BEGIN)!");
-    }
-
-    // Używamy formatu obiektowego JWT - najbardziej odporny na błędy serwerowe
+    // 2. TWORZYMY OBIEKT AUTORYZACJI
     const auth = new google.auth.JWT(
-      process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      clientEmail,
       null,
       formattedKey,
       ['https://www.googleapis.com/auth/spreadsheets']
     );
 
-    const sheets = google.sheets({ version: 'v4', auth });
+    // 3. WAŻNE: Wymuszamy pobranie tokena (to sprawdza czy klucz jest OK)
+    console.log("🔑 Generowanie tokena dostępu...");
+    await auth.getAccessToken();
+    console.log("✅ Token wygenerowany pomyślnie!");
 
-    // 6. ZAPIS DO ARKUSZA GOOGLE (MAPOWANIE 30 KOLUMN A-AD)
+    const sheets = google.sheets({ version: 'v4' });
+
+    // 4. ZAPIS DO ARKUSZA (Przekazujemy 'auth' bezpośrednio tutaj!)
     await sheets.spreadsheets.values.append({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
+      auth: auth, // <--- TO JEST KLUCZ DO SUKCESU
+      spreadsheetId: spreadsheetId,
       range: 'A:AD',
       valueInputOption: 'USER_ENTERED',
       requestBody: {
@@ -99,27 +64,33 @@ exports.handler = async (event) => {
           data.wynik_oszczednosci || data.savingsYear || '-', // R
           data.wynik_model || data.modelName || '-',          // S
           dynamicContent.expertExplanation || '-',            // T
-          data.wynik_metraz || data.area || '-',              // U (Backup)
-          data.wynik_moc || data.calculatedPower || '-',      // V (Backup)
-          data.wynik_cel || dynamicContent.goalLabel || '-',  // W (Backup)
-          data.wynik_oszczednosci || data.savingsYear || '-', // X (Backup)
-          data.wynik_model || data.modelName || '-',          // Y (Backup)
+          data.wynik_metraz || data.area || '-',              // U
+          data.wynik_moc || data.calculatedPower || '-',      // V
+          data.wynik_cel || dynamicContent.goalLabel || '-',  // W
+          data.wynik_oszczednosci || data.savingsYear || '-', // X
+          data.wynik_model || data.modelName || '-',          // Y
           new Date().toISOString(),                           // Z
           'TAK',                                              // AA
-          pdfStatus === 'WYGENEROWANO' ? 'TAK' : 'NIE',       // AB
+          data.pdf_base64 ? 'TAK' : 'NIE',                   // AB
           `Raport_AirTUR_${dynamicContent.reportId}.pdf`,     // AC
           'new'                                               // AD
         ]]
       }
     });
 
-    // 7. PRZYGOTOWANIE TREŚCI HTML Z SZABLONU
-    const templatePath = path.resolve(process.cwd(), 'src/templates/report-template.html');
-    let htmlTemplate = "<h1>Raport AirTUR</h1><p>Dziękujemy za kontakt!</p>"; 
-    
-    if (fs.existsSync(templatePath)) {
-        htmlTemplate = fs.readFileSync(templatePath, 'utf8');
+    // 5. WYSYŁKA EMAIL
+    let attachments = [];
+    if (data.pdf_base64) {
+      attachments.push({
+        filename: `Raport_AirTUR_${dynamicContent.reportId}.pdf`,
+        content: Buffer.from(data.pdf_base64.split('base64,').pop(), 'base64'),
+        contentType: 'application/pdf'
+      });
     }
+
+    const templatePath = path.resolve(process.cwd(), 'src/templates/report-template.html');
+    let htmlTemplate = "<h1>Raport AirTUR</h1>"; 
+    if (fs.existsSync(templatePath)) htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
     const finalHtml = htmlTemplate
       .replace(/{{reportId}}/g, dynamicContent.reportId)
@@ -127,7 +98,6 @@ exports.handler = async (event) => {
       .replace(/{{goalLabel}}/g, data.wynik_cel || dynamicContent.goalLabel)
       .replace(/{{savingsYear}}/g, data.wynik_oszczednosci || '---');
 
-    // 8. WYSYŁKA E-MAILA PRZEZ RESEND
     await resend.emails.send({
       from: 'AirTUR <kontakt@airtur.pl>',
       to: [data.email],
@@ -137,18 +107,11 @@ exports.handler = async (event) => {
       attachments: attachments
     });
 
-    console.log("✅ SUKCES: Robot Google dopisał wiersz, Resend wysłał maila!");
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: "Sukces", reportId: dynamicContent.reportId })
-    };
+    console.log("✅ SUKCES TOTALNY!");
+    return { statusCode: 200, body: JSON.stringify({ message: "Sukces" }) };
 
   } catch (err) {
-    console.error("❌ KRYTYCZNY BŁĄD FUNKCJI:", err.message);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: err.message })
-    };
+    console.error("❌ BŁĄD:", err.message);
+    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
 };
