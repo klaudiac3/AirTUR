@@ -2,24 +2,23 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import netlify from '@astrojs/netlify'; // DODANE
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://airtur.pl',
   
-  // SENIOR TIP: Wymuszamy spójność adresów URL. 
-  // Netlify domyślnie preferuje strukturę folderów, więc '/' na końcu jest najbardziej naturalne.
-  trailingSlash: 'always',
+  // KLUCZOWE: Zmieniamy tryb na serwerowy, żeby API działało
+  output: 'server', 
+  adapter: netlify(), 
 
-  // Wymusza generowanie adresów bez .html (czyste linki)
+  trailingSlash: 'always',
   build: {
     format: 'directory'
   },
-
   integrations: [
     sitemap()
   ],
-
   vite: {
     plugins: [tailwindcss()]
   }
