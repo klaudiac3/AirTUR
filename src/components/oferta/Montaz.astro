@@ -345,7 +345,9 @@ import { companyConfig } from '../../data/companyConfig';
                   }
 
                   console.log("✅ SUKCES! Przekierowanie...");
-                  window.location.assign('/podziekowanie/index.html?cel=montaz');
+                  
+                  // <<< TUTAJ JEST TWOJA ZMIANA Z POPRAWIONYM LINKIEM >>>
+                  window.location.assign('/podziekowanie/?cel=montaz');
 
               } catch (error) {
                   console.error("❌ BŁĄD WYSYŁKI (CATCH):", error);

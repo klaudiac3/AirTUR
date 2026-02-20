@@ -8,9 +8,3 @@
     "src/scripts/raport_logic.js",
     "public/fonts/*.ttf"
   ]
-
-# TO NAPRAWI BŁĄD 404
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200

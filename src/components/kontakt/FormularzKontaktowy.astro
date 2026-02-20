@@ -27,7 +27,6 @@ import { companyConfig } from '../../data/companyConfig';
             <input type="text" id="name" name="imie" required 
               class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
               placeholder="Jan Kowalski">
-            <!-- DODANO: Komunikat błędu dla imienia -->
             <div id="err-imie" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
           </div>
 
@@ -38,7 +37,6 @@ import { companyConfig } from '../../data/companyConfig';
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
                 placeholder="jan@przyklad.pl">
               <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Wygodna opcja dla zapytań ofertowych</p>
-              <!-- DODANO: Komunikat błędu dla emaila -->
               <div id="err-email" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Proszę podać poprawny adres e-mail.</div>
             </div>
             
@@ -48,7 +46,6 @@ import { companyConfig } from '../../data/companyConfig';
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
                 placeholder="+48 000 000 000">
               <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Dla szybkiego kontaktu telefonicznego</p>
-              <!-- DODANO: Komunikat błędu dla telefonu -->
               <div id="err-telefon" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Numer telefonu musi mieć minimum 9 cyfr.</div>
             </div>
 
@@ -75,7 +72,6 @@ import { companyConfig } from '../../data/companyConfig';
                 </label>
                 </div>
             </div>
-            <!-- DODANO: Komunikat błędu dla zgody -->
             <div id="err-zgoda" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
           </div>
 
@@ -282,7 +278,9 @@ import { companyConfig } from '../../data/companyConfig';
               }
 
               console.log("✅ SUKCES! Przekierowanie...");
-              window.location.assign('/podziekowanie/index.html?cel=kontakt');
+              
+              // <<< TUTAJ JEST TWOJA ZMIANA Z POPRAWIONYM LINKIEM >>>
+              window.location.assign('/podziekowanie/?cel=kontakt');
 
           } catch (error) {
               console.error("❌ BŁĄD WYSYŁKI (CATCH):", error);

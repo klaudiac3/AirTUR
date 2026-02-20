@@ -94,7 +94,6 @@ import { companyConfig } from '../../data/companyConfig';
         </button>
       </div>
 
-      <!-- FORMULARZ EMAIL -->
       <div id="form-email-serwis" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
         <form 
             id="serwis-form-mail"
@@ -157,7 +156,6 @@ import { companyConfig } from '../../data/companyConfig';
         </form>
       </div>
 
-      <!-- FORMULARZ TELEFONICZNY -->
       <div id="form-phone-serwis" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
         <form 
             id="serwis-form-phone"
@@ -325,7 +323,8 @@ import { companyConfig } from '../../data/companyConfig';
                       throw new Error(`Błąd serwera: ${response.status}`);
                   }
 
-                  window.location.assign('/podziekowanie/index.html?cel=serwis');
+                  // <<< TUTAJ JEST TWOJA ZMIANA Z POPRAWIONYM LINKIEM >>>
+                  window.location.assign('/podziekowanie/?cel=serwis');
 
               } catch (error) {
                   console.error("❌ BŁĄD WYSYŁKI:", error);
