@@ -3,11 +3,11 @@
   publish = "dist"
 
 [functions]
-  directory = "netlify/functions"
-  # Dodaliśmy tutaj ścieżkę do pliku logiki, żeby serwer go widział
-  included_files = ["src/templates/report-template.html", "src/scripts/raport_logic.cjs"]
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+  # directory = "netlify/functions"
+  
+  # ZMIANA: Wskazujemy na folder public/fonts
+  included_files = [
+    "src/templates/report-template.html", 
+    "src/scripts/raport_logic.js",
+    "public/fonts/*.ttf"
+  ]

@@ -94,27 +94,29 @@ import { companyConfig } from '../../data/companyConfig';
         </button>
       </div>
 
+      <!-- FORMULARZ EMAIL -->
       <div id="form-email-serwis" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
         <form 
             id="serwis-form-mail"
             name="zgloszenie-serwis-mail" 
             method="POST" 
-            data-netlify="true" 
             class="space-y-4"
             novalidate
         >
           <input type="hidden" name="form-name" value="zgloszenie-serwis-mail" />
-          <input type="hidden" name="source" value="podstrona_oferta_sekcja_serwis_email" />
+          <input type="hidden" name="source" value="oferta_serwis_email" />
           <input type="hidden" name="cel" value="serwis" />
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label for="name-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
               <input type="text" id="name-serwis" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
+              <div id="err-imie-serwis-mail" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
             </div>
             <div>
               <label for="email-field-serwis" class="block text-sm font-bold text-airtur-dark mb-1">E-mail</label>
               <input type="email" id="email-field-serwis" name="email" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="twoj@email.pl">
+              <div id="err-email-serwis-mail" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Proszę podać poprawny adres e-mail.</div>
             </div>
           </div>
           
@@ -129,23 +131,24 @@ import { companyConfig } from '../../data/companyConfig';
             ></textarea>
           </div>
 
-          <div id="error-serwis-mail" class="hidden text-red-500 text-xs font-bold italic py-1">Proszę podać poprawny adres e-mail.</div>
-
-          <div class="flex items-start pt-2">
-            <div class="flex items-center h-5">
-              <input 
-                id="consent-serwis-mail" 
-                name="zgoda" 
-                type="checkbox" 
-                required 
-                class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer"
-              >
+          <div class="flex flex-col pt-2">
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                  <input 
+                    id="consent-serwis-mail" 
+                    name="zgoda" 
+                    type="checkbox" 
+                    required 
+                    class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer"
+                  >
+                </div>
+                <div class="ml-3 text-sm leading-snug">
+                  <label for="consent-serwis-mail" class="text-gray-600 cursor-pointer">
+                    Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu umówienia serwisu urządzenia. (Wymagane)
+                  </label>
+                </div>
             </div>
-            <div class="ml-3 text-sm leading-snug">
-              <label for="consent-serwis-mail" class="text-gray-600 cursor-pointer">
-                Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu umówienia serwisu urządzenia.
-              </label>
-            </div>
+            <div id="err-zgoda-serwis-mail" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
           </div>
 
           <button type="submit" class="submit-btn w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide cursor-pointer">
@@ -154,17 +157,17 @@ import { companyConfig } from '../../data/companyConfig';
         </form>
       </div>
 
+      <!-- FORMULARZ TELEFONICZNY -->
       <div id="form-phone-serwis" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
         <form 
             id="serwis-form-phone"
             name="zgloszenie-serwis-phone" 
             method="POST" 
-            data-netlify="true" 
             class="space-y-4"
             novalidate
         >
           <input type="hidden" name="form-name" value="zgloszenie-serwis-phone" />
-          <input type="hidden" name="source" value="podstrona_oferta_sekcja_serwis_telefon" />
+          <input type="hidden" name="source" value="oferta_serwis_telefon" />
           <input type="hidden" name="cel" value="serwis" />
 
           <div class="text-center mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
@@ -174,27 +177,30 @@ import { companyConfig } from '../../data/companyConfig';
               <div>
                 <label for="name-phone-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
                 <input type="text" id="name-phone-serwis" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
+                <div id="err-imie-serwis-phone" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
               </div>
               <div>
                 <label for="phone-field-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Numer telefonu</label>
                 <input type="tel" id="phone-field-serwis" name="telefon" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="+48 ...">
+                <div id="err-phone-serwis-phone" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Numer telefonu musi mieć minimum 9 cyfr.</div>
               </div>
           </div>
 
-          <div id="error-serwis-phone" class="hidden text-red-500 text-xs font-bold italic py-1">Numer telefonu powinien zawierać minimum 9 cyfr.</div>
-
-          <div class="flex items-start pt-2">
-              <div class="flex items-center h-5">
-                <input id="consent-serwis-phone" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
-              </div>
-              <div class="ml-3 text-sm leading-snug">
-                <label for="consent-serwis-phone" class="text-gray-600 cursor-pointer">
-                  Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> na kontakt telefoniczny w celu ustalenia szczegółów serwisu. 
-                </label>
-              </div>
+          <div class="flex flex-col pt-2">
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                  <input id="consent-serwis-phone" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
+                </div>
+                <div class="ml-3 text-sm leading-snug">
+                  <label for="consent-serwis-phone" class="text-gray-600 cursor-pointer">
+                    Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> na kontakt telefoniczny w celu ustalenia szczegółów serwisu. (Wymagane)
+                  </label>
+                </div>
+            </div>
+            <div id="err-zgoda-serwis-phone" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
           </div>
 
-          <button type="submit" class="submit-btn w-full bg-airtur-dark text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide cursor-pointer">
+          <button type="submit" class="submit-btn w-full bg-airtur-dark text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
             UMÓW SERWIS TERAZ
           </button>
         </form>
@@ -205,122 +211,155 @@ import { companyConfig } from '../../data/companyConfig';
   </div>
 </section>
 
-<script>
-  // 1. LOGIKA TABÓW (BEZ ZMIAN)
-  const tabEmailSerwis = document.getElementById('tab-email-serwis');
-  const tabPhoneSerwis = document.getElementById('tab-phone-serwis');
-  const formEmailSerwis = document.getElementById('form-email-serwis');
-  const formPhoneSerwis = document.getElementById('form-phone-serwis');
-
-  const activeClassS = ['bg-airtur-dark', 'text-white'];
-  const activeRemoveS = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
-  const inactiveClassS = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
-  const inactiveRemoveS = ['bg-airtur-dark', 'text-white'];
-
-  if(tabEmailSerwis && tabPhoneSerwis && formEmailSerwis && formPhoneSerwis) {
-      tabEmailSerwis.addEventListener('click', () => {
-        formEmailSerwis.classList.remove('hidden');
-        formPhoneSerwis.classList.add('hidden');
-        tabEmailSerwis.classList.add(...activeClassS);
-        tabEmailSerwis.classList.remove(...activeRemoveS);
-        tabPhoneSerwis.classList.add(...inactiveClassS);
-        tabPhoneSerwis.classList.remove(...inactiveRemoveS);
-      });
-
-      tabPhoneSerwis.addEventListener('click', () => {
-        formPhoneSerwis.classList.remove('hidden');
-        formEmailSerwis.classList.add('hidden');
-        tabPhoneSerwis.classList.add(...activeClassS);
-        tabPhoneSerwis.classList.remove(...activeRemoveS);
-        tabEmailSerwis.classList.add(...inactiveClassS);
-        tabEmailSerwis.classList.remove(...inactiveRemoveS);
-      });
-  }
-
-  // 2. NOWOCZESNA LOGIKA WYSYŁKI (SENIOR LEVEL)
+<script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
-    // Pobieramy oba formularze serwisu
-    const forms = document.querySelectorAll('#serwis-form-mail, #serwis-form-phone');
+      console.log("🚀 SERWIS DOM READY: Szukam formularzy...");
 
-    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
+      const forms = document.querySelectorAll('#serwis-form-mail, #serwis-form-phone');
+      
+      const tabEmail = document.getElementById('tab-email-serwis');
+      const tabPhone = document.getElementById('tab-phone-serwis');
+      const formEmailContainer = document.getElementById('form-email-serwis');
+      const formPhoneContainer = document.getElementById('form-phone-serwis');
 
-    forms.forEach(form => {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Zatrzymujemy standardowe przeładowanie
-            const targetForm = e.target;
-            const submitBtn = targetForm.querySelector('.submit-btn');
-            
-            // Walidacja specyficzna dla formularza
-            if (targetForm.id === 'serwis-form-mail') {
-                const emailInput = targetForm.querySelector('input[name="email"]');
-                const errorMsg = document.getElementById('error-serwis-mail');
-                if (emailInput && !isValidEmail(emailInput.value)) {
-                    errorMsg?.classList.remove('hidden');
-                    emailInput.classList.add('border-red-400');
-                    emailInput.focus();
-                    return;
+      // --- LOGIKA TABÓW ---
+      const activeClassS = ['bg-airtur-dark', 'text-white'];
+      const activeRemoveS = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
+      const inactiveClassS = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
+      const inactiveRemoveS = ['bg-airtur-dark', 'text-white'];
+
+      if(tabEmail && tabPhone) {
+          tabEmail.addEventListener('click', () => {
+            formEmailContainer?.classList.remove('hidden');
+            formPhoneContainer?.classList.add('hidden');
+            tabEmail.classList.add(...activeClassS);
+            tabEmail.classList.remove(...activeRemoveS);
+            tabPhone?.classList.add(...inactiveClassS);
+            tabPhone?.classList.remove(...inactiveRemoveS);
+          });
+
+          tabPhone.addEventListener('click', () => {
+            formPhoneContainer?.classList.remove('hidden');
+            formEmailContainer?.classList.add('hidden');
+            tabPhone.classList.add(...activeClassS);
+            tabPhone.classList.remove(...activeRemoveS);
+            tabEmail?.classList.add(...inactiveClassS);
+            tabEmail?.classList.remove(...inactiveRemoveS);
+          });
+      }
+
+      // --- LOGIKA WYSYŁKI I WALIDACJI ---
+      const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
+
+      forms.forEach(form => {
+          form.addEventListener('submit', async (e) => {
+              e.preventDefault(); 
+
+              const targetForm = e.currentTarget; 
+              const submitBtn = targetForm.querySelector('.submit-btn');
+              const isMailForm = targetForm.id === 'serwis-form-mail';
+              const suffix = isMailForm ? 'serwis-mail' : 'serwis-phone';
+              
+              let hasError = false;
+
+              // 1. Walidacja Imienia
+              const nameInput = targetForm.querySelector('input[name="imie"]');
+              const nameErr = document.getElementById(`err-imie-${suffix}`);
+              if (nameInput.value.trim().length < 3) {
+                  hasError = true;
+                  nameInput.classList.add('border-red-400', 'bg-red-50');
+                  nameInput.classList.remove('border-gray-300');
+                  if(nameErr) nameErr.classList.remove('hidden');
+              }
+
+              // 2. Walidacja Emaila lub Telefonu
+              if (isMailForm) {
+                  const emailInput = targetForm.querySelector('input[name="email"]');
+                  const emailErr = document.getElementById(`err-email-${suffix}`);
+                  if (!isValidEmail(emailInput.value)) {
+                      hasError = true;
+                      emailInput.classList.add('border-red-400', 'bg-red-50');
+                      emailInput.classList.remove('border-gray-300');
+                      if(emailErr) emailErr.classList.remove('hidden');
+                  }
+              } else {
+                  const phoneInput = targetForm.querySelector('input[name="telefon"]');
+                  const phoneErr = document.getElementById(`err-phone-${suffix}`);
+                  if (!isValidPhone(phoneInput.value)) {
+                      hasError = true;
+                      phoneInput.classList.add('border-red-400', 'bg-red-50');
+                      phoneInput.classList.remove('border-gray-300');
+                      if(phoneErr) phoneErr.classList.remove('hidden');
+                  }
+              }
+
+              // 3. Walidacja Zgody
+              const consentInput = targetForm.querySelector('input[name="zgoda"]');
+              const consentErr = document.getElementById(`err-zgoda-${suffix}`);
+              if (!consentInput.checked) {
+                  hasError = true;
+                  if(consentErr) consentErr.classList.remove('hidden');
+              }
+
+              if (hasError) return; // Stop
+
+              // WYSYŁKA
+              const originalBtnText = submitBtn?.innerText || "WYŚLIJ";
+              if (submitBtn) {
+                  submitBtn.disabled = true;
+                  submitBtn.innerText = "WYSYŁANIE...";
+              }
+
+              const formData = new FormData(targetForm);
+              const dataObj = Object.fromEntries(formData.entries());
+
+              try {
+                  const response = await fetch('/api/send-form', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(dataObj)
+                  });
+
+                  if (!response.ok) {
+                      throw new Error(`Błąd serwera: ${response.status}`);
+                  }
+
+                  window.location.assign('/podziekowanie/index.html?cel=serwis');
+
+              } catch (error) {
+                  console.error("❌ BŁĄD WYSYŁKI:", error);
+                  alert(`Wystąpił błąd: ${error.message}`);
+                  if(submitBtn) {
+                      submitBtn.disabled = false;
+                      submitBtn.innerText = originalBtnText;
+                  }
+              }
+          });
+      });
+
+      // Czyszczenie błędów przy pisaniu
+      document.querySelectorAll('input, textarea').forEach(input => {
+          input.addEventListener('input', () => {
+              input.classList.remove('border-red-400', 'bg-red-50');
+              input.classList.add('border-gray-300'); 
+              
+              // Znajdź i ukryj najbliższy komunikat błędu
+              const parent = input.parentElement;
+              const errorDiv = parent.querySelector('[id^="err-"]');
+              if(errorDiv) errorDiv.classList.add('hidden');
+          });
+          
+          if(input.type === 'checkbox') {
+             input.addEventListener('change', () => {
+                const form = input.closest('form');
+                if(form) {
+                    const isMail = form.id === 'serwis-form-mail';
+                    const suffix = isMail ? 'serwis-mail' : 'serwis-phone';
+                    document.getElementById(`err-zgoda-${suffix}`)?.classList.add('hidden');
                 }
-            } else if (targetForm.id === 'serwis-form-phone') {
-                const phoneInput = targetForm.querySelector('input[name="telefon"]');
-                const errorMsg = document.getElementById('error-serwis-phone');
-                if (phoneInput && !isValidPhone(phoneInput.value)) {
-                    errorMsg?.classList.remove('hidden');
-                    phoneInput.classList.add('border-red-400');
-                    phoneInput.focus();
-                    return;
-                }
-            }
-
-            // Blokujemy przycisk
-            const originalBtnText = submitBtn.innerText;
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerText = "WYSYŁANIE...";
-            }
-
-            const formData = new FormData(targetForm);
-            const dataObj = Object.fromEntries(formData.entries());
-
-            try {
-                // *** SPRAWDZANIE ŚRODOWISKA (Astro Standard) ***
-                if (import.meta.env.DEV) {
-                    console.log("Tryb DEV: Symulacja API success (Serwis)");
-                    await new Promise(r => setTimeout(r, 1000)); 
-                } else {
-                    // Produkcja: Prawdziwy strzał do API
-                    const response = await fetch('/api/generate-report', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(dataObj)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Server error: ${response.status}`);
-                    }
-                }
-
-                // Sukces -> Przekierowanie
-                window.location.assign('/podziekowanie/index.html?cel=serwis');
-
-            } catch (error) {
-                console.error("Submission Error:", error);
-                alert("Wystąpił błąd podczas wysyłania. Spróbuj ponownie lub zadzwoń do nas.");
-                if(submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = originalBtnText; // Przywracamy tekst
-                }
-            }
-        });
-    });
-
-    // Usuwanie błędów przy wpisywaniu
-    document.querySelectorAll('input, textarea').forEach(input => {
-        input.addEventListener('input', () => {
-            input.classList.remove('border-red-400');
-            document.getElementById('error-serwis-mail')?.classList.add('hidden');
-            document.getElementById('error-serwis-phone')?.classList.add('hidden');
-        });
-    });
+             });
+          }
+      });
   });
 </script>

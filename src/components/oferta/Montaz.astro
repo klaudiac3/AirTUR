@@ -114,10 +114,12 @@ import { companyConfig } from '../../data/companyConfig';
           <div>
             <label for="name-mail" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
             <input type="text" id="name-mail" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
+            <div id="err-imie-mail" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
           </div>
           <div>
             <label for="email-field" class="block text-sm font-bold text-airtur-dark mb-1">E-mail</label>
             <input type="email" id="email-field" name="email" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="twoj@email.pl">
+            <div id="err-email-mail" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Proszę podać poprawny adres e-mail.</div>
           </div>
         </div>
         
@@ -132,23 +134,24 @@ import { companyConfig } from '../../data/companyConfig';
           ></textarea>
         </div>
 
-        <div id="error-mail" class="hidden text-red-500 text-xs font-bold italic py-1">Proszę podać poprawny adres e-mail.</div>
-
-        <div class="flex items-start pt-2">
-            <div class="flex items-center h-5">
-              <input 
-                id="consent-montaz-mail" 
-                name="zgoda" 
-                type="checkbox" 
-                required 
-                class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer"
-              >
+        <div class="flex flex-col pt-2">
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                  <input 
+                    id="consent-montaz-mail" 
+                    name="zgoda" 
+                    type="checkbox" 
+                    required 
+                    class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer"
+                  >
+                </div>
+                <div class="ml-3 text-sm leading-snug">
+                  <label for="consent-montaz-mail" class="text-gray-600 cursor-pointer">
+                    Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu obsługi zapytania ofertowego.
+                  </label>
+                </div>
             </div>
-            <div class="ml-3 text-sm leading-snug">
-              <label for="consent-montaz-mail" class="text-gray-600 cursor-pointer">
-                Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu obsługi zapytania ofertowego.
-              </label>
-            </div>
+            <div id="err-zgoda-mail" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
         </div>
 
         <button type="submit" class="submit-btn w-full bg-airtur-blue text-white font-bold py-3 rounded-lg hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
@@ -176,24 +179,27 @@ import { companyConfig } from '../../data/companyConfig';
             <div>
             <label for="name-phone" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
             <input type="text" id="name-phone" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
+            <div id="err-imie-phone" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
             </div>
             <div>
             <label for="phone-field" class="block text-sm font-bold text-airtur-dark mb-1">Numer telefonu</label>
             <input type="tel" id="phone-field" name="telefon" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="+48 ...">
+            <div id="err-telefon-phone" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Numer telefonu musi mieć minimum 9 cyfr.</div>
             </div>
         </div>
 
-        <div id="error-phone" class="hidden text-red-500 text-xs font-bold italic py-1">Numer telefonu powinien zawierać minimum 9 cyfr.</div>
-
-        <div class="flex items-start pt-2">
-            <div class="flex items-center h-5">
-              <input id="consent-montaz-phone" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
+        <div class="flex flex-col pt-2">
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                  <input id="consent-montaz-phone" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
+                </div>
+                <div class="ml-3 text-sm leading-snug">
+                  <label for="consent-montaz-phone" class="text-gray-600 cursor-pointer">
+                    Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu kontaktu telefonicznego.
+                  </label>
+                </div>
             </div>
-            <div class="ml-3 text-sm leading-snug">
-              <label for="consent-montaz-phone" class="text-gray-600 cursor-pointer">
-                Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu kontaktu telefonicznego.
-              </label>
-            </div>
+            <div id="err-zgoda-phone" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
         </div>
 
         <button type="submit" class="submit-btn w-full bg-airtur-dark text-white font-bold py-3 rounded-lg hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
@@ -205,120 +211,179 @@ import { companyConfig } from '../../data/companyConfig';
   </div>
 </section>
 
-<script>
-  // 1. LOGIKA TABÓW (BEZ ZMIAN - DZIAŁA DOBRZE)
-  const tabEmail = document.getElementById('tab-email');
-  const tabPhone = document.getElementById('tab-phone');
-  const formEmailContainer = document.getElementById('form-email');
-  const formPhoneContainer = document.getElementById('form-phone');
-
-  const activeClassAdd = ['bg-airtur-dark', 'text-white'];
-  const activeClassRemove = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
-  const inactiveClassAdd = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
-  const inactiveClassRemove = ['bg-airtur-dark', 'text-white'];
-
-  tabEmail?.addEventListener('click', () => {
-    formEmailContainer?.classList.remove('hidden');
-    formPhoneContainer?.classList.add('hidden');
-    tabEmail.classList.add(...activeClassAdd);
-    tabEmail.classList.remove(...activeClassRemove);
-    tabPhone?.classList.add(...inactiveClassAdd);
-    tabPhone?.classList.remove(...inactiveClassRemove);
-  });
-
-  tabPhone?.addEventListener('click', () => {
-    formPhoneContainer?.classList.remove('hidden');
-    formEmailContainer?.classList.add('hidden');
-    tabPhone.classList.add(...activeClassAdd);
-    tabPhone.classList.remove(...activeClassRemove);
-    tabEmail?.classList.add(...inactiveClassAdd);
-    tabEmail?.classList.remove(...inactiveClassRemove);
-  });
-
-  // 2. NOWOCZESNA LOGIKA WYSYŁKI (SENIOR LEVEL)
+<script is:inline>
+  // Wersja PRO: Używamy DOMContentLoaded (szybciej niż load, bezpieczniej niż sam skrypt)
   document.addEventListener('DOMContentLoaded', () => {
-    // Pobieramy oba formularze (Email i Telefon)
-    const forms = document.querySelectorAll('#montaz-form-mail, #montaz-form-phone');
+      console.log("🚀 DOM READY: HTML załadowany, szukam formularzy...");
 
-    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
+      // Wybór formularzy po ID (zostawiamy ID, żeby nie psuć stylów CSS, jeśli są na nich oparte)
+      const forms = document.querySelectorAll('#montaz-form-mail, #montaz-form-phone');
+      
+      // Elementy tabów
+      const tabEmail = document.getElementById('tab-email');
+      const tabPhone = document.getElementById('tab-phone');
+      const formEmailContainer = document.getElementById('form-email');
+      const formPhoneContainer = document.getElementById('form-phone');
 
-    forms.forEach(form => {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Zatrzymujemy standardowe przeładowanie
-            const targetForm = e.target;
-            const submitBtn = targetForm.querySelector('.submit-btn');
-            
-            // Walidacja specyficzna dla formularza
-            if (targetForm.id === 'montaz-form-mail') {
-                const emailInput = targetForm.querySelector('input[name="email"]');
-                const errorMsg = document.getElementById('error-mail');
-                if (emailInput && !isValidEmail(emailInput.value)) {
-                    errorMsg?.classList.remove('hidden');
-                    emailInput.classList.add('border-red-400');
-                    emailInput.focus();
-                    return;
+      // DIAGNOSTYKA
+      console.log(`🔍 ZNALEZIONO FORMULARZY: ${forms.length}`);
+      if (forms.length === 0) console.error("❌ BŁĄD KRYTYCZNY: Nie widzę formularzy w DOM!");
+
+      // --- LOGIKA TABÓW (Bez zmian - działa dobrze) ---
+      const activeClassAdd = ['bg-airtur-dark', 'text-white'];
+      const activeClassRemove = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
+      const inactiveClassAdd = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
+      const inactiveClassRemove = ['bg-airtur-dark', 'text-white'];
+
+      if(tabEmail && tabPhone) {
+          tabEmail.addEventListener('click', () => {
+            formEmailContainer?.classList.remove('hidden');
+            formPhoneContainer?.classList.add('hidden');
+            tabEmail.classList.add(...activeClassAdd);
+            tabEmail.classList.remove(...activeClassRemove);
+            tabPhone?.classList.add(...inactiveClassAdd);
+            tabPhone?.classList.remove(...inactiveClassRemove);
+          });
+
+          tabPhone.addEventListener('click', () => {
+            formPhoneContainer?.classList.remove('hidden');
+            formEmailContainer?.classList.add('hidden');
+            tabPhone.classList.add(...activeClassAdd);
+            tabPhone.classList.remove(...activeClassRemove);
+            tabEmail?.classList.add(...inactiveClassAdd);
+            tabEmail?.classList.remove(...inactiveClassRemove);
+          });
+      }
+
+      // --- LOGIKA WYSYŁKI (SENIOR LEVEL) ---
+      const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
+
+      forms.forEach(form => {
+          console.log(`🔧 Podpinam listener pod formularz: ${form.id}`);
+          
+          form.addEventListener('submit', async (e) => {
+              e.preventDefault(); // STOP PRZEŁADOWANIU
+              console.log("🚀 SUBMIT EVENT ZŁAPANY!");
+
+              // SENIOR FIX: currentTarget to pewność, że mamy <form>, a nie coś w środku
+              const targetForm = e.currentTarget; 
+              const submitBtn = targetForm.querySelector('.submit-btn');
+              
+              const suffix = targetForm.id === 'montaz-form-mail' ? 'mail' : 'phone';
+              let hasError = false;
+
+              // 1. Walidacja Imienia (wspólna dla obu)
+              const nameInput = targetForm.querySelector('input[name="imie"]');
+              const nameErr = document.getElementById(`err-imie-${suffix}`);
+              if (nameInput.value.trim().length < 3) {
+                  hasError = true;
+                  nameInput.classList.add('border-red-400', 'bg-red-50');
+                  nameInput.classList.remove('border-gray-300');
+                  if(nameErr) nameErr.classList.remove('hidden');
+              }
+
+              // 2. Walidacja Emaila lub Telefonu
+              if (suffix === 'mail') {
+                  const emailInput = targetForm.querySelector('input[name="email"]');
+                  const emailErr = document.getElementById(`err-email-mail`);
+                  if (!isValidEmail(emailInput.value)) {
+                      hasError = true;
+                      emailInput.classList.add('border-red-400', 'bg-red-50');
+                      emailInput.classList.remove('border-gray-300');
+                      if(emailErr) emailErr.classList.remove('hidden');
+                  }
+              } else {
+                  const phoneInput = targetForm.querySelector('input[name="telefon"]');
+                  const phoneErr = document.getElementById(`err-telefon-phone`);
+                  if (!isValidPhone(phoneInput.value)) {
+                      hasError = true;
+                      phoneInput.classList.add('border-red-400', 'bg-red-50');
+                      phoneInput.classList.remove('border-gray-300');
+                      if(phoneErr) phoneErr.classList.remove('hidden');
+                  }
+              }
+
+              // 3. Walidacja Zgody
+              const consentInput = targetForm.querySelector('input[name="zgoda"]');
+              const consentErr = document.getElementById(`err-zgoda-${suffix}`);
+              if (!consentInput.checked) {
+                  hasError = true;
+                  if(consentErr) consentErr.classList.remove('hidden');
+              }
+
+              // STOP JEŚLI BŁĘDY
+              if (hasError) return;
+
+              // --- WYSYŁKA ---
+              // SENIOR FIX: Optional Chaining (?.) - jak nie znajdzie tekstu, to się nie wywali
+              const originalBtnText = submitBtn?.innerText || "WYŚLIJ";
+              
+              if (submitBtn) {
+                  submitBtn.disabled = true;
+                  submitBtn.innerText = "WYSYŁANIE...";
+              }
+
+              const formData = new FormData(targetForm);
+              const dataObj = Object.fromEntries(formData.entries());
+
+              try {
+                  console.log("📡 Wysyłam fetch do /api/send-form...");
+                  
+                  const response = await fetch('/api/send-form', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(dataObj)
+                  });
+                  
+                  console.log("📡 Status odpowiedzi:", response.status);
+
+                  if (!response.ok) {
+                      const errorText = await response.text();
+                      console.error("❌ Błąd serwera treść:", errorText);
+                      throw new Error(`Błąd serwera: ${response.status}`);
+                  }
+
+                  console.log("✅ SUKCES! Przekierowanie...");
+                  window.location.assign('/podziekowanie/index.html?cel=montaz');
+
+              } catch (error) {
+                  console.error("❌ BŁĄD WYSYŁKI (CATCH):", error);
+                  alert(`Wystąpił błąd: ${error.message}`);
+                  
+                  if(submitBtn) {
+                      submitBtn.disabled = false;
+                      submitBtn.innerText = originalBtnText;
+                  }
+              }
+          });
+      });
+
+      // Czyszczenie błędów przy pisaniu (uniwersalne)
+      document.querySelectorAll('input, textarea').forEach(input => {
+          input.addEventListener('input', () => {
+              input.classList.remove('border-red-400', 'bg-red-50');
+              input.classList.add('border-gray-300'); // Przywróć normalny border
+              
+              // Znajdź i ukryj komunikat błędu powiązany z tym polem
+              // Szukamy najbliższego diva z błędem w tym samym kontenerze lub po ID
+              const parent = input.parentElement;
+              const errorDiv = parent.querySelector('[id^="err-"]');
+              if(errorDiv) errorDiv.classList.add('hidden');
+          });
+          
+          // Ukryj błąd zgody po kliknięciu w checkbox
+          if(input.type === 'checkbox') {
+             input.addEventListener('change', () => {
+                // Znajdź kontener zgody i ukryj błąd w nim (lub obok)
+                const form = input.closest('form');
+                if(form) {
+                    const suffix = form.id === 'montaz-form-mail' ? 'mail' : 'phone';
+                    const consentErr = document.getElementById(`err-zgoda-${suffix}`);
+                    if(consentErr) consentErr.classList.add('hidden');
                 }
-            } else if (targetForm.id === 'montaz-form-phone') {
-                const phoneInput = targetForm.querySelector('input[name="telefon"]');
-                const errorMsg = document.getElementById('error-phone');
-                if (phoneInput && !isValidPhone(phoneInput.value)) {
-                    errorMsg?.classList.remove('hidden');
-                    phoneInput.classList.add('border-red-400');
-                    phoneInput.focus();
-                    return;
-                }
-            }
-
-            // Blokujemy przycisk
-            const originalBtnText = submitBtn.innerText;
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerText = "WYSYŁANIE...";
-            }
-
-            const formData = new FormData(targetForm);
-            const dataObj = Object.fromEntries(formData.entries());
-
-            try {
-                // *** SPRAWDZANIE ŚRODOWISKA (Astro Standard) ***
-                if (import.meta.env.DEV) {
-                    console.log("Tryb DEV: Symulacja API success (Montaż)");
-                    await new Promise(r => setTimeout(r, 1000)); 
-                } else {
-                    // Produkcja: Prawdziwy strzał do API
-                    const response = await fetch('/api/generate-report', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(dataObj)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Server error: ${response.status}`);
-                    }
-                }
-
-                // Sukces -> Przekierowanie
-                window.location.assign('/podziekowanie/index.html?cel=montaz');
-
-            } catch (error) {
-                console.error("Submission Error:", error);
-                alert("Wystąpił błąd podczas wysyłania. Spróbuj ponownie lub zadzwoń do nas.");
-                if(submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = originalBtnText; // Przywracamy tekst
-                }
-            }
-        });
-    });
-
-    // Usuwanie błędów przy wpisywaniu
-    document.querySelectorAll('input, textarea').forEach(input => {
-        input.addEventListener('input', () => {
-            input.classList.remove('border-red-400');
-            document.getElementById('error-mail')?.classList.add('hidden');
-            document.getElementById('error-phone')?.classList.add('hidden');
-        });
-    });
+             });
+          }
+      });
   });
 </script>

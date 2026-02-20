@@ -20,9 +20,7 @@
     </p>
 
     <div class="flex items-center gap-4 mb-4">
-        <!-- ZMIANA: max="500" -->
         <input type="number" id="area-input" value="25" min="10" max="500" class="w-24 px-3 py-2 text-2xl font-bold text-airtur-blue text-center bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-airtur-blue">
-        <!-- ZMIANA: max="500" -->
         <input type="range" id="area-slider" min="10" max="500" value="25" class="flex-grow h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-airtur-blue">
     </div>
   </div>
@@ -89,37 +87,141 @@
 
   <div id="intermediate-result" class="hidden animate-fade-in mt-12">
     
-    <div class="bg-[#E0F7FA] border-2 border-airtur-blue rounded-2xl p-8 text-center mb-10">
+    <div class="bg-[#E0F7FA] border-2 border-airtur-blue rounded-2xl p-8 text-center mb-12">
         <p class="text-gray-600 uppercase tracking-widest text-sm mb-2">Twoje zapotrzebowanie:</p>
         <p class="text-4xl font-extrabold text-airtur-dark mb-2"><span id="temp-result-power">0.0</span> kW</p>
         <p class="text-gray-500 text-sm">Na podstawie powierzchni, nasłonecznienia i osób.</p>
     </div>
 
-    <div class="max-w-3xl mx-auto bg-white border-2 border-airtur-dark rounded-2xl overflow-hidden shadow-2xl mb-10">
-        <div class="bg-airtur-dark p-4 text-center">
-          <p class="text-white font-bold uppercase tracking-wider text-sm">Rekomendacja Eksperta AirTUR</p>
-        </div>
-        <div class="p-8 md:p-10 text-center">
-          
-          <h3 class="text-3xl font-bold text-airtur-dark mb-3" id="model-name">Wybieramy model...</h3>
-          <div class="inline-block bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-bold mb-6" id="model-category">Kategoria</div>
-          
-          <p class="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8" id="model-desc">
-              Tutaj pojawi się opis urządzenia idealnie dopasowanego do Twojego celu.
-          </p>
+    <!-- SEKCJA 3 KART -->
+    <div class="mb-10 text-center">
+        <h3 class="text-xl font-bold text-airtur-dark mb-2">Oto 3 strategie doboru urządzenia dla Ciebie:</h3>
+        <p class="text-sm text-gray-500">Wybierz opcję dopasowaną do Twojego budżetu i wymagań.</p>
+    </div>
 
-          <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-airtur-blue text-left">
-            <h4 class="font-bold text-airtur-dark mb-2">Dlaczego ten wybór?</h4>
-            <p class="text-sm text-gray-600 italic" id="expert-explanation">
-                Analizujemy Twój wybór...
-            </p>
-          </div>
-
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+        
+        <!-- KARTA 1: ECO -->
+        <div id="card-eco" class="relative flex flex-col rounded-2xl border-2 border-airtur-dark bg-[#F6F7FA] overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg">
+            <div class="bg-airtur-dark text-white text-xs font-bold uppercase py-2 text-center tracking-wider">
+                EKONOMICZNY
+            </div>
+            <div class="p-6 flex-grow flex flex-col">
+                <h4 id="model-eco-name" class="text-lg font-bold text-airtur-dark mb-1 leading-tight min-h-[3rem]">
+                    Model Eco...
+                </h4>
+                <p class="text-xs text-gray-500 italic mb-4">Mądry wybór na start</p>
+                
+                <div class="mt-auto space-y-3">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-600 font-medium">Cena</span>
+                        <div class="flex gap-1">
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-dark"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-gray-300"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-gray-300"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-gray-300"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-gray-300"></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-600 font-medium">Technologia</span>
+                        <div class="flex gap-1">
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-dark"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-dark"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-dark"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-gray-300"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-gray-300"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <p id="model-eco-desc" class="text-xs text-gray-600 leading-relaxed">Opis modelu...</p>
+                </div>
+            </div>
         </div>
+
+        <!-- KARTA 2: SMART (WYRÓŻNIONA) -->
+        <div id="card-smart" class="relative flex flex-col rounded-2xl border-2 border-airtur-blue bg-white shadow-xl scale-105 z-10 overflow-hidden transform transition-transform hover:scale-[1.07]">
+            <div class="bg-airtur-blue text-white text-sm font-bold uppercase py-3 text-center tracking-wider shadow-sm">
+                REKOMENDACJA EKSPERTA
+            </div>
+            <div class="p-6 flex-grow flex flex-col">
+                <h4 id="model-smart-name" class="text-xl font-extrabold text-airtur-navy mb-1 leading-tight min-h-[3.5rem]">
+                    Model Smart...
+                </h4>
+                <p class="text-sm text-airtur-blue font-medium mb-5">Lider opłacalności</p>
+                
+                <div class="mt-auto space-y-3 mb-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-airtur-dark font-bold">Cena</span>
+                        <div class="flex gap-1">
+                            <span class="w-3 h-3 rounded-full bg-airtur-blue"></span>
+                            <span class="w-3 h-3 rounded-full bg-airtur-blue"></span>
+                            <span class="w-3 h-3 rounded-full bg-airtur-blue"></span>
+                            <span class="w-3 h-3 rounded-full bg-gray-200"></span>
+                            <span class="w-3 h-3 rounded-full bg-gray-200"></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-airtur-dark font-bold">Technologia</span>
+                        <div class="flex gap-1">
+                            <span class="w-3 h-3 rounded-full bg-airtur-blue"></span>
+                            <span class="w-3 h-3 rounded-full bg-airtur-blue"></span>
+                            <span class="w-3 h-3 rounded-full bg-airtur-blue"></span>
+                            <span class="w-3 h-3 rounded-full bg-airtur-blue"></span>
+                            <span class="w-3 h-3 rounded-full bg-gray-200"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <p id="model-smart-desc" class="text-sm text-gray-600 leading-relaxed font-medium">Opis modelu...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KARTA 3: PREMIUM (DARK MODE) -->
+        <div id="card-premium" class="relative flex flex-col rounded-2xl border-2 border-airtur-navy bg-[#212529] overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <div class="bg-airtur-navy text-white text-xs font-bold uppercase py-2 text-center tracking-wider">
+                TECHNOLOGIA HI-END
+            </div>
+            <div class="p-6 flex-grow flex flex-col text-white">
+                <h4 id="model-premium-name" class="text-lg font-bold text-white mb-1 leading-tight min-h-[3rem]">
+                    Model Premium...
+                </h4>
+                <p class="text-xs text-airtur-blue italic mb-4">Japońska Perfekcja</p>
+                
+                <div class="mt-auto space-y-3">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-300 font-medium">Cena</span>
+                        <div class="flex gap-1">
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-300 font-medium">Technologia</span>
+                        <div class="flex gap-1">
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-airtur-blue"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-gray-700">
+                    <p id="model-premium-desc" class="text-xs text-gray-400 leading-relaxed">Opis modelu...</p>
+                </div>
+            </div>
+        </div>
+
     </div>
     
     <div class="text-center">
-        <p class="text-gray-600 mb-4 font-medium">Mamy sprzęt. Teraz sprawdźmy, ile pieniędzy zaoszczędzisz na ogrzewaniu.</p>
+        <p class="text-gray-600 mb-4 font-medium max-w-2xl mx-auto">Każdy z tych modeli spełni Twoje zapotrzebowanie. Teraz sprawdźmy, ile pieniędzy zaoszczędzisz na ogrzewaniu.</p>
         <button id="go-to-roi-btn" class="w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide text-lg">
             PRZEJDŹ DO KALKULATORA OSZCZĘDNOŚCI (ROI)
         </button>

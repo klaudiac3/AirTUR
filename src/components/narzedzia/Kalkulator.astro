@@ -1,27 +1,24 @@
 ---
 // src/components/narzedzia/Kalkulator.astro
 
-// Importujemy poszczególne kroki (upewnij się, że pliki StepX.astro są w folderze src/components/narzedzia/kalkulator/)
+// Importujemy poszczególne kroki
 import Step1 from './kalkulator/Step1.astro';
 import Step2 from './kalkulator/Step2.astro';
 import Step3 from './kalkulator/Step3.astro';
 import Step4 from './kalkulator/Step4.astro';
 ---
 
-<section id="kalkulator-app" class="relative bg-white min-h-[600px] transition-all duration-300 pb-24">
+<section id="kalkulator-app" class="relative bg-white min-h-[600px] transition-all duration-300 pb-24 scroll-mt-24">
   
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- Kontener na Kroki (Pasek postępu jest teraz we Wprowadzenie.astro) -->
     <div class="relative pt-8">
         
-        <!-- Importowane komponenty kroków -->
         <Step1 />
         <Step2 />
         <Step3 />
         <Step4 />
 
-        <!-- EKRAN ŁADOWANIA (Wspólny dla wszystkich kroków) -->
         <div id="step-loading" class="hidden absolute inset-0 bg-white/95 backdrop-blur-sm z-30 flex flex-col items-center justify-center text-center min-h-[400px]">
             <div class="relative w-24 h-24 mb-6">
                <div class="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
@@ -42,28 +39,35 @@ import Step4 from './kalkulator/Step4.astro';
 </section>
 
 <script>
-  // IMPORT Z PLIKU KONFIGURACYJNEGO (Baza danych)
-  // Upewnij się, że plik models.js zawiera export const MARKET_DATA
-  import { models, MARKET_DATA } from './kalkulator/models.js';
+  // IMPORT Z PLIKU KONFIGURACYJNEGO
+  import { models, MARKET_DATA, selectThreeModels, TIERS, transitionContent } from './kalkulator/models.js';
 
   document.addEventListener('DOMContentLoaded', () => {
 
-    // --- STAN APLIKACJI (Global State) ---
+    // --- STAN APLIKACJI ---
     let state = {
       buildingType: '',
       buildingFactor: 1.0,
       goal: '',
-      area: 25,          // Domyślna powierzchnia (salon)
-      sunFactor: 0.10,   // Domyślne nasłonecznienie
-      peopleLoad: 0,     // Domyślnie 0 kW dodatkowo
+      area: 25,          
+      sunFactor: 0.10,   
+      peopleLoad: 0,     
       calculatedPower: 0,
-      billAmount: 800,   // Domyślny rachunek
+      billAmount: 800,   
       
-      // Nowe pola dla zaawansowanej logiki:
-      selectedFuel: null, // Klucz paliwa (np. 'coal_old')
-      comfortLevel: 'standard', // 'low', 'standard', 'high'
+      selectedFuel: null, 
+      comfortLevel: 'standard', 
       
-      recommendedModel: '' 
+      // Nowe pola do obsługi 3 modeli
+      selectedModels: { eco: null, smart: null, premium: null },
+      activeModelKey: 'smart', // Domyślnie wybieramy środkowy (To nasz TIER)
+      
+      recommendedModel: '', 
+      recommendedDesc: '', 
+      
+      savingsYear: 0,
+      savings5Years: 0,
+      savings10Years: 0
     };
 
     // --- ELEMENTY DOM ---
@@ -74,47 +78,45 @@ import Step4 from './kalkulator/Step4.astro';
       document.getElementById('step-4')
     ];
     const stepLoading = document.getElementById('step-loading');
-    // Pasek postępu (znajduje się fizycznie we Wprowadzenie.astro, ale sterujemy nim stąd)
     const progressLine = document.getElementById('progress-line');
+    const appContainer = document.getElementById('kalkulator-app'); 
 
     // ============================================================
-    // 1. SYNCHRONIZACJA Z FORMULARZEM (KONWERSJA.ASTRO)
+    // 1. SYNCHRONIZACJA Z FORMULARZEM
     // ============================================================
     function syncWithConversionForm() {
         const goalBtn = document.querySelector(`.goal-btn[data-goal="${state.goal}"]`);
-        // Pobieramy sam tytuł celu (pierwsza linia tekstu w przycisku)
         const goalLabel = goalBtn ? goalBtn.innerText.split('\n')[0] : state.goal; 
-        const savingsValue = document.getElementById('savings-year')?.innerText || "0";
         
-        // --- Tłumaczenie danych technicznych na język ludzki ---
-        
-        // 1. Paliwo
         const fuelData = state.selectedFuel ? MARKET_DATA.fuels[state.selectedFuel] : null;
         const fuelName = fuelData ? fuelData.name : 'Nieznane';
 
-        // 2. Słońce
         let sunLabel = "Średnie";
         if(state.sunFactor === 0.08) sunLabel = "Niskie";
         if(state.sunFactor === 0.13) sunLabel = "Wysokie";
 
-        // 3. Komfort
         let comfortLabel = "Standardowy (21°C)";
         if(state.comfortLevel === 'low') comfortLabel = "Oszczędny (<20°C)";
         if(state.comfortLevel === 'high') comfortLabel = "Wysoki (>22°C)";
 
-        // --- Wypełnianie ukrytych pól w Konwersja.astro ---
         const setVal = (selector, val) => {
             document.querySelectorAll(selector).forEach(el => el.value = val);
         };
 
-        // Stare pola (kompatybilność)
-        setVal('.calc-field-area', state.area);
-        setVal('.calc-field-power', state.calculatedPower);
+        setVal('.calc-field-area', state.area + " m²"); 
+        setVal('.calc-field-power', state.calculatedPower + " kW");
         setVal('.calc-field-goal', goalLabel);
-        setVal('.calc-field-savings', savingsValue);
-        setVal('.calc-field-model', state.recommendedModel);
         
-        // Nowe pola (szczegółowy raport)
+        setVal('.calc-field-savings', state.savingsYear + " zł");
+        setVal('.calc-field-savings5', state.savings5Years + " zł");   
+        setVal('.calc-field-savings10', state.savings10Years + " zł"); 
+
+        // 🔥 KLUCZOWA ZMIANA: Wysyłamy nie tylko nazwę, ale i wybrany TIER (eco/smart/premium)
+        setVal('.calc-field-model', state.recommendedModel);
+        setVal('.calc-field-tier', state.activeModelKey);
+        
+        setVal('.calc-field-explanation', state.recommendedDesc);
+
         setVal('.calc-field-bill', state.billAmount + " zł");
         setVal('.calc-field-fuel', fuelName);
         setVal('.calc-field-comfort', comfortLabel);
@@ -124,47 +126,43 @@ import Step4 from './kalkulator/Step4.astro';
     }
 
     // ============================================================
-    // 2. NAWIGACJA I UI
+    // 2. NAWIGACJA I UI - PROFESJONALNY SCROLL
     // ============================================================
+    
+    function scrollToTop() {
+        if (appContainer) {
+            setTimeout(() => {
+                appContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50); 
+        }
+    }
+
     function goToStep(stepIndex) {
       if(!steps[stepIndex]) return;
-      
-      // Ukryj wszystko, pokaż wybrane
       steps.forEach(s => s && s.classList.add('hidden'));
       steps[stepIndex].classList.remove('hidden');
-      
-      // Scroll do góry
-      document.getElementById('kalkulator-app')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      
-      // Aktualizacja paska postępu
+      scrollToTop();
       updateProgress(stepIndex + 1);
     }
 
     function updateProgress(stepNumber) {
-      // 1. Aktualizacja linii
       if(progressLine) {
           if(stepNumber === 1) progressLine.style.width = '0%';
           if(stepNumber === 2) progressLine.style.width = '50%';
           if(stepNumber >= 3) progressLine.style.width = '100%';
       }
-      
-      // 2. Aktualizacja kółek (Szukamy ich po klasach z Wprowadzenie.astro)
       const circles = document.querySelectorAll('.w-10.h-10.rounded-full'); 
-      
       circles.forEach((circle, idx) => {
-          // Jeśli jesteśmy na danym kroku lub wyższym -> Aktywuj
           if(idx + 1 <= stepNumber || (stepNumber === 4 && idx === 2)) {
               circle.classList.remove('bg-white', 'text-gray-400', 'border-2', 'border-gray-200');
               circle.classList.add('bg-airtur-blue', 'text-white');
           } else {
-              // Dezaktywuj
               circle.classList.remove('bg-airtur-blue', 'text-white');
               circle.classList.add('bg-white', 'text-gray-400', 'border-2', 'border-gray-200');
           }
       });
     }
 
-    // Obsługa przycisków WSTECZ
     document.querySelectorAll('.back-btn').forEach(btn => {
       btn.addEventListener('click', () => {
           const prevStep = parseInt(btn.dataset.prev);
@@ -172,7 +170,6 @@ import Step4 from './kalkulator/Step4.astro';
       });
     });
 
-    // Obsługa przycisków RESET
     document.querySelectorAll('.reset-btn').forEach(btn => {
       btn.addEventListener('click', () => {
           if(confirm("Czy na pewno chcesz zresetować kalkulator i zacząć od początku?")) {
@@ -181,22 +178,73 @@ import Step4 from './kalkulator/Step4.astro';
       });
     });
 
+    const scrollToElement = (element) => {
+        if(element) {
+            setTimeout(() => {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+    };
+
+    // Obsługa Inputów Step 2
+    document.querySelectorAll('input[name="sun"]').forEach(r => {
+      r.addEventListener('change', (e) => { 
+          state.sunFactor = parseFloat(e.target.value);
+          updateSunDescription(state.sunFactor);
+          const peopleContainer = document.querySelector('input[name="people"]')?.closest('.mb-10');
+          scrollToElement(peopleContainer);
+      });
+    });
+
+    document.querySelectorAll('input[name="people"]').forEach(r => {
+      r.addEventListener('change', (e) => { 
+          state.peopleLoad = parseFloat(e.target.value); 
+          const calcBtn = document.getElementById('calculate-btn');
+          scrollToElement(calcBtn);
+      });
+    });
+
+    // Obsługa Inputów Step 3
+    const heatBtns = document.querySelectorAll('.heat-btn');
+    heatBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+          heatBtns.forEach(b => {
+              b.classList.remove('border-airtur-blue', 'bg-blue-50');
+              b.classList.add('border-gray-200');
+          });
+          btn.classList.remove('border-gray-200');
+          btn.classList.add('border-airtur-blue', 'bg-blue-50');
+          state.selectedFuel = btn.dataset.fuel;
+          
+          const comfortContainer = document.querySelector('input[name="comfort"]')?.closest('.mb-12');
+          scrollToElement(comfortContainer);
+      });
+    });
+
+    const comfortRadios = document.querySelectorAll('input[name="comfort"]');
+    comfortRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            state.comfortLevel = e.target.value;
+            const roiBtn = document.getElementById('roi-btn');
+            scrollToElement(roiBtn);
+        });
+    });
+
+
     // ============================================================
-    // 3. KROK 1: PROFIL BUDYNKU
+    // 3. LOGIKA KROKU 1 (PROFIL BUDYNKU)
     // ============================================================
     const typeBtns = document.querySelectorAll('.type-btn');
     const goalBtns = document.querySelectorAll('.goal-btn');
 
     typeBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-          // Reset wizualny
           typeBtns.forEach(b => {
               b.classList.remove('border-airtur-blue', 'bg-blue-50');
               b.classList.add('border-gray-200');
               b.querySelector('svg')?.classList.remove('text-airtur-blue');
               b.querySelector('svg')?.classList.add('text-gray-400');
           });
-          // Aktywacja
           btn.classList.remove('border-gray-200');
           btn.classList.add('border-airtur-blue', 'bg-blue-50');
           btn.querySelector('svg')?.classList.remove('text-gray-400');
@@ -204,6 +252,10 @@ import Step4 from './kalkulator/Step4.astro';
           
           state.buildingType = btn.dataset.value;
           state.buildingFactor = parseFloat(btn.dataset.factor);
+          
+          const goalSection = document.querySelector('.goal-btn')?.closest('div')?.parentElement;
+          scrollToElement(goalSection);
+
           checkStep1Completion();
       });
     });
@@ -227,28 +279,26 @@ import Step4 from './kalkulator/Step4.astro';
 
     function checkStep1Completion() {
       if(state.buildingType && state.goal) {
-          // Symulacja "myślenia"
+          steps[0].classList.add('hidden');
+          if(stepLoading) {
+              stepLoading.classList.remove('hidden');
+              stepLoading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          
           setTimeout(() => {
-              steps[0].classList.add('hidden');
-              if(stepLoading) stepLoading.classList.remove('hidden');
-              
-              setTimeout(() => {
-                  if(stepLoading) stepLoading.classList.add('hidden');
-                  setupStep2Defaults();
-                  goToStep(1);
-              }, 1000); 
-          }, 300);
+              if(stepLoading) stepLoading.classList.add('hidden');
+              setupStep2Defaults();
+              goToStep(1); 
+          }, 1000); 
       }
     }
 
     // ============================================================
-    // 4. KROK 2: DOBÓR MOCY (FIZYKA)
+    // 4. LOGIKA KROKU 2 (DOBÓR MOCY) - NOWA OBSŁUGA KART
     // ============================================================
     function setupStep2Defaults() {
       const sunRadios = document.querySelectorAll('input[name="sun"]');
       sunRadios.forEach(r => { if(r.value === "0.10") r.checked = true; });
-      
-      // Poddasze = więcej słońca
       if(state.buildingType === 'poddasze') {
           sunRadios.forEach(r => { if(r.value === "0.13") r.click(); });
       } else {
@@ -268,47 +318,28 @@ import Step4 from './kalkulator/Step4.astro';
     const areaSlider = document.getElementById('area-slider');
     const areaInput = document.getElementById('area-input');
     
-    // Obsługa Slidera (Limit 500m2)
     areaSlider?.addEventListener('input', (e) => {
       if(areaInput) areaInput.value = e.target.value;
       state.area = parseInt(e.target.value);
     });
     areaInput?.addEventListener('input', (e) => {
       let val = parseInt(e.target.value);
-      if(val > 500) val = 500; // LIMIT 500
+      if(val > 500) val = 500; 
       if(val < 10) val = 10;
       if(areaSlider) areaSlider.value = val;
       state.area = val;
     });
 
-    // Listenery
-    document.querySelectorAll('input[name="sun"]').forEach(r => {
-      r.addEventListener('change', (e) => { 
-          state.sunFactor = parseFloat(e.target.value);
-          updateSunDescription(state.sunFactor);
-      });
-    });
-    document.querySelectorAll('input[name="people"]').forEach(r => {
-      r.addEventListener('change', (e) => { state.peopleLoad = parseFloat(e.target.value); });
-    });
-
-    // PRZYCISK: OBLICZ MOC
     document.getElementById('calculate-btn')?.addEventListener('click', () => {
-      // Wzór: (m2 * W/m2) + Ludzie
       let basePower = (state.area * state.sunFactor) + state.peopleLoad;
-      // Korekta o typ budynku
       let finalPower = basePower * state.buildingFactor;
-      
       state.calculatedPower = finalPower.toFixed(1);
 
-      // Wyświetlenie wyniku
       const tempRes = document.getElementById('temp-result-power');
       if(tempRes) tempRes.innerText = state.calculatedPower;
       
-      // Dobór modelu
-      calculateAndShowModelRecommendation();
+      calculateAndShow3Models();
 
-      // Pokazanie sekcji wynikowej
       const interResult = document.getElementById('intermediate-result');
       if(interResult) {
           interResult.classList.remove('hidden');
@@ -323,14 +354,50 @@ import Step4 from './kalkulator/Step4.astro';
     });
 
     // ============================================================
-    // 5. KROK 3: FINANSE (ZAAWANSOWANA LOGIKA)
+    // OBSŁUGA KLIKNIĘĆ W KARTY MODELI (Step 2)
+    // ============================================================
+    function activateCard(cardType) {
+        const cards = ['eco', 'smart', 'premium'];
+        cards.forEach(type => {
+            const cardEl = document.getElementById(`card-${type}`);
+            if(cardEl) {
+                if(type === cardType) {
+                    cardEl.classList.add('ring-4', 'ring-airtur-blue/50');
+                } else {
+                    cardEl.classList.remove('ring-4', 'ring-airtur-blue/50');
+                }
+            }
+        });
+
+        // 🔥 To jest krytyczne: zapisujemy, że wybrał 'eco', 'smart' lub 'premium'
+        state.activeModelKey = cardType;
+        const selectedModel = state.selectedModels[cardType];
+        
+        if (selectedModel) {
+            state.recommendedModel = selectedModel.name;
+            state.recommendedDesc = selectedModel.desc;
+            
+            const finalModelName = document.getElementById('final-model-name');
+            if(finalModelName) finalModelName.innerText = selectedModel.name;
+        }
+        syncWithConversionForm();
+    }
+
+    ['eco', 'smart', 'premium'].forEach(type => {
+        const card = document.getElementById(`card-${type}`);
+        if(card) {
+            card.addEventListener('click', () => activateCard(type));
+            card.style.cursor = 'pointer'; 
+        }
+    });
+
+
+    // ============================================================
+    // 5. LOGIKA KROKU 3 (FINANSE)
     // ============================================================
     const billSlider = document.getElementById('bill-slider');
     const billInput = document.getElementById('bill-input');
-    const heatBtns = document.querySelectorAll('.heat-btn');
-    const comfortRadios = document.querySelectorAll('input[name="comfort"]');
 
-    // Slider Rachunku
     billSlider?.addEventListener('input', (e) => {
       if(billInput) billInput.value = e.target.value;
       state.billAmount = parseInt(e.target.value);
@@ -343,28 +410,6 @@ import Step4 from './kalkulator/Step4.astro';
       state.billAmount = val;
     });
 
-    // Wybór Paliwa (zapisujemy KLUCZ np. 'coal_old')
-    heatBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-          heatBtns.forEach(b => {
-              b.classList.remove('border-airtur-blue', 'bg-blue-50');
-              b.classList.add('border-gray-200');
-          });
-          btn.classList.remove('border-gray-200');
-          btn.classList.add('border-airtur-blue', 'bg-blue-50');
-          
-          state.selectedFuel = btn.dataset.fuel;
-      });
-    });
-
-    // Wybór Komfortu
-    comfortRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            state.comfortLevel = e.target.value;
-        });
-    });
-
-    // PRZYCISK: PRZELICZ ROI
     document.getElementById('roi-btn')?.addEventListener('click', () => {
       if(!state.selectedFuel) {
           alert("Proszę wybrać obecne źródło ogrzewania.");
@@ -372,15 +417,24 @@ import Step4 from './kalkulator/Step4.astro';
       }
       calculateAdvancedFinancials(); 
       syncWithConversionForm();
+      
+      populateStep4Table();
+
       goToStep(3);
+      
+      setTimeout(() => {
+          const step4 = document.getElementById('step-4');
+          if (step4) {
+              step4.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+      }, 1200);
     });
 
     // ============================================================
-    // 6. FUNKCJE BIZNESOWE
+    // 6. NOWE FUNKCJE BIZNESOWE (3 MODELE)
     // ============================================================
-
-    // A. DOBÓR MODELU (Według mocy)
-    function calculateAndShowModelRecommendation() {
+    
+    function calculateAndShow3Models() {
       const power = parseFloat(state.calculatedPower);
       let basket = '2.5';
       
@@ -388,78 +442,112 @@ import Step4 from './kalkulator/Step4.astro';
       else if(power <= 3.8) basket = '3.5';
       else if(power <= 5.5) basket = '5.0';
       else if(power <= 7.2) basket = '7.0';
-      else basket = 'MULTI';
+      else basket = '7.0'; 
 
-      const modelName = document.getElementById('model-name');
-      const modelCat = document.getElementById('model-category');
-      const modelDesc = document.getElementById('model-desc');
-      const finalModelName = document.getElementById('final-model-name');
-
-      if(basket === 'MULTI' || power > 8.0) {
-          state.recommendedModel = "System Multi-Split / Komercyjny";
-          if(modelName) modelName.innerText = "Konsultacja Indywidualna (System Multi)";
-          if(modelCat) modelCat.innerText = "Rozwiązanie Dedykowane";
-          if(modelDesc) modelDesc.innerText = "Twoje zapotrzebowanie przekracza standardowe jednostki ścienne. Rekomendujemy system Multi-Split lub jednostkę komercyjną.";
-          if(finalModelName) finalModelName.innerText = "System Multi-Split";
+      let availableModels = [];
+      
+      if (typeof models !== 'undefined' && models[state.goal] && models[state.goal][basket]) {
+         availableModels = models[state.goal][basket];
       } else {
-          let mData = { name: `AirTUR Standard ${basket}kW`, cat: 'Standard', desc: 'Wydajne i ciche urządzenie.' };
-          
-          // Pobranie danych z importowanego pliku models.js
-          if (typeof models !== 'undefined' && models[state.goal] && models[state.goal][basket]) {
-             mData = models[state.goal][basket];
-          }
-
-          state.recommendedModel = mData.name;
-          if(modelName) modelName.innerText = mData.name;
-          if(modelCat) modelCat.innerText = mData.cat;
-          if(modelDesc) modelDesc.innerText = mData.desc;
-          if(finalModelName) finalModelName.innerText = mData.name;
+         availableModels = [
+             { name: 'Model Podstawowy', desc: 'Opis...', cat: 'Standard' },
+             { name: 'Model Ekspert', desc: 'Opis...', cat: 'Złoty Środek' },
+             { name: 'Model Premium', desc: 'Opis...', cat: 'Premium' }
+         ];
       }
+
+      const selection = selectThreeModels(availableModels);
+      state.selectedModels = selection;
+
+      if(selection.eco) {
+          const elName = document.getElementById('model-eco-name');
+          const elDesc = document.getElementById('model-eco-desc');
+          if(elName) elName.innerText = selection.eco.name;
+          if(elDesc) elDesc.innerText = selection.eco.desc;
+      }
+      if(selection.smart) {
+          const elName = document.getElementById('model-smart-name');
+          const elDesc = document.getElementById('model-smart-desc');
+          if(elName) elName.innerText = selection.smart.name;
+          if(elDesc) elDesc.innerText = selection.smart.desc;
+      }
+      if(selection.premium) {
+          const elName = document.getElementById('model-premium-name');
+          const elDesc = document.getElementById('model-premium-desc');
+          if(elName) elName.innerText = selection.premium.name;
+          if(elDesc) elDesc.innerText = selection.premium.desc;
+      }
+
+      activateCard('smart');
     }
 
-    // B. FIZYKA FINANSOWA (The Advanced Math)
+    function populateStep4Table() {
+        const { eco, smart, premium } = state.selectedModels;
+        
+        const fillText = (id, text) => {
+            const el = document.getElementById(id);
+            if(el) el.innerText = text || '-';
+        };
+
+        fillText('summary-area', `${state.area} m²`);
+        let sunTxt = "Standardowe";
+        if(state.sunFactor === 0.08) sunTxt = "Niskie";
+        if(state.sunFactor === 0.13) sunTxt = "Wysokie";
+        fillText('summary-sun', sunTxt);
+        fillText('summary-power', `${state.calculatedPower} kW`); 
+
+        const content = transitionContent[state.goal];
+        if (content) {
+            fillText('transition-headline', content.headline);
+            fillText('transition-subtext', content.subtext);
+        }
+
+        if(eco) {
+            fillText('table-eco-name', eco.name);
+            fillText('table-eco-energy', eco.energy_class);
+            fillText('table-eco-noise', eco.noise);
+            fillText('table-eco-filter', eco.filter);
+        }
+        if(smart) {
+            fillText('table-smart-name', smart.name);
+            fillText('table-smart-energy', smart.energy_class);
+            fillText('table-smart-noise', smart.noise);
+            fillText('table-smart-filter', smart.filter);
+        }
+        if(premium) {
+            fillText('table-premium-name', premium.name);
+            fillText('table-premium-energy', premium.energy_class);
+            fillText('table-premium-noise', premium.noise);
+            fillText('table-premium-filter', premium.filter);
+        }
+    }
+
     function calculateAdvancedFinancials() {
         const bill = state.billAmount; 
-        
-        // Pobieramy dane o paliwie z MARKET_DATA
         const fuel = MARKET_DATA.fuels[state.selectedFuel]; 
         
         if (!fuel) return;
 
-        // 1. Ile "jednostek" paliwa kupił klient?
-        // (np. 800 zł / 2 zł/kg = 400 kg węgla)
         const fuelUnits = bill / fuel.price; 
-
-        // 2. Ile energii TEORETYCZNEJ kupił? (Wartość opałowa)
-        // (np. 400 kg * 8 kWh/kg = 3200 kWh)
         const theoreticalEnergy = fuelUnits * fuel.value;
-
-        // 3. Ile energii REALNEJ trafiło do pokoju? (Sprawność)
-        // (np. 3200 kWh * 0.60 = 1920 kWh efektywnego ciepła)
         let effectiveHeat = theoreticalEnergy * fuel.efficiency;
 
-        // 4. KOREKTA NA KOMFORT (The Comfort Trap)
-        // Jeśli teraz oszczędza ('low'), to żeby mieć ciepło z pompy, zużyje więcej energii.
         if (state.comfortLevel === 'low') {
-            effectiveHeat = effectiveHeat * 1.25; // +25% zapotrzebowania
+            effectiveHeat = effectiveHeat * 1.25; 
         } else if (state.comfortLevel === 'standard') {
-            effectiveHeat = effectiveHeat * 1.05; // +5% na wygodę
+            effectiveHeat = effectiveHeat * 1.05; 
         }
-        // Przy 'high' nie zmieniamy (klient już grzeje na maksa)
 
-        // 5. Ile PRĄDU zużyje AirTUR?
-        // SCOP 4.0 = z 1 kWh prądu mamy 4 kWh ciepła
         const electricityNeeded = effectiveHeat / MARKET_DATA.airturSCOP;
-
-        // 6. Ile to kosztuje?
         const costAirTUR = Math.round(electricityNeeded * MARKET_DATA.electricityPrice);
         const costOld = bill;
 
-        // 7. Wyniki
         const savingsMonth = costOld - costAirTUR;
-        const savingsYear = savingsMonth * 5; // Sezon grzewczy
+        
+        state.savingsYear = savingsMonth * 5; 
+        state.savings5Years = state.savingsYear * 5;
+        state.savings10Years = state.savingsYear * 10;
 
-        // Aktualizacja DOM
         const costOldEl = document.getElementById('cost-old');
         const costNewEl = document.getElementById('cost-new');
         
@@ -472,8 +560,9 @@ import Step4 from './kalkulator/Step4.astro';
             if(barNew) barNew.style.width = `${barWidth}%`;
         }, 500);
 
-        // Licznik nie może być ujemny wizualnie (chyba że chcemy pokazać stratę)
-        animateValue('savings-year', 0, Math.max(0, savingsYear), 2000);
+        animateValue('savings-year', 0, Math.max(0, state.savingsYear), 2000);
+        animateValue('savings-5years', 0, Math.max(0, state.savings5Years), 2000);
+        animateValue('savings-10years', 0, Math.max(0, state.savings10Years), 2000);
     }
 
     function animateValue(id, start, end, duration) {
@@ -483,12 +572,78 @@ import Step4 from './kalkulator/Step4.astro';
       const step = (timestamp) => {
           if (!startTimestamp) startTimestamp = timestamp;
           const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-          obj.innerHTML = Math.floor(progress * (end - start) + start);
+          obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString('pl-PL');
           if (progress < 1) {
               window.requestAnimationFrame(step);
           }
       };
       window.requestAnimationFrame(step);
     }
+
+    // ============================================================
+    // 7. OBSŁUGA WYBORU W STEP 4 - STEROWANIE KONWERSJĄ
+    // ============================================================
+    const conversionSection = document.getElementById('conversion-section');
+    const mainPhoneContainer = document.getElementById('main-phone-container');
+    const secondaryPhoneSection = document.getElementById('secondary-phone-section');
+    
+    // A. "Chcę wycenę z montażem" (Gorący Lead)
+    document.getElementById('cta-request-quote')?.addEventListener('click', () => {
+        conversionSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        document.querySelectorAll('input[name="cel"]').forEach(input => {
+            input.value = 'chce_montaz'; 
+        });
+
+        if(mainPhoneContainer) {
+            mainPhoneContainer.classList.remove('hidden');
+            const phoneInput = mainPhoneContainer.querySelector('input');
+            if(phoneInput) phoneInput.required = true;
+        }
+        if(secondaryPhoneSection) {
+            secondaryPhoneSection.classList.add('hidden');
+        }
+
+        const header = conversionSection?.querySelector('h2');
+        const sub = conversionSection?.querySelector('p');
+        if(header) {
+            header.innerText = "Świetna decyzja! Umówmy bezpłatną wycenę.";
+            header.classList.remove('text-white');
+            header.classList.add('text-airtur-blue');
+        }
+        if(sub) {
+            sub.innerText = `Nasz inżynier przeanalizuje wynik dla modelu ${state.recommendedModel}. Zostaw numer telefonu, abyśmy mogli przygotować ofertę.`;
+        }
+    });
+
+    // B. "Chcę tylko raport" (Zimny Lead)
+    document.getElementById('cta-get-report')?.addEventListener('click', () => {
+        conversionSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        document.querySelectorAll('input[name="cel"]').forEach(input => {
+            input.value = 'raport_wyslany'; 
+        });
+
+        if(mainPhoneContainer) {
+            mainPhoneContainer.classList.add('hidden');
+            const phoneInput = mainPhoneContainer.querySelector('input');
+            if(phoneInput) phoneInput.required = false;
+        }
+        if(secondaryPhoneSection) {
+            secondaryPhoneSection.classList.remove('hidden');
+        }
+
+        const header = conversionSection?.querySelector('h2');
+        const sub = conversionSection?.querySelector('p');
+        if(header) {
+            header.innerText = "Twoja osobista Analiza Inwestycyjna jest gotowa.";
+            header.classList.remove('text-airtur-blue');
+            header.classList.add('text-white');
+        }
+        if(sub) {
+            sub.innerText = "Wyniki Twoich obliczeń to doskonały fundament. Odbierz pełny raport PDF na swój e-mail.";
+        }
+    });
+
   });
 </script>

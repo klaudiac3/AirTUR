@@ -2,6 +2,19 @@
 import Layout from '../layouts/Layout.astro';
 // Importujemy centralną konfigurację firmy
 import { companyConfig } from '../data/companyConfig';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Pobieramy ścieżkę do bieżącego pliku regulaminu
+const filePath = path.resolve('./src/pages/regulamin.astro');
+// Pobieramy statystyki pliku
+const stats = fs.statSync(filePath);
+// Formatujemy datę modyfikacji na polski format
+const lastModifiedDate = stats.mtime.toLocaleDateString('pl-PL', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
 ---
 
 <Layout title="Regulamin Serwisu - AirTUR" description="Zasady korzystania z serwisu internetowego AirTUR oraz narzędzi diagnostycznych.">
@@ -10,7 +23,8 @@ import { companyConfig } from '../data/companyConfig';
       
       <header class="mb-12 border-b border-gray-100 pb-8">
         <h1 class="text-4xl font-extrabold text-airtur-dark mb-4">Regulamin Serwisu</h1>
-        <p class="text-gray-500 italic">Obowiązuje od dnia: 27 stycznia 2026 r.</p>
+        <!-- Dynamiczna data modyfikacji -->
+        <p class="text-gray-500 italic">Obowiązuje od dnia: {lastModifiedDate} r.</p>
       </header>
 
       <div class="prose prose-blue prose-lg max-w-none text-gray-700 space-y-8">
@@ -18,7 +32,7 @@ import { companyConfig } from '../data/companyConfig';
         <section>
           <h2 class="text-2xl font-bold text-airtur-dark mb-4">§1. Postanowienia ogólne</h2>
           <p>
-            Niniejszy regulamin określa zasady korzystania z serwisu internetowego dostępnego pod adresem airtur.pl, zwanego dalej „Serwisem”. Właścicielem Serwisu jest {companyConfig.fullName} z siedzibą w miejscowości {companyConfig.address.city}.
+            Niniejszy regulamin określa zasady korzystania z serwisu internetowego dostępnego pod adresem airtur.pl, zwanego dalej „Serwisem”. Właścicielem Serwisem jest {companyConfig.fullName} z siedzibą w miejscowości {companyConfig.address.city}.
           </p>
         </section>
 

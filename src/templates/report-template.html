@@ -5,130 +5,276 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Analiza Inwestycyjna AirTUR</title>
     <style type="text/css">
-        body { margin: 0; padding: 0; min-width: 100%; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2D3748; background-color: #f0f2f5; }
-        .wrapper { width: 100%; table-layout: fixed; background-color: #f0f2f5; padding-bottom: 40px; }
-        .main-table { width: 100%; max-width: 750px; margin: 0 auto; background-color: #ffffff; border-spacing: 0; }
-        .header { padding: 30px 40px; border-bottom: 5px solid #0AB3C6; }
-        .hero { background: #3A4149; background: linear-gradient(135deg, #3A4149 0%, #0A3876 100%); color: #ffffff; padding: 40px; }
+        /* RESET DLA KLIENTÓW POCZTOWYCH */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #F1F2F6; color: #3A4149; }
+
+        /* KLASY GŁÓWNE */
+        .wrapper { width: 100%; background-color: #F1F2F6; padding: 30px 0; }
+        .main-table { width: 100%; max-width: 640px; margin: 0 auto; background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        
+        .header { padding: 30px 40px; border-bottom: 4px solid #0AB3C6; background-color: #FFFFFF; }
+        .hero { background-color: #212529; color: #FFFFFF; padding: 40px; text-align: center; }
         .content { padding: 40px; }
-        .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #0A3876; background-color: #F8FAFC; padding: 8px 15px; border-radius: 6px; margin-bottom: 15px; }
-        .data-table { width: 100%; border: 1px solid #E2E8F0; margin-bottom: 30px; border-collapse: collapse; }
-        .data-table td { padding: 12px 15px; border-bottom: 1px solid #E2E8F0; font-size: 13px; }
-        .label { background-color: #F8FAFC; font-weight: bold; color: #4A5568; width: 40%; }
+        .footer { padding: 30px 40px; background-color: #F6F7FA; text-align: center; font-size: 11px; color: #A0AEC0; border-top: 1px solid #E2E8F0; line-height: 1.6; }
+
+        /* TYPOGRAFIA I DETALE */
+        .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #0AB3C6; letter-spacing: 1.5px; margin: 30px 0 15px 0; display: block; border-left: 3px solid #0AB3C6; padding-left: 10px; }
+        .first-title { margin-top: 0; }
+        
+        /* KARTA KLIENTA (TABELA) */
+        .data-table { width: 100%; border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+        .data-table td { padding: 12px 15px; border-bottom: 1px solid #E2E8F0; font-size: 14px; }
+        .label { background-color: #F6F7FA; font-weight: 600; color: #718096; width: 45%; }
         .value { color: #3A4149; font-weight: 700; text-align: right; }
-        .power-result { text-align: center; padding: 30px; background-color: #F0FDFF; border: 2px solid #0AB3C6; border-radius: 15px; margin-bottom: 30px; }
-        .power-value { font-size: 42px; font-weight: 900; color: #0A3876; }
-        .recommendation-box { border: 1px solid #E2E8F0; border-radius: 20px; padding: 25px; margin-bottom: 30px; }
-        .justification { background-color: #F8FAFC; padding: 18px; border-radius: 12px; font-size: 13px; border-left: 5px solid #0AB3C6; margin-bottom: 15px; }
-        .rejection-note { background-color: #FFF5F5; padding: 15px; border-radius: 12px; font-size: 12px; color: #C53030; border-left: 5px solid #FC8181; }
-        .roi-section { background-color: #E6FFFA; border: 1px solid #B2F5EA; border-radius: 20px; padding: 25px; margin-bottom: 30px; text-align: center; }
-        .roi-card { background-color: #ffffff; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #B2F5EA; }
-        .expert-advice { background-color: #FFFBEB; padding: 20px; border-radius: 15px; border-left: 5px solid #F59E0B; margin-bottom: 30px; font-size: 13px; }
-        .footer { padding: 30px 40px; background-color: #F8FAFC; text-align: center; font-size: 10px; color: #94A3B8; border-top: 1px solid #E2E8F0; }
-        .btn { background-color: #0AB3C6; color: #ffffff; padding: 15px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; }
+
+        /* DIAGNOZA MOCY */
+        .power-result { text-align: center; padding: 25px; background-color: #F0FDFF; border: 1px solid #0AB3C6; border-radius: 8px; margin-bottom: 25px; }
+        .power-value { font-size: 38px; font-weight: 900; color: #0AB3C6; display: block; margin-top: 5px; }
+
+        /* TABELA 3 MODELI - STYLE */
+        .model-col { width: 33.33%; padding: 15px 10px; text-align: center; border: 1px solid #E2E8F0; vertical-align: top; }
+        .model-badge { font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px; color: white; letter-spacing: 1px; }
+        .badge-eco { background-color: #3A4149; }
+        .badge-smart { background-color: #0AB3C6; }
+        .badge-premium { background-color: #212529; }
+        .model-name { font-size: 13px; font-weight: bold; color: #212529; margin: 0 0 15px 0; height: 35px; }
+        .spec-label { font-size: 10px; color: #718096; text-transform: uppercase; margin: 0; }
+        .spec-val { font-size: 11px; color: #3A4149; font-weight: bold; margin: 2px 0 12px 0; }
+
+        /* BOXY INFORMACYJNE */
+        .box-justification { background-color: #F0FDFF; padding: 15px 20px; border-radius: 6px; border-left: 4px solid #0AB3C6; margin-bottom: 15px; font-size: 14px; line-height: 1.6; color: #3A4149; }
+        .box-rejection { background-color: #FFF5F5; padding: 15px 20px; border-radius: 6px; border-left: 4px solid #C53030; margin-bottom: 25px; font-size: 13px; line-height: 1.6; color: #212529; }
+        .box-expert { background-color: #FFFBEB; padding: 20px; border-radius: 8px; border-left: 4px solid #D97706; margin-bottom: 30px; font-size: 14px; line-height: 1.6; color: #3A4149; }
+
+        /* TABELA ROI */
+        .roi-card { background-color: #FFFFFF; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #B2F5EA; margin-bottom: 10px; }
+        .roi-note { font-size: 12px; color: #718096; text-align: center; margin-top: 15px; font-style: italic; }
+        .roi-disclaimer { font-size: 10px; color: #A0AEC0; font-style: italic; text-align: center; margin-top: 10px; line-height: 1.4; }
+
+        /* PRZYCISK */
+        .btn { background-color: #0AB3C6; color: #FFFFFF; padding: 16px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ======================================= */
+        /* ZAPYTANIA MEDIA (MAGIA DLA TELEFONÓW)   */
+        /* ======================================= */
+        @media only screen and (max-width: 600px) {
+            .wrapper { padding: 0 !important; }
+            .main-table { width: 100% !important; border-radius: 0 !important; }
+            
+            /* Pady w głównych sekcjach dla małych ekranów */
+            .header { padding: 20px !important; }
+            .hero { padding: 30px 20px !important; }
+            .content { padding: 25px 20px !important; }
+            .footer { padding: 20px !important; }
+            
+            /* Nagłówek (Logo + Data) - Układ pionowy na telefonie */
+            .header-td { display: block !important; width: 100% !important; text-align: center !important; }
+            .header-td-right { margin-top: 15px !important; }
+            .header-img { margin: 0 auto !important; }
+
+            /* Hero - Mniejsze fonty */
+            .hero h2 { font-size: 20px !important; }
+            .hero p { font-size: 13px !important; }
+
+            /* Tabele - Utrzymujemy czytelność */
+            .label { width: 40% !important; font-size: 12px !important; padding: 10px !important; }
+            .value { font-size: 13px !important; padding: 10px !important; }
+
+            /* Tabela 3 Modeli - Kafelki pionowo */
+            .model-col { display: block !important; width: 100% !important; box-sizing: border-box !important; margin-bottom: 10px !important; border-radius: 8px !important; }
+            .model-name { height: auto !important; }
+
+            /* Tabela ROI - Kafelki pionowo */
+            .stack-column { display: block !important; width: 100% !important; padding: 0 0 10px 0 !important; }
+            .roi-card { margin-bottom: 0 !important; }
+            
+            /* Przycisk na pełną szerokość */
+            .btn { display: block !important; width: 100% !important; box-sizing: border-box !important; text-align: center !important; }
+        }
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <table class="main-table">
+        <table class="main-table" border="0" cellspacing="0" cellpadding="0" align="center">
+            
+            <!-- HEADER -->
             <tr>
                 <td class="header">
-                    <table width="100%">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
-                            <td width="50%"><img src="https://airtur.pl/logo.svg" height="50" alt="AirTUR" /></td>
-                            <td width="50%" align="right">
-                                <p style="margin:0; font-size:16px; font-weight:900; color:#3A4149; text-transform:uppercase;">Analiza Inwestycyjna</p>
-                                <p style="margin:0; font-size:10px; color:#0AB3C6; font-weight:bold;">RAPORT: {{reportId}}</p>
+                            <td class="header-td" align="left" valign="middle" width="50%">
+                                <img src="https://airtur.pl/logo.png" height="35" alt="AirTUR" class="header-img" style="display:block;" />
+                            </td>
+                            <td class="header-td header-td-right" align="right" valign="middle" width="50%">
+                                <p style="margin:0; font-size:13px; font-weight:800; color:#3A4149; text-transform:uppercase;">Raport #{{reportId}}</p>
+                                <p style="margin:2px 0 0; font-size:11px; color:#A0AEC0;">DATA: {{date}}</p>
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
 
+            <!-- HERO (CEL) -->
             <tr>
                 <td class="hero">
-                    <h2 style="margin:0; font-size:24px; color:#0AB3C6;">Cel: {{goalLabel}}</h2>
-                    <p style="margin:15px 0 0; font-size:15px; line-height:1.4;">Witaj <strong>{{name}}</strong>! Przygotowaliśmy Twoją Osobistą Kartę Diagnostyki Termicznej. To dokument inżynieryjny, który pokazuje, jak nowoczesna technologia wpłynie na Twój komfort i domowy budżet.</p>
+                    <h2 style="margin:0; font-size:24px; color:#0AB3C6; line-height:1.3;">{{heroHeadline}}</h2>
+                    <p style="margin:15px 0 0; font-size:15px; opacity:0.9; line-height:1.6;">
+                        Witaj <strong>{{name}}</strong>! {{heroDesc}}
+                    </p>
                 </td>
             </tr>
 
+            <!-- ZAWARTOŚĆ -->
             <tr>
                 <td class="content">
                     
-                    <div class="section-title">01. Parametry Wejściowe</div>
-                    <table class="data-table">
-                        <tr><td class="label">Typ Pomieszczenia</td><td class="value">{{buildingType}}</td></tr>
-                        <tr><td class="label">Powierzchnia</td><td class="value">{{area}} m²</td></tr>
-                        <tr><td class="label">Nasłonecznienie</td><td class="value">{{sunFactorLabel}}</td></tr>
-                        <tr><td class="label">Liczba Użytkowników</td><td class="value">{{peopleCount}}</td></tr>
-                        <tr><td class="label">Obecne Ogrzewanie</td><td class="value">{{currentHeatSource}}</td></tr>
+                    <!-- 1. KARTA KLIENTA -->
+                    <span class="section-title first-title">01. Karta Parametrów Budynku</span>
+                    <table class="data-table" border="0" cellspacing="0" cellpadding="0">
+                        <tr><td class="label">Typ budynku</td><td class="value">{{buildingType}}</td></tr>
+                        <tr><td class="label">Powierzchnia</td><td class="value">{{area}}</td></tr>
+                        <tr><td class="label">Ekspozycja</td><td class="value">{{sunFactorLabel}}</td></tr>
+                        <tr><td class="label">Domownicy</td><td class="value">{{peopleCount}}</td></tr>
+                        <tr><td class="label">Obecne źródło</td><td class="value">{{currentHeatSource}}</td></tr>
                     </table>
 
-                    <div class="section-title">02. Wyliczone Zapotrzebowanie</div>
+                    <!-- 2. DIAGNOZA MOCY I DOBÓR -->
+                    <span class="section-title">02. Diagnoza Mocy i Dobór</span>
+                    
                     <div class="power-result">
-                        <p style="margin:0 0 10px; font-size:11px; font-weight:800; color:#718096; text-transform:uppercase;">Moc obliczeniowa dla Twojego profilu:</p>
-                        <span class="power-value">{{calculatedPower}} kW</span>
+                        <p style="margin:0 0 5px; font-size:11px; font-weight:800; color:#0AB3C6; text-transform:uppercase; letter-spacing:1px;">Zalecana Moc Urządzenia</p>
+                        <span class="power-value">{{modelPower}}</span>
                     </div>
 
-                    <div class="section-title">03. Rekomendacja Systemu</div>
-                    <div class="recommendation-box">
-                        <h3 style="margin:0 0 15px; font-size:20px; font-weight:900; color:#3A4149;">{{modelName}} <span style="font-size:12px; color:#0AB3C6;">(Typoszereg: {{modelPower}})</span></h3>
-                        <div class="justification">
-                            <strong>Uzasadnienie Wyboru:</strong><br/>
-                            {{expertExplanation}}
-                        </div>
-                        <div class="rejection-note">
-                            <strong>Audyt Odrzuconych Rozwiązań:</strong><br/>
-                            Odrzuciliśmy modele o mocy {{rejectedPowerClass}} kW. Przy Twoim metrażu ({{area}} m²) mniejsza jednostka pracowałaby w trybie przeciążenia, co drastycznie zwiększyłoby zużycie prądu.
-                        </div>
+                    <!-- NOWA TABELA 3 MODELI -->
+                    <h3 style="margin:0 0 15px 0; font-size:16px; font-weight:800; color:#212529; text-align:center;">Porównanie Rekomendowanych Modeli</h3>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 25px;">
+                        <tr>
+                            <!-- Kolumna ECO -->
+                            <td class="model-col" style="background-color: #F6F7FA;">
+                                <span class="model-badge badge-eco">ECO</span>
+                                <p class="model-name">{{ecoName}}</p>
+                                <p class="spec-label">Klasa / Energia</p>
+                                <p class="spec-val">{{ecoEnergy}}</p>
+                                <p class="spec-label">Głośność</p>
+                                <p class="spec-val">{{ecoNoise}}</p>
+                                <p class="spec-label">Filtry</p>
+                                <p class="spec-val" style="margin-bottom: 0;">{{ecoFilter}}</p>
+                            </td>
+                            <!-- Kolumna SMART -->
+                            <td class="model-col" style="background-color: #FFFFFF; border-top: 3px solid #0AB3C6; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                                <span class="model-badge badge-smart">SMART</span>
+                                <p class="model-name" style="color: #0AB3C6;">{{smartName}}</p>
+                                <p class="spec-label">Klasa / Energia</p>
+                                <p class="spec-val">{{smartEnergy}}</p>
+                                <p class="spec-label">Głośność</p>
+                                <p class="spec-val">{{smartNoise}}</p>
+                                <p class="spec-label">Filtry</p>
+                                <p class="spec-val" style="margin-bottom: 0;">{{smartFilter}}</p>
+                            </td>
+                            <!-- Kolumna PREMIUM -->
+                            <td class="model-col" style="background-color: #212529; border-top: 3px solid #0A3876;">
+                                <span class="model-badge badge-premium">PREMIUM</span>
+                                <p class="model-name" style="color: #FFFFFF;">{{premiumName}}</p>
+                                <p class="spec-label" style="color: #A0AEC0;">Klasa / Energia</p>
+                                <p class="spec-val" style="color: #E2E8F0;">{{premiumEnergy}}</p>
+                                <p class="spec-label" style="color: #A0AEC0;">Głośność</p>
+                                <p class="spec-val" style="color: #E2E8F0;">{{premiumNoise}}</p>
+                                <p class="spec-label" style="color: #A0AEC0;">Filtry</p>
+                                <p class="spec-val" style="color: #E2E8F0; margin-bottom: 0;">{{premiumFilter}}</p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- WYBRANY MODEL -->
+                    <div style="background-color: #F8F9FA; border: 1px solid #E2E8F0; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                        <p style="margin: 0; font-size: 13px; color: #718096; font-weight: bold; text-transform: uppercase;">Wstępnie wybrany przez Ciebie model:</p>
+                        <p style="margin: 5px 0 0 0; font-size: 18px; font-weight: 800; color: #0AB3C6;">{{modelName}}</p>
+                    </div>
+                    
+                    <!-- Box Uzasadnienie (TAK) -->
+                    <div class="box-justification">
+                        <strong style="color: #0AB3C6; font-size: 11px; text-transform: uppercase;">Uzasadnienie Inżynierskie:</strong><br/>
+                        <div style="margin-top: 5px;">{{expertExplanation}}</div>
                     </div>
 
-                    <div class="section-title">04. Prognoza Oszczędności (ROI)</div>
-                    <div style="background-color:#E6FFFA; padding:20px; border-radius:20px; text-align:center;">
-                        <p style="margin:0 0 15px; font-size:12px; font-weight:900; color:#234E52; text-transform:uppercase;">Szacowane oszczędności względem: {{currentHeatSource}}</p>
-                        <table width="100%" border="0" cellspacing="10" cellpadding="0">
+                    <!-- Box Odrzucenie (NIE) -->
+                    <div class="box-rejection">
+                        <strong style="color: #C53030; font-size: 11px; text-transform: uppercase;">Dlaczego odrzuciliśmy inne warianty mocy?</strong><br/>
+                        <div style="margin-top: 5px;">{{rejectionText}}</div>
+                    </div>
+
+                    <!-- 3. ROI -->
+                    <span class="section-title">03. Prognoza Oszczędności (ROI)</span>
+                    <div style="background-color:#F0FDFF; padding:20px; border-radius:12px; border: 1px solid #B2F5EA;">
+                        <p style="margin:0 0 15px; font-size:12px; font-weight:800; color:#285E61; text-transform:uppercase; text-align:center;">Szacowany zysk względem obecnego ogrzewania</p>
+                        
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
                             <tr>
-                                <td width="33%">
+                                <td class="stack-column" width="33%" valign="top" style="padding-right: 5px;">
                                     <div class="roi-card">
-                                        <p style="margin:0; font-size:9px; font-weight:800; color:#2C7A7B; text-transform:uppercase;">Rocznie</p>
-                                        <p style="margin:5px 0 0; font-size:16px; font-weight:900; color:#059669;">~{{savingsYear}} zł</p>
+                                        <p style="margin:0; font-size:10px; font-weight:800; color:#319795; text-transform:uppercase;">1 Rok</p>
+                                        <p style="margin:5px 0 0; font-size:18px; font-weight:900; color:#059669;">~{{savingsYear}} zł</p>
                                     </div>
                                 </td>
-                                <td width="33%">
+                                <td class="stack-column" width="33%" valign="top" style="padding: 0 5px;">
                                     <div class="roi-card">
-                                        <p style="margin:0; font-size:9px; font-weight:800; color:#2C7A7B; text-transform:uppercase;">5 Lat</p>
-                                        <p style="margin:5px 0 0; font-size:16px; font-weight:900; color:#059669;">~{{savings5Years}} zł</p>
+                                        <p style="margin:0; font-size:10px; font-weight:800; color:#319795; text-transform:uppercase;">5 Lat</p>
+                                        <p style="margin:5px 0 0; font-size:18px; font-weight:900; color:#059669;">~{{savings5Years}} zł</p>
                                     </div>
                                 </td>
-                                <td width="33%">
+                                <td class="stack-column" width="33%" valign="top" style="padding-left: 5px;">
                                     <div class="roi-card">
-                                        <p style="margin:0; font-size:9px; font-weight:800; color:#2C7A7B; text-transform:uppercase;">10 Lat</p>
-                                        <p style="margin:5px 0 0; font-size:16px; font-weight:900; color:#059669;">~{{savings10Years}} zł</p>
+                                        <p style="margin:0; font-size:10px; font-weight:800; color:#319795; text-transform:uppercase;">10 Lat</p>
+                                        <p style="margin:5px 0 0; font-size:18px; font-weight:900; color:#059669;">~{{savings10Years}} zł</p>
                                     </div>
                                 </td>
                             </tr>
                         </table>
+                        
+                        <!-- Dopisek z Mapy Celów -->
+                        <div class="roi-note">
+                            "{{roiPsychology}}"
+                        </div>
+
+                        <!-- DISCLAIMER Z GWIAZDKĄ -->
+                        <div class="roi-disclaimer">
+                            * Powyższe wartości to szacunki oparte na wprowadzonych przez Ciebie danych (obecne źródło ciepła, metraż, rachunki). Rzeczywiste oszczędności mogą się różnić w zależności od zmian cen energii i nawyków użytkowania.
+                        </div>
                     </div>
 
-                    <div style="margin-top:30px;" class="section-title">05. Zalecenia Inżynierskie</div>
-                    <div class="expert-advice">
-                        <strong>💡 Zalecenie dla Twojego profilu:</strong><br/>
-                        {{expertTipDynamic}}
+                    <!-- 4. RADA EKSPERTA -->
+                    <span class="section-title">04. Wskazówka Instlacyjna</span>
+                    <div class="box-expert">
+                        <strong style="color: #D97706; font-size: 11px; text-transform: uppercase;">Dla Twojego Budynku:</strong><br/>
+                        <div style="margin-top: 5px;">{{expertTipDynamic}}</div>
                     </div>
 
-                    <div style="text-align:center; padding:20px 0;">
-                        <a href="https://airtur.pl/kontakt/" class="btn">UMÓW BEZPŁATNĄ WIZJĘ LOKALNĄ</a>
+                    <!-- CTA -->
+                    <div style="text-align:center; padding-top:10px;">
+                        <p style="font-size:14px; font-weight:700; color:#3A4149; margin-bottom:15px;">W załączniku znajdziesz pełny Raport w formacie PDF.</p>
+                        <a href="https://airtur.pl/kontakt/" class="btn">ZAMÓW BEZPŁATNĄ WYCENĘ</a>
                     </div>
+
                 </td>
             </tr>
 
+            <!-- STOPKA PRAWNA -->
             <tr>
                 <td class="footer">
-                    <p><strong>F.H.U. Krzysztof Turek | AirTUR - Inżynieria Komfortu</strong></p>
-                    <p>Zarzecze 9, 33-390 Łącko | <a href="mailto:kontakt@airtur.pl" style="color:#0AB3C6; text-decoration:none;">kontakt@airtur.pl</a></p>
-                    <p style="margin-top:20px; opacity:0.7;">Niniejsza analiza ma charakter szacunkowy. Pełny raport PDF został dołączony do tego e-maila jako załącznik.</p>
+                    <p style="margin:0 0 5px; font-weight:bold; color:#718096; font-size:12px;">{{companyName}}</p>
+                    <p style="margin:0 0 15px;">{{companyAddress}}</p>
+                    <p style="margin:0;"><a href="mailto:{{companyEmail}}" style="color:#0AB3C6; text-decoration:none;">{{companyEmail}}</a> | <a href="tel:{{companyPhone}}" style="color:#0AB3C6; text-decoration:none;">{{companyPhone}}</a></p>
+                    <p style="margin-top:20px; font-size:10px; opacity:0.8; text-align: justify;">
+                        Niniejsza 'Karta Diagnostyki Termicznej' ma charakter wyłącznie analityczno-poglądowy. Przedstawione wyliczenia oszczędności (ROI) opierają się na danych szacunkowych oraz średnich cenach energii i mogą różnić się w zależności od rzeczywistego użytkowania. Dokument nie stanowi oferty handlowej w rozumieniu art. 66 § 1 Kodeksu Cywilnego. Ostateczna specyfikacja techniczna i wycena wymagają potwierdzenia podczas wizji lokalnej przez certyfikowanego instalatora AirTUR.
+                    </p>
                 </td>
             </tr>
+
         </table>
     </div>
 </body>

@@ -46,18 +46,22 @@ import Konwersja from '../components/narzedzia/Konwersja.astro';
             // Sprawdzamy czy klasa 'hidden' została usunięta (czyli użytkownik jest w kroku 4)
             if (!step4.classList.contains('hidden')) {
                 
-                // 1. Odkryj sekcję
+                // 1. Odkryj sekcję (żeby była w DOM i gotowa na scroll)
                 conversionSection.classList.remove('hidden');
                 
-                // 2. Animuj wjazd
+                // 2. Animuj wjazd (fade in)
                 setTimeout(() => {
                     conversionSection.classList.remove('opacity-0', 'translate-y-10');
                 }, 100);
 
-                // 3. Delikatnie przesuń ekran
+                // ❌ USUNIĘTO AUTOMATYCZNY SCROLL
+                // Teraz scrollowanie wywołują przyciski w Step 4 ("Wycena" lub "Raport")
+                /*
                 setTimeout(() => {
                     conversionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 600);
+                */
+
             } else {
                 // Ukryj ponownie przy resecie
                 conversionSection.classList.add('hidden', 'opacity-0', 'translate-y-10');

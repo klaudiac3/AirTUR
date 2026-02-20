@@ -9,7 +9,7 @@ const blogCollection = defineCollection({
     pubDate: z.date(),           // Data publikacji
     image: z.string(),           // Ścieżka do zdjęcia
     category: z.string(),        // Kategoria
-    author: z.string(),          // Autor
+    author: z.string(),          // Autor (wpisz klucz z BLOG_AUTHORS, np. 'klaudia')
     readingTime: z.string(),     // np. "7 min"
     featured: z.boolean(),       // Wyróżnienie na górze
     excerpt: z.string(),         // Krótki opis
@@ -119,4 +119,47 @@ const casesCollection = defineCollection({
 export const collections = {
   'blog': blogCollection,
   'cases': casesCollection,
+};
+
+// --- BAZA AUTORÓW ---
+// WAŻNE: Klucze (np. "klaudia", "krzysztof") powinny być małymi literami.
+export const BLOG_AUTHORS = {
+  
+  // 1. KLAUDIA (Ze zdjęciem)
+  // W pliku .md wpisz: author: "klaudia"
+  "klaudia": {
+    name: "Klaudia Turek",
+    role: "Specjalista ds. systemów grzewczych i klimatyzacji w AirTUR",
+    description: "Pomaga inwestorom podejmować decyzje oparte na twardych danych.",
+    avatar: "/klaudia-turek.jpg" // Zdjęcie istnieje w /public
+  },
+
+  // 2. KRZYSZTOF (Bez zdjęcia)
+  // W pliku .md wpisz: author: "krzysztof"
+  "krzysztof": {
+    name: "Krzysztof",
+    role: "Ekspert techniczny HVAC",
+    description: "Założyciel AirTUR - specjalista od doboru pomp ciepła i rozwiązań hybrydowych.",
+    avatar: "" // Pusty string = brak kółeczka ze zdjęciem
+  },
+  
+  // 3. DEFAULT (Fallback dla nieznanych autorów)
+  // Używane gdy wpiszesz np. author: "marta" lub zostawisz puste
+  "default": {
+    name: "Zespół AirTUR",
+    role: "Redakcja Bazy Wiedzy",
+    description: "Dzielimy się wiedzą i doświadczeniem, aby zapewnić Ci komfort termiczny w Twoim domu.",
+    avatar: "" // Tutaj też można dać logo firmy, np. "/logo.png", lub zostawić puste
+  },
+
+  /* // --- MIEJSCE NA NOWYCH AUTORÓW ---
+  // Skopiuj poniższy blok i odkomentuj, gdy dojdziesz nowego pracownika.
+  
+  "imie": {
+    name: "Imie Nazwisko",
+    role: "Stanowisko",
+    description: "Krótki opis osoby.",
+    avatar: "" // Wklej tu ścieżkę np. "/imie-nazwisko.jpg"
+  },
+  */
 };

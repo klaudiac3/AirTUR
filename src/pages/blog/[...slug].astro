@@ -1,7 +1,10 @@
 ---
+export const prerender = true;
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import TableOfContents from '../../components/blog/TableOfContents.astro';
+// 1. IMPORTUJEMY BAZĘ AUTORÓW
+import { BLOG_AUTHORS } from '../../content/config';
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
@@ -22,7 +25,7 @@ const headings = rawHeadings.filter(h => !h.text.toLowerCase().includes('faq'));
 // 3. DODAWANIE: Teraz dodajemy nasze systemowe FAQ (jeśli istnieje w configu)
 if (entry.data.faq && entry.data.faq.length > 0) {
   headings.push({
-    depth: 2,             
+    depth: 2,              
     slug: 'faq-sekcja',   // To ID jest kluczowe dla poprawnego podświetlania
     text: 'FAQ – Pytania i odpowiedzi' 
   });
@@ -31,6 +34,17 @@ if (entry.data.faq && entry.data.faq.length > 0) {
 const seoTitle = entry.data.meta?.title || `${entry.data.title} - Blog AirTUR`;
 const seoDescription = entry.data.meta?.description || entry.data.excerpt;
 const showTOC = entry.data.showTOC;
+
+// --- LOGIKA WYBORU AUTORA (ZMODYFIKOWANA) ---
+// 1. Pobieramy to, co wpisałaś w .md, usuwamy spacje
+const rawAuthorInput = entry.data.author ? entry.data.author.trim() : '';
+// 2. Zamieniamy na małe litery, żeby pasowało do kluczy w configu (np. "Klaudia" -> "klaudia")
+const authorKey = rawAuthorInput.toLowerCase();
+
+// 3. Pobieramy dane z configu.
+//    - Jeśli klucz istnieje (np. 'klaudia'), bierzemy jej dane.
+//    - Jeśli klucz NIE istnieje (np. 'marta') lub jest pusty, bierzemy 'default' (Zespół AirTUR).
+const authorData = BLOG_AUTHORS[authorKey] || BLOG_AUTHORS['default'];
 ---
 
 <Layout title={seoTitle} description={seoDescription}>
@@ -51,7 +65,8 @@ const showTOC = entry.data.showTOC;
       <div class="flex flex-wrap justify-center items-center gap-4 text-sm text-gray-500 font-medium">
         <span class="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-airtur-blue"><path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" /></svg>
-            {entry.data.author}
+            {/* Tutaj wyświetlamy pełne imię z configu */}
+            {authorData.name}
         </span>
         <span class="text-gray-300">|</span>
         <span>{entry.data.readingTime} czytania</span>
@@ -129,10 +144,22 @@ const showTOC = entry.data.showTOC;
             </div>
         )}
 
+        {/* --- SEKCJA AUTORA (POPRAWIONA) --- */}
         <div class="mt-16 pt-10 border-t border-gray-100 flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-            <div class="w-20 h-20 bg-gray-100 rounded-full overflow-hidden flex-shrink-0 border-2 border-white shadow-md"><img src="/klaudia-turek.jpg" alt={entry.data.author} class="w-full h-full object-cover" onerror="this.style.display='none';" /></div>
-            <div><p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Autor analizy</p><p class="text-xl font-bold text-airtur-dark mb-2">{entry.data.author}</p><p class="text-sm text-gray-500">Specjalista ds. systemów grzewczych i klimatyzacji w AirTUR. Pomaga inwestorom podejmować decyzje oparte na twardych danych.</p></div>
+            {/* Wyświetlaj div ze zdjęciem TYLKO jeśli avatar nie jest pusty w configu */}
+            {authorData.avatar && (
+              <div class="w-20 h-20 bg-gray-100 rounded-full overflow-hidden flex-shrink-0 border-2 border-white shadow-md">
+                  <img src={authorData.avatar} alt={authorData.name} class="w-full h-full object-cover" onerror="this.style.display='none';" />
+              </div>
+            )}
+            
+            <div>
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Autor analizy</p>
+                <p class="text-xl font-bold text-airtur-dark mb-2">{authorData.name}</p>
+                <p class="text-sm text-gray-500">{authorData.role}. {authorData.description}</p>
+            </div>
         </div>
+        {/* --- KONIEC SEKCJI AUTORA --- */}
 
         <div class="mt-12 text-center">
             <a href="/baza-wiedzy" class="inline-flex items-center gap-2 text-airtur-blue font-bold hover:text-airtur-navy transition-colors px-6 py-3 rounded-lg hover:bg-blue-50"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg> Wróć do Bazy Wiedzy</a>

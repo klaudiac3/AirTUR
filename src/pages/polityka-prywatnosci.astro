@@ -1,7 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
-// Importujemy centralną konfigurację firmy, aby dane były zawsze aktualne
 import { companyConfig } from '../data/companyConfig';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Pobieramy ścieżkę do bieżącego pliku
+const filePath = path.resolve('./src/pages/polityka-prywatnosci.astro');
+// Pobieramy statystyki pliku
+const stats = fs.statSync(filePath);
+// Formatujemy datę modyfikacji na polski format
+const lastModifiedDate = stats.mtime.toLocaleDateString('pl-PL', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
 ---
 
 <Layout title="Polityka Prywatności - AirTUR" description="Informacje o przetwarzaniu danych osobowych w serwisie AirTUR.">
@@ -10,7 +22,8 @@ import { companyConfig } from '../data/companyConfig';
       
       <header class="mb-12 border-b border-gray-100 pb-8">
         <h1 class="text-4xl font-extrabold text-airtur-dark mb-4">Polityka Prywatności</h1>
-        <p class="text-gray-500 italic">Zgodna z RODO. Ostatnia aktualizacja: 27 stycznia 2026 r.</p>
+        <!-- Dynamiczna data modyfikacji -->
+        <p class="text-gray-500 italic">Zgodna z RODO. Ostatnia aktualizacja: {lastModifiedDate} r.</p>
       </header>
 
       <div class="prose prose-blue prose-lg max-w-none text-gray-700 space-y-8">
@@ -19,7 +32,6 @@ import { companyConfig } from '../data/companyConfig';
           <h2 class="text-2xl font-bold text-airtur-dark mb-4">1. Kto jest Administratorem danych?</h2>
           <p>Operatorem serwisu oraz Administratorem Twoich danych osobowych jest:</p>
           <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mt-4">
-            <!-- Dane pobierane dynamicznie z companyConfig -->
             <p class="font-bold text-airtur-dark">{companyConfig.fullName}</p>
             <p>{companyConfig.address.full}</p>
             <p>NIP: {companyConfig.nip}</p>
@@ -33,7 +45,7 @@ import { companyConfig } from '../data/companyConfig';
           <ul class="list-disc pl-6 space-y-2">
             <li><strong>Formularze kontaktowe:</strong> Imię, nazwisko, adres e-mail oraz numer telefonu, aby móc odpowiedzieć na Twoje zapytanie ofertowe.</li>
             <li><strong>Kalkulator Mocy i ROI:</strong> Parametry techniczne budynku oraz Twój e-mail, aby przesłać Ci gotowy raport z wyliczeniami.</li>
-            <li><strong>Statystyki:</strong> Anonimowe dane o ruchu na stronie (Google Analytics), które pomagają nam ulepszać ofertę.</li>
+            <li><strong>Analityka i Marketing:</strong> Anonimowe dane o ruchu (Google Analytics) oraz narzędzia marketingowe (np. Facebook Pixel), które pomagają nam mierzyć skuteczność reklam i dopasowywać ofertę do potrzeb użytkowników.</li>
           </ul>
         </section>
 

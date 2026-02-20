@@ -1,5 +1,4 @@
 ---
-// src/components/kontakt/FormularzKontaktowy.astro
 import { companyConfig } from '../../data/companyConfig';
 ---
 
@@ -16,7 +15,6 @@ import { companyConfig } from '../../data/companyConfig';
           id="main-contact-form"
           name="kontakt-glowny" 
           method="POST" 
-          data-netlify="true" 
           class="space-y-6"
           novalidate
         >
@@ -29,6 +27,8 @@ import { companyConfig } from '../../data/companyConfig';
             <input type="text" id="name" name="imie" required 
               class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
               placeholder="Jan Kowalski">
+            <!-- DODANO: Komunikat błędu dla imienia -->
+            <div id="err-imie" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
@@ -38,6 +38,8 @@ import { companyConfig } from '../../data/companyConfig';
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
                 placeholder="jan@przyklad.pl">
               <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Wygodna opcja dla zapytań ofertowych</p>
+              <!-- DODANO: Komunikat błędu dla emaila -->
+              <div id="err-email" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Proszę podać poprawny adres e-mail.</div>
             </div>
             
             <div>
@@ -46,6 +48,8 @@ import { companyConfig } from '../../data/companyConfig';
                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
                 placeholder="+48 000 000 000">
               <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Dla szybkiego kontaktu telefonicznego</p>
+              <!-- DODANO: Komunikat błędu dla telefonu -->
+              <div id="err-telefon" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Numer telefonu musi mieć minimum 9 cyfr.</div>
             </div>
 
             <div id="contact-error" class="hidden absolute -bottom-5 left-0 text-red-500 text-[10px] font-bold italic">
@@ -60,15 +64,19 @@ import { companyConfig } from '../../data/companyConfig';
               placeholder="Dzień dobry, interesuje mnie [montaż / serwis] w miejscowości…&#10;Mój przybliżony metraż to..."></textarea>
           </div>
 
-          <div class="flex items-start pt-2">
-            <div class="flex items-center h-5">
-              <input id="consent" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
+          <div class="flex flex-col pt-2">
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                <input id="consent" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
+                </div>
+                <div class="ml-3 text-sm">
+                <label for="consent" class="text-gray-600 cursor-pointer">
+                    Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a>.
+                </label>
+                </div>
             </div>
-            <div class="ml-3 text-sm">
-              <label for="consent" class="text-gray-600 cursor-pointer">
-                Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a>.
-              </label>
-            </div>
+            <!-- DODANO: Komunikat błędu dla zgody -->
+            <div id="err-zgoda" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
           </div>
 
           <div class="pt-4">
@@ -167,84 +175,162 @@ import { companyConfig } from '../../data/companyConfig';
   </div>
 </section>
 
-<script>
+<script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('main-contact-form');
-      const emailInput = document.getElementById('email');
-      const phoneInput = document.getElementById('phone');
-      const errorMsg = document.getElementById('contact-error');
+      console.log("🚀 KONTAKT DOM READY: Szukam formularza...");
 
+      const form = document.getElementById('main-contact-form');
+      
+      // Walidatory
       const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
 
-      form?.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const targetForm = e.target;
-          const submitBtn = targetForm.querySelector('.submit-btn');
+      if (!form) {
+          console.error("❌ BŁĄD: Nie znaleziono formularza #main-contact-form");
+          return;
+      }
 
+      form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          console.log("🚀 SUBMIT EVENT ZŁAPANY!");
+
+          const targetForm = e.currentTarget;
+          const submitBtn = targetForm.querySelector('.submit-btn');
+          const originalBtnText = submitBtn?.innerText || "WYŚLIJ WIADOMOŚĆ";
+
+          // Elementy formularza
+          const nameInput = targetForm.querySelector('input[name="imie"]');
+          const emailInput = targetForm.querySelector('input[name="email"]');
+          const phoneInput = targetForm.querySelector('input[name="telefon"]');
+          const consentInput = targetForm.querySelector('input[name="zgoda"]');
+
+          // Elementy błędów
+          const errName = document.getElementById('err-imie');
+          const errEmail = document.getElementById('err-email');
+          const errPhone = document.getElementById('err-telefon');
+          const errConsent = document.getElementById('err-zgoda');
+          const errGeneral = document.getElementById('contact-error');
+
+          let hasError = false;
+
+          // 1. Walidacja Imienia
+          if (nameInput.value.trim().length < 3) {
+             hasError = true;
+             nameInput.classList.add('border-red-400', 'bg-red-50');
+             nameInput.classList.remove('border-gray-300');
+             if(errName) errName.classList.remove('hidden');
+          }
+
+          // 2. Walidacja Formy kontaktu (Oba puste?)
           const emailVal = emailInput.value.trim();
           const phoneVal = phoneInput.value.trim();
 
-          let hasError = false;
-          let validationMessage = "";
-
-          // 1. Walidacja (Imię i przynajmniej jedna forma kontaktu)
           if (!emailVal && !phoneVal) {
               hasError = true;
-              validationMessage = "Proszę podać przynajmniej jedną formę kontaktu (E-mail lub Telefon).";
-          } else if (emailVal && !isValidEmail(emailVal)) {
+              if(errGeneral) errGeneral.classList.remove('hidden');
+          } 
+          
+          // 3. Walidacja konkretnych pól jeśli są wypełnione
+          // EMAIL
+          if (emailVal && !isValidEmail(emailVal)) {
               hasError = true;
-              validationMessage = "Podany adres e-mail ma nieprawidłowy format.";
               emailInput.classList.add('border-red-400', 'bg-red-50');
-          } else if (phoneVal && !isValidPhone(phoneVal)) {
+              emailInput.classList.remove('border-gray-300');
+              if(errEmail) errEmail.classList.remove('hidden');
+          }
+          // TELEFON
+          if (phoneVal && !isValidPhone(phoneVal)) {
               hasError = true;
-              validationMessage = "Numer telefonu powinien zawierać minimum 9 cyfr.";
               phoneInput.classList.add('border-red-400', 'bg-red-50');
+              phoneInput.classList.remove('border-gray-300');
+              if(errPhone) errPhone.classList.remove('hidden');
           }
 
-          if (hasError) {
-              errorMsg.innerText = validationMessage;
-              errorMsg.classList.remove('hidden');
-              return;
+          // 4. Walidacja Zgody
+          if (!consentInput.checked) {
+              hasError = true;
+              if(errConsent) errConsent.classList.remove('hidden');
           }
 
-          // 2. Wysyłka (Senior Level Flow)
+          // STOP JEŚLI BŁĘDY
+          if (hasError) return;
+
+          // --- LOGIKA WYSYŁKI ---
           if (submitBtn) {
               submitBtn.disabled = true;
-              submitBtn.innerText = "PRZETWARZANIE...";
+              submitBtn.innerText = "WYSYŁANIE...";
           }
 
           const formData = new FormData(targetForm);
           const dataObj = Object.fromEntries(formData.entries());
 
           try {
-              // Sprawdzanie środowiska
-              if (import.meta.env.DEV) {
-                  console.log("Tryb DEV: Symulacja wysyłki", dataObj);
-                  await new Promise(r => setTimeout(r, 1000));
-              } else {
-                  const response = await fetch('/api/generate-report', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(dataObj)
-                  });
-                  if (!response.ok) throw new Error('Błąd serwera');
+              console.log("📡 Wysyłam fetch do /api/send-form...");
+
+              const response = await fetch('/api/send-form', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(dataObj)
+              });
+
+              console.log("📡 Status odpowiedzi:", response.status);
+
+              if (!response.ok) {
+                  const errorText = await response.text();
+                  console.error("❌ Błąd serwera treść:", errorText);
+                  throw new Error(`Błąd serwera: ${response.status}`);
               }
-          } catch (error) {
-              console.error("Submission Error:", error);
-              alert("Wystąpił błąd podczas wysyłania. Spróbuj ponownie lub zadzwoń bezpośrednio.");
-          } finally {
-              // GWARANCJA PRZEKIEROWANIA
+
+              console.log("✅ SUKCES! Przekierowanie...");
               window.location.assign('/podziekowanie/index.html?cel=kontakt');
+
+          } catch (error) {
+              console.error("❌ BŁĄD WYSYŁKI (CATCH):", error);
+              alert("Wystąpił błąd podczas wysyłania. Spróbuj ponownie lub zadzwoń bezpośrednio.");
+              
+              if (submitBtn) {
+                  submitBtn.disabled = false;
+                  submitBtn.innerText = originalBtnText;
+              }
           }
       });
 
-      // Usuwanie stanów błędu
-      [emailInput, phoneInput].forEach(input => {
-          input?.addEventListener('input', () => {
-              errorMsg?.classList.add('hidden');
-              input.classList.remove('border-red-400', 'bg-red-50');
-          });
+      // --- CZYSZCZENIE BŁĘDÓW W CZASIE RZECZYWISTYM ---
+      // Uniwersalny handler dla inputów tekstowych
+      const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea');
+      inputs.forEach(input => {
+         input.addEventListener('input', () => {
+             // 1. Usuń czerwone ramki
+             input.classList.remove('border-red-400', 'bg-red-50');
+             input.classList.add('border-gray-300'); 
+             
+             // 2. Ukryj błąd dedykowany dla tego pola (szukamy po ID w pobliżu)
+             // Zakładamy strukturę: input #name -> błąd #err-imie
+             let errId = '';
+             if (input.name === 'imie') errId = 'err-imie';
+             else if (input.name === 'email') errId = 'err-email';
+             else if (input.name === 'telefon') errId = 'err-telefon';
+
+             if(errId) {
+                const errDiv = document.getElementById(errId);
+                if(errDiv) errDiv.classList.add('hidden');
+             }
+
+             // 3. Jeśli użytkownik wpisuje cokolwiek w email lub telefon, ukryj błąd ogólny
+             if (input.name === 'email' || input.name === 'telefon') {
+                 const errGeneral = document.getElementById('contact-error');
+                 if(errGeneral) errGeneral.classList.add('hidden');
+             }
+         });
       });
+
+      // Handler dla checkboxa zgody
+      const consentBox = form.querySelector('input[name="zgoda"]');
+      if(consentBox) {
+          consentBox.addEventListener('change', () => {
+              const errConsent = document.getElementById('err-zgoda');
+              if(errConsent) errConsent.classList.add('hidden');
+          });
+      }
   });
 </script>

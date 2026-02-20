@@ -5,6 +5,8 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import MobileStickyBar from '../components/MobileStickyBar.astro';
 import CookieBanner from '../components/CookieBanner.astro';
+// 🔥 DODANO IMPORT KONFIGURACJI
+import { companyConfig } from '../data/companyConfig';
 
 interface Props {
   title: string;
@@ -56,21 +58,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://airtur.p
     <meta property="twitter:image" content={new URL(image, canonicalURL.origin)} />
 
     <!-- DANE STRUKTURALNE (JSON-LD) -->
-    <script type="application/ld+json">
+    <script type="application/ld+json" is:inline define:vars={{ companyConfig }}>
     {
       "@context": "https://schema.org",
       "@type": "HomeAndConstructionBusiness",
       "name": "AirTUR - Klimatyzacja i Inżynieria Komfortu",
-      "image": "https://airtur.pl/logo/logo.svg",
+      "image": "https://airtur.pl/logo.png",
       "@id": "https://airtur.pl",
       "url": "https://airtur.pl",
-      "telephone": "+48XXXXXXXXX",
+      "telephone": companyConfig.contact.phoneFull, 
       "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Zarzecze 9",
-        "addressLocality": "Łącko",
-        "postalCode": "33-390",
+        "streetAddress": companyConfig.address.street,
+        "addressLocality": companyConfig.address.city,
+        "postalCode": companyConfig.address.postCode,
         "addressRegion": "Małopolskie",
         "addressCountry": "PL"
       },

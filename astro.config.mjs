@@ -2,17 +2,18 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
-import netlify from '@astrojs/netlify'; // DODANE
+import netlify from '@astrojs/netlify';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://airtur.pl',
   
-  // KLUCZOWE: Zmieniamy tryb na serwerowy, żeby API działało
+  // To zapewnia obsługę API w Node.js (działa z googleapis)
   output: 'server', 
   adapter: netlify(), 
 
-  trailingSlash: 'always',
+  trailingSlash: 'ignore',
+  
   build: {
     format: 'directory'
   },

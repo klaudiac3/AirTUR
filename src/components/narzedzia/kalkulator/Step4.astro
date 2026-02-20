@@ -1,34 +1,27 @@
 <div id="step-4" class="hidden step-content transition-opacity duration-500 relative">
       
-    <!-- Przyciski Nawigacyjne (Góra) -->
     <div class="flex justify-end mb-4">
-        <button class="reset-btn text-sm text-gray-400 hover:text-red-500 underline decoration-dotted">Zacznij od nowa</button>
+        <button class="reset-btn text-sm text-gray-400 hover:text-red-500 underline decoration-dotted cursor-pointer">Zacznij od nowa</button>
     </div>
 
-    <!-- PODSUMOWANIE FINANSOWE (DASHBOARD) -->
+    <!-- 1. SEKCJA ROI (Bez zmian) -->
     <div class="bg-gray-900 rounded-3xl p-8 mb-12 text-white shadow-2xl relative overflow-hidden">
-        <!-- Tło ozdobne -->
         <div class="absolute top-0 right-0 w-64 h-64 bg-airtur-blue opacity-10 rounded-full blur-3xl -mr-16 -mt-16"></div>
 
-        <!-- ZMIANA: Nagłówek skupiony na efektywności, a nie skali -->
         <h3 class="text-xl font-bold text-center mb-8 opacity-90">KOSZT WYTWORZENIA <span class="text-airtur-blue">TEJ SAMEJ ILOŚCI CIEPŁA</span>:</h3>
 
-        <!-- WYKRES PORÓWNAWCZY -->
         <div class="mb-10 space-y-6">
-            <!-- Stary system -->
             <div>
                 <div class="flex justify-between text-sm mb-2 opacity-80">
                     <span>Twój obecny system</span>
                     <span id="cost-old">0 zł</span>
                 </div>
                 <div class="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-red-500 w-full"></div> <!-- Zawsze 100% jako baza -->
-                </div>
+                    <div class="h-full bg-red-500 w-full"></div> </div>
             </div>
-            <!-- AirTUR -->
             <div>
                 <div class="flex justify-between text-sm mb-2 font-bold text-airtur-blue">
-                    <span>Klimatyzacja</span>
+                    <span>Klimatyzacja AirTUR</span>
                     <span id="cost-new">0 zł</span>
                 </div>
                 <div class="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
@@ -37,34 +30,136 @@
             </div>
         </div>
 
-        <!-- GŁÓWNY LICZNIK OSZCZĘDNOŚCI -->
-        <div class="text-center border-t border-gray-700 pt-8">
-            <p class="text-gray-400 uppercase tracking-widest text-sm mb-2">Potencjalna Oszczędność Roczna</p>
-            <p class="text-4xl md:text-5xl font-extrabold text-green-400">
-                NAWET <span id="savings-year">0</span> ZŁ
-            </p>
-            <!-- ZMIANA: Zabezpieczenie prawne/logiczne -->
-            <p class="text-xs text-gray-500 mt-2">*Szacunek dla sezonu grzewczego przy zastąpieniu obecnego źródła.</p>
+        <div class="border-t border-gray-700 pt-8">
+            <p class="text-gray-400 uppercase tracking-widest text-sm mb-6 text-center">Prognoza Twoich Zysków</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-gray-700">
+                <div class="pb-4 md:pb-0">
+                    <p class="text-xs text-gray-500 mb-1">Rocznie</p>
+                    <p class="text-2xl font-bold text-green-400"><span id="savings-year">0</span> zł</p>
+                </div>
+                <div class="py-4 md:pb-0">
+                    <p class="text-xs text-gray-500 mb-1">Po 5 latach</p>
+                    <p class="text-3xl font-extrabold text-green-400"><span id="savings-5years">0</span> zł</p>
+                </div>
+                <div class="pt-4 md:pt-0">
+                    <p class="text-xs text-gray-500 mb-1">Po 10 latach</p>
+                    <p class="text-4xl font-black text-airtur-blue"><span id="savings-10years">0</span> zł</p>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-8 text-center">*Szacunek dla sezonu grzewczego przy zastąpieniu obecnego źródła.</p>
         </div>
     </div>
 
-    <!-- Małe przypomnienie co wybraliśmy (bez detali) -->
-    <div class="text-center mb-8 bg-blue-50 border border-airtur-blue/30 rounded-xl p-4">
-        <p class="text-gray-600 text-sm">Rekomendowane urządzenie do Twoich warunków:</p>
-        <p class="font-bold text-airtur-dark text-lg" id="final-model-name">Model...</p>
+    <!-- 2. UZASADNIENIE LOGICZNE (Przejście do modeli) -->
+    <div class="text-center mb-10 max-w-3xl mx-auto px-2">
+        <!-- Dodano ID dla nagłówka i tekstu, aby JS mógł je podmieniać -->
+        <h3 id="transition-headline" class="text-2xl font-bold text-airtur-dark mb-4">
+            Wynik jest jasny. Teraz wybierz komfort.
+        </h3>
+        <p id="transition-subtext" class="text-gray-600 leading-relaxed mb-4">
+            Niezależnie od tego, który z poniższych modeli wybierzesz – Twoje oszczędności będą na zbliżonym, wysokim poziomie.
+            Różnica polega na <strong>KOMFORCIE</strong> użytkowania, <strong>CISZY</strong> i <strong>WYGLĄDZIE</strong>.
+        </p>
+        
+        <!-- Dodano sekcję z MOCĄ -->
+        <p class="text-sm text-gray-500 bg-gray-50 inline-block px-4 py-2 rounded-lg border border-gray-200 mt-2">
+            Urządzenia dobrane do Twoich warunków: <strong id="summary-area">... m²</strong>, 
+            nasłonecznienie: <strong id="summary-sun">...</strong>, 
+            zalecana moc: <strong id="summary-power" class="text-airtur-blue">... kW</strong>.
+        </p>
     </div>
 
-    <!-- Sekcja CTA -->
-    <div class="text-center">
-        <h3 class="text-xl font-bold text-airtur-dark mb-6">Chcesz poznać dokładną wycenę z montażem?</h3>
-        <a href="/kontakt" class="inline-block bg-airtur-dark text-white px-12 py-5 rounded-xl font-bold hover:bg-opacity-90 transition shadow-lg uppercase text-lg transform hover:-translate-y-1">
-            UMÓW MONTAŻ TEGO MODELU
-        </a>
+    <!-- 3. TABELA PORÓWNAWCZA -->
+    <div class="overflow-x-auto mb-16 -mx-4 sm:mx-0 pb-4">
+        <div class="min-w-[600px] px-4 sm:px-0 max-w-4xl mx-auto">
+            
+            <!-- Grid tabeli: 4 kolumny (Etykiety + 3 Modele) -->
+            <div class="grid grid-cols-4 gap-2 sm:gap-4 text-sm relative mt-4">
+                
+                <!-- Nagłówki Kolumn -->
+                <div class="col-span-1 flex items-end pb-4">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest pl-2">Porównanie</span>
+                </div>
+                
+                <!-- Header ECO (Płaski) -->
+                <div class="col-span-1 bg-gray-50 p-3 text-center flex flex-col justify-end border-b border-gray-200">
+                    <span class="text-xs font-bold text-airtur-dark tracking-wider block mb-1">SMART START</span>
+                    <span class="text-[10px] bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full inline-block">EKONOMICZNY</span>
+                </div>
+
+                <!-- Header SMART (Wyróżniony z daszkiem) -->
+                <div class="col-span-1 bg-white rounded-t-xl p-3 text-center border-t-4 border-airtur-blue shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.1)] relative z-10 transform scale-105 origin-bottom flex flex-col justify-end">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-airtur-blue text-white text-[10px] px-3 py-1 rounded-full uppercase font-bold whitespace-nowrap shadow-sm">
+                        Ekspert Poleca
+                    </div>
+                    <span class="text-xs font-bold text-airtur-blue tracking-wider block mb-1">SMART</span>
+                    <span class="text-[10px] bg-blue-50 text-airtur-blue px-2 py-0.5 rounded-full inline-block">ZŁOTY ŚRODEK</span>
+                </div>
+
+                <!-- Header PREMIUM (Płaski, Ciemny) -->
+                <div class="col-span-1 bg-[#212529] p-3 text-center flex flex-col justify-end border-b border-gray-700">
+                    <span class="text-xs font-bold text-white tracking-wider block mb-1">PREMIUM</span>
+                    <span class="text-[10px] bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full inline-block">HI-END</span>
+                </div>
+
+                <!-- WIERSZ 1: Nazwa Modelu -->
+                <div class="col-span-1 flex items-center pl-2 font-bold text-gray-600">Model</div>
+                <div class="col-span-1 bg-gray-50 p-3 rounded-md text-center text-xs font-bold text-airtur-dark flex items-center justify-center" id="table-eco-name">...</div>
+                <div class="col-span-1 bg-white shadow-md p-3 rounded-md text-center text-xs font-bold text-airtur-navy border border-gray-100 relative z-10 scale-105 flex items-center justify-center" id="table-smart-name">...</div>
+                <div class="col-span-1 bg-[#2b3036] p-3 rounded-md text-center text-xs font-bold text-white flex items-center justify-center" id="table-premium-name">...</div>
+
+                <!-- WIERSZ 2: Klasa Energii -->
+                <div class="col-span-1 flex items-center pl-2 font-medium text-gray-500">Energia</div>
+                <div class="col-span-1 bg-gray-50 p-3 rounded-md text-center text-xs text-gray-700 flex items-center justify-center" id="table-eco-energy">...</div>
+                <div class="col-span-1 bg-white shadow-sm p-3 rounded-md text-center text-xs font-bold text-airtur-blue border border-gray-100 relative z-10 scale-105 flex items-center justify-center" id="table-smart-energy">...</div>
+                <div class="col-span-1 bg-[#2b3036] p-3 rounded-md text-center text-xs text-gray-300 flex items-center justify-center" id="table-premium-energy">...</div>
+
+                <!-- WIERSZ 3: Głośność -->
+                <div class="col-span-1 flex items-center pl-2 font-medium text-gray-500">Głośność</div>
+                <div class="col-span-1 bg-gray-50 p-3 rounded-md text-center text-xs text-gray-700 flex items-center justify-center" id="table-eco-noise">...</div>
+                <div class="col-span-1 bg-white shadow-sm p-3 rounded-md text-center text-xs font-bold text-gray-800 border border-gray-100 relative z-10 scale-105 flex items-center justify-center" id="table-smart-noise">...</div>
+                <div class="col-span-1 bg-[#2b3036] p-3 rounded-md text-center text-xs text-white font-bold flex items-center justify-center" id="table-premium-noise">...</div>
+
+                <!-- WIERSZ 4: Filtracja -->
+                <div class="col-span-1 flex items-center pl-2 font-medium text-gray-500">Filtracja</div>
+                <div class="col-span-1 bg-gray-50 p-3 rounded-b-xl text-center text-[11px] text-gray-600 flex items-center justify-center leading-tight" id="table-eco-filter">...</div>
+                <div class="col-span-1 bg-white shadow-md p-3 rounded-b-xl text-center text-[11px] font-medium text-gray-800 border border-gray-100 relative z-10 scale-105 flex items-center justify-center leading-tight" id="table-smart-filter">...</div>
+                <div class="col-span-1 bg-[#2b3036] p-3 rounded-b-xl text-center text-[11px] text-gray-300 flex items-center justify-center leading-tight" id="table-premium-filter">...</div>
+
+            </div>
+        </div>
     </div>
 
-    <!-- Nawigacja Dół -->
-    <div class="mt-8 text-center">
-        <button class="back-btn text-gray-400 hover:text-airtur-dark underline text-sm" data-prev="3">← Wróć do Analizy</button>
+    <!-- 4. CTA (Bez zmian) -->
+    <div class="space-y-4">
+        <div class="text-center">
+            <h3 class="text-xl font-bold text-airtur-dark mb-4">Wybierz kolejny krok:</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+            <!-- OPCJA A: Gorący Lead (Wycena) -->
+            <button id="cta-request-quote" class="bg-airtur-blue text-white p-6 rounded-2xl font-bold hover:bg-opacity-90 transition shadow-xl transform hover:-translate-y-1 cursor-pointer flex flex-col items-center gap-2 group">
+                <span class="text-lg uppercase tracking-wide">CHCĘ WYCENĘ MONTAŻU</span>
+                <span class="text-xs font-normal opacity-80 leading-snug">Nasz inżynier przeanalizuje Twoje dane i przygotuje niezobowiązującą ofertę (wymagany telefon).</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mt-2 group-hover:translate-x-1 transition-transform">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                </svg>
+            </button>
+
+            <!-- OPCJA B: Zimny Lead (Sam PDF) -->
+            <button id="cta-get-report" class="bg-white border-2 border-gray-200 text-gray-600 p-6 rounded-2xl font-bold hover:border-airtur-blue hover:text-airtur-blue transition shadow-md transform hover:-translate-y-1 cursor-pointer flex flex-col items-center gap-2">
+                <span class="text-lg uppercase tracking-wide text-airtur-dark">Chcę tylko raport PDF</span>
+                <span class="text-xs font-normal opacity-80 leading-snug">Pobierz darmowe podsumowanie Twoich obliczeń na swój adres e-mail.</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 mt-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M7.5 12 12 16.5m0 0L16.5 12M12 16.5V3" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="mt-12 text-center">
+        <button class="back-btn text-gray-400 hover:text-airtur-dark underline text-sm cursor-pointer" data-prev="3">← Wróć do Analizy</button>
     </div>
 
 </div>

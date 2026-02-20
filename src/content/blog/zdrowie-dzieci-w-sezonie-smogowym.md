@@ -3,7 +3,7 @@ title: "Twój dom jako bezpieczna przystań: Kompleksowa strategia ochrony zdrow
 pubDate: 2026-01-15  
 image: "/blog/bsmog.jpg"  
 category: "Ogrzewanie i Klimatyzacja / Zdrowie Dziecka"  
-author: "Klaudia Turek"  
+author: "Klaudia"  
 readingTime: "8 min"  
 featured: true
 showTOC: true  
