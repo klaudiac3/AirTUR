@@ -41,7 +41,7 @@ export const POST: APIRoute = async ({ request }) => {
         if (data.email) recipients.push(data.email);
         recipients.push(ADMIN_EMAIL);
 
-        // Generowanie treści dynamicznych (logika z models.js i nowego raport_logic.js)
+        // Generowanie treści dynamicznych (logika z models.js i raport_logic.js)
         dynamicContent = getDynamicReportContent(data);
 
         // Generowanie PDF
@@ -88,14 +88,15 @@ export const POST: APIRoute = async ({ request }) => {
             .replace(/{{peopleCount}}/g, data.wynik_ludzie || data.peopleCount)
             .replace(/{{currentHeatSource}}/g, dynamicContent.currentHeatSource)
             
-            // 4. Diagnoza Mocy i Ekspert (Dla wybranego modelu)
+            // 4. Diagnoza Mocy i Ekspert (Dla wybranego modelu LUB domyślnego Smart)
             .replace(/{{modelPower}}/g, dynamicContent.modelPower)
             .replace(/{{modelName}}/g, dynamicContent.modelName)
             .replace(/{{expertExplanation}}/g, dynamicContent.expertExplanation || '-') 
             .replace(/{{rejectionText}}/g, dynamicContent.rejectionText || '-')
             .replace(/{{expertTipDynamic}}/g, dynamicContent.expertTipDynamic || '-')
+            .replace(/{{selectionLabel}}/g, dynamicContent.selectionLabel || 'Twój wstępny wybór:') // 🔥 Nowy tag
             
-            // 5. 🔥 TABELA 3 MODELI W MAILU (Wypełniamy zmiennymi wyeksportowanymi z raport_logic.js)
+            // 5. TABELA 3 MODELI W MAILU
             .replace(/{{ecoName}}/g, dynamicContent.modelEco?.name || 'Model Ekonomiczny')
             .replace(/{{ecoEnergy}}/g, dynamicContent.modelEco?.energy_class || '-')
             .replace(/{{ecoNoise}}/g, dynamicContent.modelEco?.noise || '-')
@@ -120,9 +121,14 @@ export const POST: APIRoute = async ({ request }) => {
         // Tworzymy czytelny ciąg tekstowy dla arkusza (Kolumna AA)
         const wszystkieModele = `ECO: ${dynamicContent.modelEco?.name || '-'} | SMART: ${dynamicContent.modelSmart?.name || '-'} | PREMIUM: ${dynamicContent.modelPremium?.name || '-'}`;
         
-        // Zapis do kolumny AG - Jasna informacja dla handlowca co do wariantu klienta
-        const wybranyTierText = (data.wynik_wybrany_tier || 'smart').toUpperCase();
-        const wybranyZapisId = `${wybranyTierText} (${dynamicContent.modelName})`;
+        // 🔥 Zapis do kolumny AG - TWARDY FAKT CZY KLIENT KLIKNĄŁ
+        let wybranyZapisId = "NIE WYBRANO";
+        if (data.wynik_wybrany_tier && data.wynik_wybrany_tier.trim() !== "") {
+            const wybranyTierText = data.wynik_wybrany_tier.toUpperCase();
+            // Używamy nazwy, która przyszła z ukrytego pola (tej którą faktycznie kliknął)
+            const nazwaModelu = data.wynik_model && data.wynik_model.trim() !== "" ? data.wynik_model : dynamicContent.modelName;
+            wybranyZapisId = `${wybranyTierText} (${nazwaModelu})`;
+        }
 
         // Wiersz do arkusza (PEŁNY ZAKRES A:AG)
         rowValues = [
@@ -149,7 +155,7 @@ export const POST: APIRoute = async ({ request }) => {
             data.wynik_oszczednosci_5 || dynamicContent.savings5Years || '-', // S
             data.wynik_oszczednosci_10 || dynamicContent.savings10Years || '-', // T
             // MODELE I OPIS
-            wszystkieModele,                                        // U: Zestaw 3 zaoferowanych modeli (zastępuje 1 model)
+            wszystkieModele,                                        // U: Zestaw 3 zaoferowanych modeli
             data.expertExplanation || dynamicContent.expertExplanation || '-', // V: Opis Eksperta
             // BACKUP PDF
             data.wynik_metraz || data.area,                         // W
@@ -163,7 +169,7 @@ export const POST: APIRoute = async ({ request }) => {
             true,                                                   // AD: pdf_sent
             `Raport_AirTUR_${dynamicContent.reportId}.pdf`,         // AE: Filename
             'new',                                                  // AF: Status
-            wybranyZapisId                                          // AG: 🔥 WYBRANY WARIANT (np. ECO (Gree Amber))
+            wybranyZapisId                                          // AG: 🔥 WYBRANY WARIANT DLA HANDLOWCA
         ];
 
     } else {

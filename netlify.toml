@@ -3,11 +3,14 @@
   publish = "dist"
 
 [functions]
-  # directory = "netlify/functions"
-  
-  # ZMIANA: Wskazujemy na folder public/fonts
   included_files = [
     "src/templates/report-template.html", 
     "src/scripts/raport_logic.js",
     "public/fonts/*.ttf"
   ]
+
+# TO NAPRAWI BŁĄD 404
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

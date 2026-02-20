@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 // import { Image } from 'astro:assets'; 
 
+export const prerender = true;
+
 // 1. Generowanie ścieżek
 export async function getStaticPaths() {
   const caseEntries = await getCollection('cases');

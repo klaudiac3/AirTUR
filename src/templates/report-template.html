@@ -74,7 +74,9 @@
             /* Nagłówek (Logo + Data) - Układ pionowy na telefonie */
             .header-td { display: block !important; width: 100% !important; text-align: center !important; }
             .header-td-right { margin-top: 15px !important; }
-            .header-img { margin: 0 auto !important; }
+            
+            /* TWARDY FIX DLA LOGO NA MOBILE */
+            .header-img { margin: 0 auto !important; max-width: 140px !important; height: auto !important; }
 
             /* Hero - Mniejsze fonty */
             .hero h2 { font-size: 20px !important; }
@@ -107,7 +109,8 @@
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
                             <td class="header-td" align="left" valign="middle" width="50%">
-                                <img src="https://airtur.pl/logo.png" height="35" alt="AirTUR" class="header-img" style="display:block;" />
+                                <!-- 🔥 TWARDY FIX WYMIARÓW LOGO (Zabezpieczenie przed powiększeniem tabeli) -->
+                                <img src="https://airtur.pl/logo.png" width="140" border="0" alt="AirTUR" class="header-img" style="display:block; width: 140px; max-width: 100%; height: auto;" />
                             </td>
                             <td class="header-td header-td-right" align="right" valign="middle" width="50%">
                                 <p style="margin:0; font-size:13px; font-weight:800; color:#3A4149; text-transform:uppercase;">Raport #{{reportId}}</p>

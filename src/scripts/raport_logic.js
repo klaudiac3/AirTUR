@@ -52,12 +52,19 @@ export const getDynamicReportContent = (data) => {
     const threeModels = selectThreeModels(availableModels) || { eco: null, smart: null, premium: null };
 
     // 🔥 KULOODPORNE SPRAWDZANIE WYBORU KLIENTA PO 'TIER' (eco/smart/premium)
-    const selectedTier = data.wynik_wybrany_tier || 'smart'; // domyślnie 'smart'
+    let selectedTier = 'smart'; // Domyślnie bierzemy środek (dla widoku klienta w PDF)
+    let selectionLabel = 'Nasza optymalna rekomendacja:'; // Domyślna etykieta gdy klient nic nie zaznaczy
+
+    if (data.wynik_wybrany_tier && data.wynik_wybrany_tier.trim() !== "") {
+        selectedTier = data.wynik_wybrany_tier.toLowerCase();
+        selectionLabel = 'Twój wstępny wybór:'; // Zmieniamy etykietę na wybór klienta
+    }
     
     let selectedModelData = threeModels[selectedTier]; 
     if (!selectedModelData) {
         // Awaryjne zabezpieczenie, gdyby coś poszło nie tak
         selectedModelData = threeModels.smart || availableModels[0];
+        selectionLabel = 'Nasza optymalna rekomendacja:';
     }
 
     // Opis wybranego modelu dla inżyniera
@@ -165,10 +172,13 @@ export const getDynamicReportContent = (data) => {
         sunFactorLabel: sunMap[String(data.sunFactor || data.wynik_slonce)] || 'Standardowe',
         currentHeatSource: heatSourceLabel,
         
-        // Diagnoza - Wybrany model
+        // Diagnoza - Wybrany model lub rekomendacja domyślna
         modelPower: (isNaN(power) ? '3.5' : power.toFixed(1)) + ' kW',
         modelName: selectedModelData.name, 
         expertExplanation: expertExplanationFromDb, 
+        
+        // 🔥 Wypychamy etykietę dla PDF/Maila
+        selectionLabel: selectionLabel,
         
         // Trzy modele dla tabeli w PDF i Mailu
         modelEco: threeModels.eco || {},
