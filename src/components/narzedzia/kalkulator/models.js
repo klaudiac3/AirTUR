@@ -198,6 +198,15 @@ export function selectThreeModels(modelsArray) {
         }
     });
 
+    // 3. FAILSAFE (Zabezpieczenie przed błędem UI)
+    // Jeśli w koszyku masz tylko 1 lub 2 modele, duplikujemy pierwszy lepszy do brakujących slotów
+    const fallbackModel = result.smart || result.eco || result.premium || modelsArray[0];
+    slots.forEach(slot => {
+        if (!result[slot]) {
+            result[slot] = fallbackModel;
+        }
+    });
+
     return result;
 }
 
@@ -1062,12 +1071,27 @@ export const models = {
 };
 
 // ==========================================
-// 5. TREŚCI PRZEJŚCIOWE (STEP 4)
+// 5. TREŚCI PRZEJŚCIOWE (STEP 4 - WYNIKI)
 // ==========================================
 export const transitionContent = {
-  'ogrzewanie': { headline: 'Przeprowadziliśmy analizę ROI. Teraz wybierzmy technologię grzewczą.', subtext: 'Każdy z poniższych modeli wygeneruje podobne oszczędności (ROI). Różnica, za którą dopłacasz w wyższych wariantach, to wydajność przy ekstremalnych mrozach oraz gwarancja ciągłości grzania.' },
-  'komfort': { headline: 'Oszczędność nie jest najważniejszym czynnikiem - kluczem jest ulga w upały.', subtext: 'Kalkulacja ROI pokazuje zwrot kosztów, ale Twoim celem jest chłód. Modele różnią się szybkością schładzania oraz inteligentnym nawiewem, który chroni przed efektem "przewiania".' },
-  'zdrowie': { headline: 'Zysk finansowy jest ważny, ale Twoje zdrowie najważniejsze.', subtext: 'Pod kątem zużycia prądu te urządzenia są zbliżone. Główna różnica tkwi w filtracji. Wyższe modele (Smart/Premium) to w praktyce profesjonalne oczyszczacze powietrza niszczące wirusy i alergeny.' },
-  'cisza': { headline: 'Liczby mówią głośno, ale urządzenie musi szeptać.', subtext: 'Każdy z tych modeli jest energooszczędny, jednak w sypialni liczy się każdy decybel. Różnica polega na kulturze pracy nocnej – modele Premium są praktycznie niesłyszalne (poniżej 20dB).' },
-  'design': { headline: 'Stylowy wygląd urządzenia to twój priorytet.', subtext: 'Różnica polega na estetyce. Modele wyższej klasy oferują unikalne wykończenie (mat, tkanina), które staje się ozdobą wnętrza.' }
+  'ogrzewanie': { 
+      headline: 'Przeprowadziliśmy analizę ROI. Teraz wybierzmy technologię grzewczą.', 
+      subtext: 'Każdy z poniższych modeli wygeneruje podobne oszczędności finansowe. Różnica polega na <strong>wydajności przy ekstremalnych mrozach</strong> oraz gwarancji ciągłości pracy.' 
+  },
+  'komfort': { 
+      headline: 'Oszczędność to bonus. Kluczem jest natychmiastowa ulga w upały.', 
+      subtext: 'Wszystkie modele świetnie chłodzą, ale wyższe warianty oferują <strong>inteligentny nawiew 4D</strong>, który błyskawicznie obniża temperaturę i chroni przed efektem "przewiania".' 
+  },
+  'zdrowie': { 
+      headline: 'Zysk finansowy jest ważny, ale Twoje zdrowie najważniejsze.', 
+      subtext: 'Zużycie prądu będzie zbliżone. Główna różnica tkwi w <strong>zaawansowanej filtracji</strong>. Modele Smart i Premium to w praktyce profesjonalne oczyszczacze powietrza.' 
+  },
+  'cisza': { 
+      headline: 'Liczby mówią głośno, ale urządzenie musi szeptać.', 
+      subtext: 'Każdy z tych modeli jest energooszczędny, jednak w sypialni liczy się każdy decybel. Modele wyższej klasy zapewniają <strong>absolutną dyskrecję pracy nocnej</strong> (poniżej 20dB).' 
+  },
+  'design': { 
+      headline: 'Wyniki są jasne. Teraz dopasujmy sprzęt do Twojego wnętrza.', 
+      subtext: 'Oszczędności masz jak w banku. Różnica polega na wykończeniu – modele Premium oferują <strong>unikalne wzornictwo, matowe tekstury</strong> i smukłe linie, stając się ozdobą salonu.' 
+  }
 };

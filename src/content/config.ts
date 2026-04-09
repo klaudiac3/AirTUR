@@ -11,7 +11,7 @@ const blogCollection = defineCollection({
     category: z.string(),        // Kategoria
     author: z.string(),          // Autor (wpisz klucz z BLOG_AUTHORS, np. 'klaudia')
     readingTime: z.string(),     // np. "7 min"
-    featured: z.boolean(),       // Wyróżnienie na górze
+    featured: z.boolean(),       // Wyróżnienie na górze, artykuł pojawi się jako wyróżniony jeśli wpiszę true, lub będzie niżej jeśli wpiszę false
     excerpt: z.string(),         // Krótki opis
     keyTakeaways: z.array(z.string()).optional(), // Wnioski
 

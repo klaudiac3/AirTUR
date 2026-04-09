@@ -1,25 +1,22 @@
 ---
-// src/components/oferta/OfferProgressSideNav.astro
 const navItems = [
   { id: 'montaz', label: 'Montaż', labelDesktop: 'Precyzyjny Montaż' },
-  { id: 'serwis', label: 'Serwis', labelDesktop: 'Serwis i Opieka' },
+  { id: 'serwis', label: 'Serwis', labelDesktop: 'Serwis' },
   { id: 'analiza', label: 'Analiza', labelDesktop: 'Analiza i Doradztwo' },
 ];
 ---
 
-<!-- ========================================== -->
-<!-- 1. WERSJA DESKTOP (Boczny pasek - LG+) -->
-<!-- ========================================== -->
 <nav 
   id="offer-side-nav" 
   class="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 z-50 flex-col items-end gap-8 transition-opacity duration-500 opacity-0 pointer-events-none"
 >
   <div class="relative flex flex-col items-end py-4">
     <div class="absolute right-[5px] top-0 bottom-0 w-[2px] bg-gray-100 rounded-full"></div>
+    
     <div 
       id="progress-bar-fill" 
-      class="absolute right-[5px] top-0 w-[2px] bg-airtur-blue rounded-full transition-all duration-100 ease-out shadow-[0_0_10px_rgba(10,179,198,0.5)]"
-      style="height: 0%;"
+      class="absolute right-[5px] top-0 w-[2px] bg-airtur-blue rounded-full transition-all duration-100 ease-out"
+      style="height: 0%; box-shadow: 0 0 10px var(--color-airtur-blue);"
     ></div>
 
     <div class="flex flex-col justify-between h-[300px] w-full">
@@ -29,7 +26,7 @@ const navItems = [
           class="nav-dot-container group flex items-center justify-end gap-4 relative cursor-pointer"
           data-target={item.id}
         >
-          <span class="nav-label text-[10px] font-bold uppercase tracking-widest text-gray-300 group-hover:text-gray-400 transition-colors duration-300">
+          <span class="nav-label text-[10px] uppercase tracking-[0.2em] transition-colors duration-300">
             {item.labelDesktop}
           </span>
           <div class="relative">
@@ -42,9 +39,6 @@ const navItems = [
   </div>
 </nav>
 
-<!-- ========================================== -->
-<!-- 2. WERSJA MOBILE (Górny pasek - LG-) -->
-<!-- ========================================== -->
 <nav 
   id="offer-mobile-nav" 
   class="lg:hidden fixed top-24 left-0 w-full bg-white/95 backdrop-blur-sm shadow-md border-b border-gray-100 z-40 transition-transform duration-500 -translate-y-[200%]"
@@ -60,150 +54,137 @@ const navItems = [
       </a>
     ))}
   </div>
-  <!-- Poziomy pasek postępu -->
   <div class="absolute bottom-0 left-0 w-full h-[2px] bg-gray-100">
     <div 
       id="mobile-progress-bar-fill" 
-      class="h-full bg-airtur-blue transition-all duration-100 ease-out shadow-[0_0_8px_rgba(10,179,198,0.6)]"
-      style="width: 0%;"
+      class="h-full bg-airtur-blue transition-all duration-100 ease-out"
+      style="width: 0%; box-shadow: 0 0 8px var(--color-airtur-blue);"
     ></div>
   </div>
 </nav>
 
 <style>
+  /** * [SENIOR FIX]: Używamy zmiennych var(--color-...) i natywnego CSS.
+   * Dzięki temu terminal nie wywala błędu o nieznanych klasach Tailwind w @apply.
+   */
+  
   /* STYL DESKTOP */
+  .nav-label {
+    color: #D1D5DB; /* text-gray-300 */
+    font-weight: 700;
+  }
+
   .nav-dot-container.active .dot-indicator {
-    background-color: #0AB3C6;
-    border-color: #0AB3C6;
+    background-color: var(--color-airtur-blue);
+    border-color: var(--color-airtur-blue);
     transform: scale(1.3);
   }
-  .nav-dot-container.active .dot-glow { opacity: 0.6; }
-  .nav-dot-container.active .nav-label {
-    color: #0AB3C6;
-    opacity: 1;
+
+  .nav-dot-container.active .dot-glow { 
+    opacity: 0.6; 
   }
-  #offer-side-nav.visible { opacity: 1; pointer-events: auto; }
+
+  .nav-dot-container.active .nav-label {
+    color: var(--color-airtur-blue);
+    font-weight: 900; /* Nasz "font-black" */
+  }
+
+  #offer-side-nav.visible { 
+    opacity: 1; 
+    pointer-events: auto; 
+  }
 
   /* STYL MOBILE */
   .mobile-nav-item.active {
-    color: #0AB3C6;
-    font-weight: 800; 
+    color: var(--color-airtur-blue);
+    font-weight: 900; 
   }
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // 1. Elementy UI
+  // Przywrócona Twoja działająca logika z drobnymi poprawkami dla pewności
+  const handleOfferNav = () => {
     const navDesktop = document.getElementById('offer-side-nav');
-    const progressDesktop = document.getElementById('progress-bar-fill');
-    const dotsDesktop = document.querySelectorAll('.nav-dot-container');
-
     const navMobile = document.getElementById('offer-mobile-nav');
+    const progressDesktop = document.getElementById('progress-bar-fill');
     const progressMobile = document.getElementById('mobile-progress-bar-fill');
+    
+    const dotsDesktop = document.querySelectorAll('.nav-dot-container');
     const itemsMobile = document.querySelectorAll('.mobile-nav-item');
 
-    // 2. Sekcje (Pobieramy WSZYSTKIE trzy)
-    const sectionMontaz = document.getElementById('montaz');
-    const sectionSerwis = document.getElementById('serwis');
-    const sectionAnaliza = document.getElementById('analiza'); 
+    // Pobieramy sekcje
+    const sections = {
+      montaz: document.getElementById('montaz'),
+      serwis: document.getElementById('serwis'),
+      analiza: document.getElementById('analiza')
+    };
 
-    // Diagnostyka
-    if (!sectionMontaz) console.warn('OfferNav: Brak sekcji #montaz');
-    if (!sectionSerwis) console.warn('OfferNav: Brak sekcji #serwis');
-    if (!sectionAnaliza) console.warn('OfferNav: Brak sekcji #analiza');
+    if (!sections.montaz || !sections.serwis || !sections.analiza) return;
 
-    if (!sectionMontaz || !sectionSerwis || !sectionAnaliza) return;
+    const calculate = () => {
+      const scrollY = window.scrollY;
+      const viewportCenter = scrollY + (window.innerHeight / 2);
 
-    const calculateProgress = () => {
-      // Pobieramy pozycję środka ekranu (punkt odniesienia dla użytkownika)
-      const viewportCenter = window.scrollY + (window.innerHeight / 2);
+      const posMontaz = sections.montaz.offsetTop;
+      const posSerwis = sections.serwis.offsetTop;
+      const posAnaliza = sections.analiza.offsetTop;
+      const posEnd = posAnaliza + sections.analiza.offsetHeight;
 
-      // Pozycje startowe sekcji (Top)
-      // Dodajemy mały offset (np. 100px), żeby zmiana następowała chwilę po wejściu sekcji
-      const posMontaz = sectionMontaz.offsetTop;
-      const posSerwis = sectionSerwis.offsetTop;
-      const posAnaliza = sectionAnaliza.offsetTop;
-      const posEnd = sectionAnaliza.offsetTop + sectionAnaliza.offsetHeight;
-
-      // --- 1. Widoczność pasków ---
-      // Pokaż, jeśli jesteśmy blisko montażu lub wewnątrz oferty
+      // 1. Widoczność
       const shouldShow = viewportCenter > (posMontaz - 200) && viewportCenter < posEnd;
 
       if (shouldShow) {
-        if (navDesktop) navDesktop.classList.add('visible');
+        navDesktop?.classList.add('visible');
         if (navMobile) {
-            navMobile.classList.remove('-translate-y-[200%]');
-            navMobile.classList.add('translate-y-0');
+          navMobile.classList.remove('-translate-y-[200%]');
+          navMobile.classList.add('translate-y-0');
         }
       } else {
-        if (navDesktop) navDesktop.classList.remove('visible');
+        navDesktop?.classList.remove('visible');
         if (navMobile) {
-            navMobile.classList.remove('translate-y-0');
-            navMobile.classList.add('-translate-y-[200%]');
+          navMobile.classList.remove('translate-y-0');
+          navMobile.classList.add('-translate-y-[200%]');
         }
       }
 
-      // --- 2. Obliczanie % postępu (SEGMENTOWE) ---
-      let progressPercentage = 0;
-
-      if (viewportCenter < posMontaz) {
-        // Przed ofertą
-        progressPercentage = 0;
-      } else if (viewportCenter >= posMontaz && viewportCenter < posSerwis) {
-        // SEGMENT 1: Montaż -> Serwis (0% - 50%)
-        const distance = posSerwis - posMontaz;
-        const scrolled = viewportCenter - posMontaz;
-        const ratio = scrolled / distance;
-        progressPercentage = 0 + (ratio * 50); // Skalujemy do przedziału 0-50
+      // 2. Progres
+      let progress = 0;
+      if (viewportCenter >= posMontaz && viewportCenter < posSerwis) {
+        progress = ((viewportCenter - posMontaz) / (posSerwis - posMontaz)) * 50;
       } else if (viewportCenter >= posSerwis && viewportCenter < posAnaliza) {
-        // SEGMENT 2: Serwis -> Analiza (50% - 100%)
-        const distance = posAnaliza - posSerwis;
-        const scrolled = viewportCenter - posSerwis;
-        const ratio = scrolled / distance;
-        progressPercentage = 50 + (ratio * 50); // Skalujemy do przedziału 50-100
-      } else {
-        // W sekcji Analiza i dalej
-        progressPercentage = 100;
+        progress = 50 + ((viewportCenter - posSerwis) / (posAnaliza - posSerwis)) * 50;
+      } else if (viewportCenter >= posAnaliza) {
+        progress = 100;
       }
 
-      // Clamp
-      if (progressPercentage < 0) progressPercentage = 0;
-      if (progressPercentage > 100) progressPercentage = 100;
-      
-      if (progressDesktop) progressDesktop.style.height = `${progressPercentage}%`;
-      if (progressMobile) progressMobile.style.width = `${progressPercentage}%`;
+      if (progressDesktop) progressDesktop.style.height = `${progress}%`;
+      if (progressMobile) progressMobile.style.width = `${progress}%`;
 
-      // --- 3. Podświetlanie aktywnych sekcji ---
-      const updateActiveState = (elements) => {
-        elements.forEach(el => {
-          const targetId = el.dataset.target;
-          const targetSection = document.getElementById(targetId);
-          
-          if (targetSection) {
-              const rect = targetSection.getBoundingClientRect();
-              // Sekcja jest aktywna, jeśli jej środek lub góra jest w "polu rażenia" środka ekranu
-              // Uproszczona logika: czy viewportCenter jest wewnątrz sekcji?
-              const top = targetSection.offsetTop;
-              const bottom = top + targetSection.offsetHeight;
-              
-              // Rozszerzamy zakres "Montażu" w górę, żeby złapał już na starcie
-              const effectiveTop = (targetId === 'montaz') ? top - 300 : top; 
+      // 3. Aktywne stany
+      [...dotsDesktop, ...itemsMobile].forEach(el => {
+        // @ts-ignore
+        const targetId = el.dataset.target;
+        const targetSec = sections[targetId];
+        if (targetSec) {
+          const top = targetSec.offsetTop;
+          const bottom = top + targetSec.offsetHeight;
+          const effectiveTop = (targetId === 'montaz') ? top - 300 : top;
 
-              if (viewportCenter >= effectiveTop && viewportCenter <= bottom) {
-                  el.classList.add('active');
-              } else {
-                  el.classList.remove('active');
-              }
+          if (viewportCenter >= effectiveTop && viewportCenter <= bottom) {
+            el.classList.add('active');
+          } else {
+            el.classList.remove('active');
           }
-        });
-      };
-
-      if (dotsDesktop.length) updateActiveState(dotsDesktop);
-      if (itemsMobile.length) updateActiveState(itemsMobile);
+        }
+      });
     };
 
-    window.addEventListener('scroll', calculateProgress, { passive: true });
-    // Wymuszenie sprawdzenia od razu po załadowaniu
-    setTimeout(calculateProgress, 100); 
-  });
+    window.addEventListener('scroll', calculate, { passive: true });
+    calculate();
+  };
+
+  // Astro page-load dla wsparcia nawigacji między stronami
+  document.addEventListener('astro:page-load', handleOfferNav);
+  // Fallback
+  document.addEventListener('DOMContentLoaded', handleOfferNav);
 </script>

@@ -1,391 +1,305 @@
 ---
-// src/components/oferta/Montaz.astro
 import { companyConfig } from '../../data/companyConfig';
+
+// [DATA]: Proces montażu (Zgodnie z prośbą: NIE RUSZAMY)
+const processSteps = [
+  { num: "01", title: "Analiza i audyt", description: "Zaczynamy od zrozumienia Twoich celów i warunków technicznych budynku. Nie od wyboru urządzenia.", rotateClass: "-rotate-6" },
+  { num: "02", title: "Kalkulacja ROI", description: "Za pomocą Naszych narzędzi możesz obliczyć szacunkowy stopień zwrotu inwestycji (ROI).", rotateClass: "rotate-6" },
+  { num: "03", title: "Dobór systemu", description: "Rekomendujemy urządzenia, które zapewniają najlepszą wydajność. Przygotowujemy wycenę bez ukrytych kosztów.", rotateClass: "-rotate-3" },
+  { num: "04", title: "Czysty montaż", description: "Profesjonalny montaż to nie tylko technika, ale też dbałość o czystość i nienaruszony charakter Twojego wnętrza.", rotateClass: "rotate-3" },
+  { num: "05", title: "Instruktaż", description: "Nie zostawiamy Cię z samym pilotem. Uczymy pełnej kontroli nad systemem i dbaniem o filtry.", rotateClass: "-rotate-6" }
+];
 ---
 
-<section id="montaz" class="py-12 md:py-20 bg-white scroll-mt-24">
-  
+<section id="montaz" class="py-12 md:py-16 bg-white scroll-mt-24 overflow-hidden">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <div class="text-center mb-10">
-      <h2 class="text-3xl md:text-4xl font-bold text-airtur-dark">
-        Precyzyjny Montaż i Zasada Idealnego Porządku
-      </h2>
-    </div>
+    <h2 class="text-3xl md:text-5xl font-black text-airtur-dark tracking-tight leading-[1.1] mb-12 text-balance max-w-4xl mx-auto">
+      Precyzyjny Montaż <span class="text-airtur-blue">i Szacunek Do Twojej Przestrzeni</span>
+    </h2>
 
-    <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 mb-16 items-stretch">
-      
-      <div class="w-full lg:w-1/2 min-h-[300px]">
+    <div class="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center text-left mb-16">
+      <div class="w-full lg:w-1/2 relative group">
+        <div class="absolute -inset-4 bg-airtur-blue/5 rounded-[2rem] blur-2xl group-hover:bg-airtur-blue/10 transition-colors duration-500"></div>
         <img 
           src="/montaz.jpg" 
-          alt="Instalator AirTUR podczas pracy" 
-          class="w-full h-full object-cover rounded-xl shadow-lg"
+          alt="Instalator AirTUR podczas precyzyjnego montażu" 
+          class="relative w-full aspect-video object-cover rounded-3xl shadow-2xl border border-gray-100" 
         />
       </div>
-
-      <div class="w-full lg:w-1/2 flex flex-col justify-center">
-        <p class="text-lg text-gray-600 leading-relaxed">
-          Nasza filozofia montażu opiera się na trzech filarach: precyzji, porządku i terminowości. Doświadczenie zdobyte na najbardziej wymagających rynkach europejskich nauczyło nas, że jakość tkwi w detalach. <br><br>
+      <div class="w-full lg:w-1/2">
+        <p class="text-lg md:text-xl text-gray-600 leading-relaxed font-medium">
+          Nie potrzebujemy wielkich słów o jakości – wolimy pokazać ją w praktyce. <strong class="text-airtur-dark font-black">Pracujemy tak, abyś po zakończeniu montażu poczuł jedynie zmianę temperatury, a nie bałagan.</strong>. Doświadczenie z rynków europejskich nauczyło nas jednego: profesjonalizm widać w tym, jak traktuje się czyjąś własność.
+        </p>
+        <p class="mt-6 text-gray-500 leading-relaxed">
           Każdy montaż traktujemy z najwyższym szacunkiem dla Twojego domu – naszym celem jest, aby cały proces przebiegł sprawnie, bez bałaganu i niepotrzebnego stresu.
         </p>
       </div>
-
     </div>
 
-  </div>
+    <div class="relative py-16 mb-20">
+      <div class="absolute inset-0 bg-airtur-blue/5 rounded-[3rem] -mx-4 md:-mx-12 pointer-events-none"></div>
+      <div class="relative z-10">
+        <h3 class="text-2xl md:text-3xl font-black text-airtur-dark mb-12 text-center tracking-tight">
+          Nasz Proces – Twój Spokój <span class="text-airtur-blue"> w {processSteps.length} Krokach</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          {processSteps.map((step) => (
+            <article class="group bg-white p-8 rounded-3xl shadow-lg border border-airtur-blue/5 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col items-center text-center">
+              <div class={`w-14 h-14 rounded-2xl bg-white shadow-sm border border-gray-100 flex items-center justify-center mb-6 text-airtur-blue transition-transform duration-500 group-hover:scale-110 group-hover:${step.rotateClass}`}>
+                <span class="text-xl font-black tracking-tighter">{step.num}</span>
+              </div>
+              <h4 class="font-black text-lg text-airtur-dark mb-3 tracking-tight">{step.title}</h4>
+              <p class="text-sm text-gray-500 leading-relaxed font-medium">{step.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
 
-  <div class="bg-gray-50 py-12 border-y border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      
-      <h3 class="text-2xl font-bold text-airtur-dark mb-10">
-        Nasz Proces – Twój Spokój w 5 Krokach
-      </h3>
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-10">
+        <h3 class="text-2xl md:text-3xl font-black text-airtur-dark tracking-tight mb-4">
+          Chcesz umówić się na montaż lub <span class="text-airtur-blue">Masz pytania?</span>
+        </h3>
+        <p class="text-gray-500 font-medium uppercase text-[10px] tracking-[0.2em]">Wybierz preferowaną formę kontaktu:</p>
+      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+      <div class="flex p-1.5 bg-gray-100 rounded-2xl mb-10 max-w-md mx-auto">
+        <button id="tab-email" class="flex-1 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 bg-airtur-dark text-white shadow-lg cursor-pointer">
+          E-mail
+        </button>
+        <button id="tab-phone" class="flex-1 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 text-gray-500 hover:text-airtur-dark cursor-pointer">
+          Telefon
+        </button>
+      </div>
+
+      <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-gray-100">
         
-        <div class="flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-airtur-blue text-white flex items-center justify-center text-xl font-bold mb-3 shadow-md">1</div>
-          <h4 class="font-bold text-lg text-airtur-dark mb-1">Analiza i audyt</h4>
-          <p class="text-sm text-gray-600 leading-relaxed">Zaczynamy od zrozumienia Twoich celów i warunków technicznych, a nie od wyboru urządzenia.</p>
+        <div id="form-email" class="transition-all duration-500">
+          <form id="montaz-form-mail" name="zapytanie-montaz-mail" class="space-y-6" novalidate>
+            <div class="hidden" aria-hidden="true"><input type="text" name="b_website" tabindex="-1" value="" /></div>
+            <input type="hidden" name="form-name" value="zapytanie-montaz-mail" />
+            <input type="hidden" name="source" value="oferta_montaz_email" />
+            <input type="hidden" name="cel" value="montaz" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label for="name-mail" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Imię i Nazwisko *</label>
+                <input type="text" id="name-mail" name="imie" required 
+                  class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium" 
+                  placeholder="Twoje dane">
+                <div id="err-imie-mail" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Minimum 3 znaki.</div>
+              </div>
+              <div class="space-y-2">
+                <label for="email-field" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Adres E-mail *</label>
+                <input type="email" id="email-field" name="email" required 
+                  class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium" 
+                  placeholder="twoj@email.pl">
+                <div id="err-email-mail" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Podaj poprawny e-mail.</div>
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <label for="message-mail" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Szczegóły montażu</label>
+              <textarea id="message-mail" name="wiadomosc" rows="5" 
+                class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium resize-none text-sm leading-relaxed" 
+                placeholder={"Dzień dobry,\nProszę o ofertę na montaż klimatyzacji.\nLokalizacja: [Miejscowość]\nPowierzchnia: [ok. m²]"}></textarea>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex items-start gap-3">
+                <input type="checkbox" id="consent-mail" name="zgoda" required class="w-5 h-5 text-airtur-blue border-gray-200 rounded focus:ring-airtur-blue/20 cursor-pointer">
+                <label for="consent-mail" class="text-[11px] text-gray-500 cursor-pointer leading-tight">
+                  Akceptuję <a href="/regulamin" class="text-airtur-blue font-bold hover:underline">Regulamin</a> i wyrażam zgodę na przetwarzanie danych (<a href="/polityka-prywatnosci" class="text-airtur-blue font-bold hover:underline">Polityka Prywatności</a>).
+                </label>
+              </div>
+              <div id="err-zgoda-mail" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Zgoda jest wymagana.</div>
+            </div>
+
+            <button type="submit" class="submit-btn group relative w-full py-5 bg-airtur-blue text-white rounded-2xl font-black text-[13px] tracking-[0.25em] shadow-xl hover:bg-airtur-navy transition-all duration-300 uppercase flex items-center justify-center">
+              <span class="btn-text">Wyślij zapytanie</span>
+              <svg class="spinner hidden w-5 h-5 ml-3 animate-spin text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </button>
+          </form>
         </div>
 
-        <div class="flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-airtur-blue text-white flex items-center justify-center text-xl font-bold mb-3 shadow-md">2</div>
-          <h4 class="font-bold text-lg text-airtur-dark mb-1">Kalkulacja ROI</h4>
-          <p class="text-sm text-gray-600 leading-relaxed">Otrzymujesz od nas oparte na danych szacunki zwrotu z inwestycji (ROI) oraz finalną, szczegółową wycenę.</p>
-        </div>
+        <div id="form-phone" class="hidden transition-all duration-500">
+          <form id="montaz-form-phone" name="zapytanie-montaz-phone" class="space-y-6" novalidate>
+            <div class="hidden" aria-hidden="true"><input type="text" name="b_website" tabindex="-1" value="" /></div>
+            <input type="hidden" name="form-name" value="zapytanie-montaz-phone" />
+            <input type="hidden" name="source" value="oferta_montaz_telefon" />
+            <input type="hidden" name="cel" value="montaz" />
+            
+            <div class="bg-airtur-blue/5 p-5 rounded-2xl border border-airtur-blue/10 mb-8 text-center">
+              <p class="text-airtur-dark font-black text-sm tracking-tight">Zostaw numer. Oddzwonimy w ciągu 24h roboczych.</p>
+            </div>
 
-        <div class="flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-airtur-blue text-white flex items-center justify-center text-xl font-bold mb-3 shadow-md">3</div>
-          <h4 class="font-bold text-lg text-airtur-dark mb-1">Dobór systemu</h4>
-          <p class="text-sm text-gray-600 leading-relaxed">Rekomendujemy wyłącznie sprawdzone urządzenia, które zapewniają najlepszy zwrot z inwestycji.</p>
-        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label for="name-phone" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Imię *</label>
+                <input type="text" id="name-phone" name="imie" required class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium" placeholder="Wpisz imię">
+                <div id="err-imie-phone" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Minimum 3 znaki.</div>
+              </div>
+              <div class="space-y-2">
+                <label for="phone-field" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Numer Telefonu *</label>
+                <input type="tel" id="phone-field" name="telefon" required class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium" placeholder="+48 ...">
+                <div id="err-telefon-phone" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Podaj poprawny numer (min. 9 cyfr).</div>
+              </div>
+            </div>
 
-        <div class="flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-airtur-blue text-white flex items-center justify-center text-xl font-bold mb-3 shadow-md">4</div>
-          <h4 class="font-bold text-lg text-airtur-dark mb-1">Czysty montaż</h4>
-          <p class="text-sm text-gray-600 leading-relaxed">Jesteśmy w umówionym dniu i rygorystycznie przestrzegamy naszej Zasady Idealnego Porządku.</p>
-        </div>
+            <div class="space-y-2">
+              <div class="flex items-start gap-3">
+                <input type="checkbox" id="consent-phone" name="zgoda" required class="w-5 h-5 text-airtur-blue border-gray-200 rounded focus:ring-airtur-blue/20 cursor-pointer">
+                <label for="consent-phone" class="text-[11px] text-gray-500 cursor-pointer">Wyrażam zgodę na kontakt telefoniczny. Akceptuję <a href="/regulamin" class="text-airtur-blue font-bold hover:underline">Regulamin</a> i wyrażam zgodę na przetwarzanie danych (<a href="/polityka-prywatnosci" class="text-airtur-blue font-bold hover:underline">Polityka Prywatności</a>).
+              </div>
+              <div id="err-zgoda-phone" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Zgoda jest wymagana.</div>
+            </div>
 
-        <div class="flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-airtur-blue text-white flex items-center justify-center text-xl font-bold mb-3 shadow-md">5</div>
-          <h4 class="font-bold text-lg text-airtur-dark mb-1">Instruktaż</h4>
-          <p class="text-sm text-gray-600 leading-relaxed">Nie zostawiamy Cię z samym pilotem. Uczymy pełnej kontroli nad systemem i dbaniem o filtry.</p>
+            <button type="submit" class="submit-btn group relative w-full py-5 bg-airtur-dark text-white rounded-2xl font-black text-[13px] tracking-[0.25em] shadow-xl hover:bg-black transition-all duration-300 uppercase flex items-center justify-center">
+              <span class="btn-text">Proszę o telefon</span>
+              <svg class="spinner hidden w-5 h-5 ml-3 animate-spin text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </button>
+          </form>
         </div>
 
       </div>
-
     </div>
-  </div>
-
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-    
-    <div class="text-center mb-8">
-      <h3 class="text-2xl font-bold text-airtur-dark">
-        Masz pytania dotyczące montażu? Wybierz formę kontaktu:
-      </h3>
-    </div>
-
-    <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-      
-      <button id="tab-email" class="w-full sm:w-auto px-6 py-3 rounded-lg border-2 border-airtur-dark text-sm font-bold uppercase tracking-wide transition-all bg-airtur-dark text-white shadow-lg cursor-pointer">
-        Chcę napisać e-mail
-      </button>
-      
-      <button id="tab-phone" class="w-full sm:w-auto px-6 py-3 rounded-lg border-2 border-airtur-dark text-sm font-bold uppercase tracking-wide transition-all bg-white text-airtur-dark hover:bg-gray-100 cursor-pointer">
-        Preferuję kontakt telefoniczny
-      </button>
-
-    </div>
-
-    <div id="form-email" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
-      <form 
-        id="montaz-form-mail"
-        name="zapytanie-montaz-mail" 
-        method="POST" 
-        class="space-y-4"
-        novalidate
-      >
-        <input type="hidden" name="form-name" value="zapytanie-montaz-mail" />
-        <input type="hidden" name="source" value="oferta_montaz_email" />
-        <input type="hidden" name="cel" value="montaz" />
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label for="name-mail" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
-            <input type="text" id="name-mail" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
-            <div id="err-imie-mail" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
-          </div>
-          <div>
-            <label for="email-field" class="block text-sm font-bold text-airtur-dark mb-1">E-mail</label>
-            <input type="email" id="email-field" name="email" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="twoj@email.pl">
-            <div id="err-email-mail" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Proszę podać poprawny adres e-mail.</div>
-          </div>
-        </div>
-        
-        <div>
-          <label for="message-mail" class="block text-sm font-bold text-airtur-dark mb-1">Treść wiadomości</label>
-          <textarea 
-            id="message-mail" 
-            name="wiadomosc"
-            rows="5" 
-            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50 text-gray-700 placeholder-gray-400"
-            placeholder="Dzień dobry,&#10;Proszę o przygotowanie analizy i oferty na montaż.&#10;Moja lokalizacja: [np. Dom w okolicy Nowego Sącza]&#10;Powierzchnia pomieszczenia: [np. ok. 30 m²]&#10;Mój główny cel to: [np. Oszczędność na ogrzewaniu / Chłodzenie latem]"
-          ></textarea>
-        </div>
-
-        <div class="flex flex-col pt-2">
-            <div class="flex items-start">
-                <div class="flex items-center h-5">
-                  <input 
-                    id="consent-montaz-mail" 
-                    name="zgoda" 
-                    type="checkbox" 
-                    required 
-                    class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer"
-                  >
-                </div>
-                <div class="ml-3 text-sm leading-snug">
-                  <label for="consent-montaz-mail" class="text-gray-600 cursor-pointer">
-                    Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu obsługi zapytania ofertowego.
-                  </label>
-                </div>
-            </div>
-            <div id="err-zgoda-mail" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
-        </div>
-
-        <button type="submit" class="submit-btn w-full bg-airtur-blue text-white font-bold py-3 rounded-lg hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
-          WYŚLIJ WIADOMOŚĆ
-        </button>
-      </form>
-    </div>
-
-    <div id="form-phone" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
-      <form 
-        id="montaz-form-phone"
-        name="zapytanie-montaz-phone" 
-        method="POST" 
-        class="space-y-4"
-        novalidate
-      >
-        <input type="hidden" name="form-name" value="zapytanie-montaz-phone" />
-        <input type="hidden" name="source" value="oferta_montaz_telefon" />
-        <input type="hidden" name="cel" value="montaz" />
-
-        <div class="text-center mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
-            <p class="text-airtur-dark font-medium text-sm">Zostaw swój numer. Oddzwonimy, by omówić szczegóły montażu.</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-            <label for="name-phone" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
-            <input type="text" id="name-phone" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
-            <div id="err-imie-phone" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
-            </div>
-            <div>
-            <label for="phone-field" class="block text-sm font-bold text-airtur-dark mb-1">Numer telefonu</label>
-            <input type="tel" id="phone-field" name="telefon" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="+48 ...">
-            <div id="err-telefon-phone" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Numer telefonu musi mieć minimum 9 cyfr.</div>
-            </div>
-        </div>
-
-        <div class="flex flex-col pt-2">
-            <div class="flex items-start">
-                <div class="flex items-center h-5">
-                  <input id="consent-montaz-phone" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
-                </div>
-                <div class="ml-3 text-sm leading-snug">
-                  <label for="consent-montaz-phone" class="text-gray-600 cursor-pointer">
-                    Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu kontaktu telefonicznego.
-                  </label>
-                </div>
-            </div>
-            <div id="err-zgoda-phone" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
-        </div>
-
-        <button type="submit" class="submit-btn w-full bg-airtur-dark text-white font-bold py-3 rounded-lg hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
-          PROSZĘ O TELEFON
-        </button>
-      </form>
-    </div>
-
   </div>
 </section>
 
 <script is:inline>
-  // Wersja PRO: Używamy DOMContentLoaded (szybciej niż load, bezpieczniej niż sam skrypt)
-  document.addEventListener('DOMContentLoaded', () => {
-      console.log("🚀 DOM READY: HTML załadowany, szukam formularzy...");
+  /**
+   * AirTUR Form Engine v3.0 - REWIRING API
+   */
+  const initMontazForm = () => {
+    console.log("🚀 AirTUR Form Engine: Inicjalizacja...");
+    
+    const tabEmail = document.getElementById('tab-email');
+    const tabPhone = document.getElementById('tab-phone');
+    const formEmailCont = document.getElementById('form-email');
+    const formPhoneCont = document.getElementById('form-phone');
 
-      // Wybór formularzy po ID (zostawiamy ID, żeby nie psuć stylów CSS, jeśli są na nich oparte)
-      const forms = document.querySelectorAll('#montaz-form-mail, #montaz-form-phone');
-      
-      // Elementy tabów
-      const tabEmail = document.getElementById('tab-email');
-      const tabPhone = document.getElementById('tab-phone');
-      const formEmailContainer = document.getElementById('form-email');
-      const formPhoneContainer = document.getElementById('form-phone');
+    if (!tabEmail || !tabPhone) return;
 
-      // DIAGNOSTYKA
-      console.log(`🔍 ZNALEZIONO FORMULARZY: ${forms.length}`);
-      if (forms.length === 0) console.error("❌ BŁĄD KRYTYCZNY: Nie widzę formularzy w DOM!");
+    // 1. Logika Tabów
+    const setTab = (active, inactive, show, hide) => {
+      active.classList.add('bg-airtur-dark', 'text-white', 'shadow-lg');
+      active.classList.remove('text-gray-500');
+      inactive.classList.remove('bg-airtur-dark', 'text-white', 'shadow-lg');
+      inactive.classList.add('text-gray-500');
+      show.classList.remove('hidden');
+      hide.classList.add('hidden');
+    };
 
-      // --- LOGIKA TABÓW (Bez zmian - działa dobrze) ---
-      const activeClassAdd = ['bg-airtur-dark', 'text-white'];
-      const activeClassRemove = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
-      const inactiveClassAdd = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
-      const inactiveClassRemove = ['bg-airtur-dark', 'text-white'];
+    tabEmail.addEventListener('click', () => setTab(tabEmail, tabPhone, formEmailCont, formPhoneCont));
+    tabPhone.addEventListener('click', () => setTab(tabPhone, tabEmail, formPhoneCont, formEmailCont));
 
-      if(tabEmail && tabPhone) {
-          tabEmail.addEventListener('click', () => {
-            formEmailContainer?.classList.remove('hidden');
-            formPhoneContainer?.classList.add('hidden');
-            tabEmail.classList.add(...activeClassAdd);
-            tabEmail.classList.remove(...activeClassRemove);
-            tabPhone?.classList.add(...inactiveClassAdd);
-            tabPhone?.classList.remove(...inactiveClassRemove);
+    // 2. Walidacja i Wysyłka (Twoja Logika API + Moje Zabezpieczenia)
+    const forms = document.querySelectorAll('#montaz-form-mail, #montaz-form-phone');
+    
+    forms.forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const targetForm = e.currentTarget;
+        const formData = new FormData(targetForm);
+        const data = Object.fromEntries(formData.entries());
+        const suffix = targetForm.id === 'montaz-form-mail' ? 'mail' : 'phone';
+        let hasError = false;
+
+        // --- Zabezpieczenie Antyspamowe (Honeypot) ---
+        if (data.b_website) {
+          console.warn("🤖 Bot detected via honeypot.");
+          return;
+        }
+
+        // --- Rate Limiting (Blokada wielokrotnej wysyłki) ---
+        const lastSent = localStorage.getItem('last_submit_time');
+        if (lastSent && Date.now() - parseInt(lastSent) < 20000) {
+          alert("Poczekaj chwilę przed kolejną próbą.");
+          return;
+        }
+
+        // --- Walidacja Senior ---
+        const resetErrors = () => {
+          targetForm.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
+          targetForm.querySelectorAll('input, textarea').forEach(el => el.classList.remove('border-red-500', 'bg-red-50'));
+        };
+        resetErrors();
+
+        if (data.imie.trim().length < 3) {
+          hasError = true;
+          document.getElementById(`err-imie-${suffix}`).classList.remove('hidden');
+          targetForm.querySelector('[name="imie"]').classList.add('border-red-500', 'bg-red-50');
+        }
+
+        if (suffix === 'mail' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+          hasError = true;
+          document.getElementById('err-email-mail').classList.remove('hidden');
+          targetForm.querySelector('[name="email"]').classList.add('border-red-500', 'bg-red-50');
+        }
+
+        if (suffix === 'phone' && data.telefon.replace(/\D/g, '').length < 9) {
+          hasError = true;
+          document.getElementById('err-telefon-phone').classList.remove('hidden');
+          targetForm.querySelector('[name="telefon"]').classList.add('border-red-500', 'bg-red-50');
+        }
+
+        if (!data.zgoda) {
+          hasError = true;
+          document.getElementById(`err-zgoda-${suffix}`).classList.remove('hidden');
+        }
+
+        if (hasError) return;
+
+        // --- UI Loading State ---
+        const btn = targetForm.querySelector('.submit-btn');
+        const btnText = btn.querySelector('.btn-text');
+        const spinner = btn.querySelector('.spinner');
+        const originalText = btnText.innerText;
+
+        btn.disabled = true;
+        btnText.innerText = "WYSYŁANIE...";
+        spinner.classList.remove('hidden');
+
+        // --- TWOJA LOGIKA WYSYŁKI (JSON do /api/send-form) ---
+        try {
+          const res = await fetch('/api/send-form', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
           });
 
-          tabPhone.addEventListener('click', () => {
-            formPhoneContainer?.classList.remove('hidden');
-            formEmailContainer?.classList.add('hidden');
-            tabPhone.classList.add(...activeClassAdd);
-            tabPhone.classList.remove(...activeClassRemove);
-            tabEmail?.classList.add(...inactiveClassAdd);
-            tabEmail?.classList.remove(...inactiveClassRemove);
-          });
-      }
-
-      // --- LOGIKA WYSYŁKI (SENIOR LEVEL) ---
-      const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
-
-      forms.forEach(form => {
-          console.log(`🔧 Podpinam listener pod formularz: ${form.id}`);
-          
-          form.addEventListener('submit', async (e) => {
-              e.preventDefault(); // STOP PRZEŁADOWANIU
-              console.log("🚀 SUBMIT EVENT ZŁAPANY!");
-
-              // SENIOR FIX: currentTarget to pewność, że mamy <form>, a nie coś w środku
-              const targetForm = e.currentTarget; 
-              const submitBtn = targetForm.querySelector('.submit-btn');
-              
-              const suffix = targetForm.id === 'montaz-form-mail' ? 'mail' : 'phone';
-              let hasError = false;
-
-              // 1. Walidacja Imienia (wspólna dla obu)
-              const nameInput = targetForm.querySelector('input[name="imie"]');
-              const nameErr = document.getElementById(`err-imie-${suffix}`);
-              if (nameInput.value.trim().length < 3) {
-                  hasError = true;
-                  nameInput.classList.add('border-red-400', 'bg-red-50');
-                  nameInput.classList.remove('border-gray-300');
-                  if(nameErr) nameErr.classList.remove('hidden');
-              }
-
-              // 2. Walidacja Emaila lub Telefonu
-              if (suffix === 'mail') {
-                  const emailInput = targetForm.querySelector('input[name="email"]');
-                  const emailErr = document.getElementById(`err-email-mail`);
-                  if (!isValidEmail(emailInput.value)) {
-                      hasError = true;
-                      emailInput.classList.add('border-red-400', 'bg-red-50');
-                      emailInput.classList.remove('border-gray-300');
-                      if(emailErr) emailErr.classList.remove('hidden');
-                  }
-              } else {
-                  const phoneInput = targetForm.querySelector('input[name="telefon"]');
-                  const phoneErr = document.getElementById(`err-telefon-phone`);
-                  if (!isValidPhone(phoneInput.value)) {
-                      hasError = true;
-                      phoneInput.classList.add('border-red-400', 'bg-red-50');
-                      phoneInput.classList.remove('border-gray-300');
-                      if(phoneErr) phoneErr.classList.remove('hidden');
-                  }
-              }
-
-              // 3. Walidacja Zgody
-              const consentInput = targetForm.querySelector('input[name="zgoda"]');
-              const consentErr = document.getElementById(`err-zgoda-${suffix}`);
-              if (!consentInput.checked) {
-                  hasError = true;
-                  if(consentErr) consentErr.classList.remove('hidden');
-              }
-
-              // STOP JEŚLI BŁĘDY
-              if (hasError) return;
-
-              // --- WYSYŁKA ---
-              // SENIOR FIX: Optional Chaining (?.) - jak nie znajdzie tekstu, to się nie wywali
-              const originalBtnText = submitBtn?.innerText || "WYŚLIJ";
-              
-              if (submitBtn) {
-                  submitBtn.disabled = true;
-                  submitBtn.innerText = "WYSYŁANIE...";
-              }
-
-              const formData = new FormData(targetForm);
-              const dataObj = Object.fromEntries(formData.entries());
-
-              try {
-                  console.log("📡 Wysyłam fetch do /api/send-form...");
-                  
-                  const response = await fetch('/api/send-form', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(dataObj)
-                  });
-                  
-                  console.log("📡 Status odpowiedzi:", response.status);
-
-                  if (!response.ok) {
-                      const errorText = await response.text();
-                      console.error("❌ Błąd serwera treść:", errorText);
-                      throw new Error(`Błąd serwera: ${response.status}`);
-                  }
-
-                  console.log("✅ SUKCES! Przekierowanie...");
-                  
-                  // <<< TUTAJ JEST TWOJA ZMIANA Z POPRAWIONYM LINKIEM >>>
-                  window.location.assign('/podziekowanie/?cel=montaz');
-
-              } catch (error) {
-                  console.error("❌ BŁĄD WYSYŁKI (CATCH):", error);
-                  alert(`Wystąpił błąd: ${error.message}`);
-                  
-                  if(submitBtn) {
-                      submitBtn.disabled = false;
-                      submitBtn.innerText = originalBtnText;
-                  }
-              }
-          });
-      });
-
-      // Czyszczenie błędów przy pisaniu (uniwersalne)
-      document.querySelectorAll('input, textarea').forEach(input => {
-          input.addEventListener('input', () => {
-              input.classList.remove('border-red-400', 'bg-red-50');
-              input.classList.add('border-gray-300'); // Przywróć normalny border
-              
-              // Znajdź i ukryj komunikat błędu powiązany z tym polem
-              // Szukamy najbliższego diva z błędem w tym samym kontenerze lub po ID
-              const parent = input.parentElement;
-              const errorDiv = parent.querySelector('[id^="err-"]');
-              if(errorDiv) errorDiv.classList.add('hidden');
-          });
-          
-          // Ukryj błąd zgody po kliknięciu w checkbox
-          if(input.type === 'checkbox') {
-             input.addEventListener('change', () => {
-                // Znajdź kontener zgody i ukryj błąd w nim (lub obok)
-                const form = input.closest('form');
-                if(form) {
-                    const suffix = form.id === 'montaz-form-mail' ? 'mail' : 'phone';
-                    const consentErr = document.getElementById(`err-zgoda-${suffix}`);
-                    if(consentErr) consentErr.classList.add('hidden');
-                }
-             });
+          if (res.ok) {
+            localStorage.setItem('last_submit_time', Date.now().toString());
+            window.location.assign('/podziekowanie/?cel=montaz');
+          } else {
+            throw new Error();
           }
+        } catch (err) {
+          console.error("❌ Błąd wysyłki:", err);
+          alert("Wystąpił problem z połączeniem. Prosimy o kontakt telefoniczny!");
+          btn.disabled = false;
+          btnText.innerText = "SPRÓBUJ PONOWNIE";
+          spinner.classList.add('hidden');
+        }
       });
-  });
+
+      // Clear errors on typing
+      form.querySelectorAll('input, textarea').forEach(inp => {
+        inp.addEventListener('input', () => {
+          inp.classList.remove('border-red-500', 'bg-red-50');
+          const name = inp.name === 'telefon' ? 'telefon' : (inp.name === 'email' ? 'email' : 'imie');
+          const errEl = document.getElementById(`err-${name}-${suffix}`);
+          if (errEl) errEl.classList.add('hidden');
+          document.getElementById(`err-zgoda-${suffix}`)?.classList.add('hidden');
+        });
+      });
+    });
+  };
+
+  // Inicjalizacja dla Astro (z obsługą View Transitions)
+  initMontazForm();
+  document.addEventListener('astro:page-load', initMontazForm);
 </script>

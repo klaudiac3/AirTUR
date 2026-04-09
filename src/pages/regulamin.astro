@@ -1,77 +1,175 @@
 ---
 import Layout from '../layouts/Layout.astro';
-// Importujemy centralną konfigurację firmy
 import { companyConfig } from '../data/companyConfig';
-import fs from 'node:fs';
-import path from 'node:path';
 
-// Pobieramy ścieżkę do bieżącego pliku regulaminu
-const filePath = path.resolve('./src/pages/regulamin.astro');
-// Pobieramy statystyki pliku
-const stats = fs.statSync(filePath);
-// Formatujemy datę modyfikacji na polski format
-const lastModifiedDate = stats.mtime.toLocaleDateString('pl-PL', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric'
-});
+// [LOGIKA]: Pobieranie daty z configu z bezpiecznym fallbackiem
+const humanDate = companyConfig.dates.lastUpdateRegulamin || "12 marca 2026";
+
+const getMachineDate = (dateString: string) => {
+  const months: { [key: string]: string } = {
+    'stycznia': '01', 'lutego': '02', 'marca': '03', 'kwietnia': '04',
+    'maja': '05', 'czerwca': '06', 'lipca': '07', 'sierpnia': '08',
+    'września': '09', 'października': '10', 'listopada': '11', 'grudnia': '12'
+  };
+  const parts = dateString.split(' ');
+  if (parts.length < 3) return "2026-01-01";
+  const day = parts[0].padStart(2, '0');
+  const month = months[parts[1].toLowerCase()] || '01';
+  const year = parts[2];
+  return `${year}-${month}-${day}`;
+};
+
+const machineDate = getMachineDate(humanDate);
+
+const sections = [
+  { id: 'postanowienia', title: '§1. Postanowienia ogólne' },
+  { id: 'uslugi', title: '§2. Usługi elektroniczne' },
+  { id: 'odpowiedzialnosc', title: '§3. Odpowiedzialność' },
+  { id: 'prawa', title: '§4. Prawa autorskie' },
+  { id: 'kontakt', title: '§5. Kontakt i Reklamacje' },
+];
 ---
 
-<Layout title="Regulamin Serwisu - AirTUR" description="Zasady korzystania z serwisu internetowego AirTUR oraz narzędzi diagnostycznych.">
+<Layout 
+  title="Regulamin Serwisu - AirTUR" 
+  description="Zasady korzystania z serwisu internetowego AirTUR, narzędzi kalkulacyjnych oraz Bazy Wiedzy."
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Regulamin Serwisu AirTUR",
+    "lastReviewed": machineDate,
+    "datePublished": "2024-03-02",
+    "publisher": {
+      "@type": "Organization",
+      "name": companyConfig.fullName
+    }
+  })} />
+
   <main class="pt-32 pb-24 bg-white">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <header class="mb-12 border-b border-gray-100 pb-8">
+      <header class="mb-12 border-b border-gray-100 pb-10 text-center sm:text-left">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-airtur-blue/10 rounded-2xl mb-6 text-airtur-blue">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
         <h1 class="text-4xl font-extrabold text-airtur-dark mb-4">Regulamin Serwisu</h1>
-        <!-- Dynamiczna data modyfikacji -->
-        <p class="text-gray-500 italic">Obowiązuje od dnia: {lastModifiedDate} r.</p>
+        <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 italic">
+          <span class="px-3 py-1 bg-airtur-blue/5 text-airtur-blue rounded-full not-italic font-medium">Dokument oficjalny</span>
+          <span>Obowiązuje od: <time datetime={machineDate}>{humanDate} r.</time></span>
+        </div>
       </header>
 
-      <div class="prose prose-blue prose-lg max-w-none text-gray-700 space-y-8">
+      <nav class="mb-16 p-8 bg-gray-50 rounded-2xl border border-gray-100 shadow-sm" aria-label="Spis treści">
+        <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-6">Struktura dokumentu</p>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
+          {sections.map(section => (
+            <li>
+              <a href={`#${section.id}`} class="text-gray-700 hover:text-airtur-blue transition-all flex items-center gap-3 group font-medium">
+                <span class="text-airtur-blue/40 group-hover:text-airtur-blue font-bold">#</span>
+                {section.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <article class="prose prose-blue prose-lg max-w-none text-gray-700 leading-relaxed">
         
-        <section>
-          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§1. Postanowienia ogólne</h2>
+        <section id="postanowienia" class="scroll-mt-32 mb-16">
+          <h2 class="text-2xl font-bold text-airtur-dark flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">§1</span>
+            Postanowienia ogólne
+          </h2>
           <p>
-            Niniejszy regulamin określa zasady korzystania z serwisu internetowego dostępnego pod adresem airtur.pl, zwanego dalej „Serwisem”. Właścicielem Serwisem jest {companyConfig.fullName} z siedzibą w miejscowości {companyConfig.address.city}.
+            Niniejszy regulamin określa zasady korzystania z serwisu internetowego dostępnego pod adresem <strong>airtur.pl</strong>. 
+            Właścicielem Serwisu oraz Administratorem jest <strong>{companyConfig.fullName}</strong> z siedzibą w {companyConfig.address.city}.
+          </p>
+          <p>
+            Korzystanie z serwisu jest dobrowolne i wymaga zaakceptowania niniejszych zasad.
           </p>
         </section>
 
-        <section>
-          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§2. Usługi świadczone drogą elektroniczną</h2>
-          <p>W ramach Serwisu Użytkownik może korzystać z następujących bezpłatnych usług:</p>
-          <ul class="list-disc pl-6 space-y-2">
-            <li><strong>Formularz kontaktowy:</strong> umożliwiający przesłanie zapytania do Administratora.</li>
-            <li><strong>Kalkulatory techniczne:</strong> narzędzia do szacunkowego doboru mocy urządzeń i wyliczania oszczędności.</li>
-            <li><strong>Baza Wiedzy:</strong> dostęp do merytorycznych artykułów i poradników.</li>
+        <section id="uslugi" class="scroll-mt-32 mb-16">
+          <h2 class="text-2xl font-bold text-airtur-dark flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">§2</span>
+            Usługi świadczone drogą elektroniczną
+          </h2>
+          <p>Za pośrednictwem Serwisu świadczone są następujące usługi:</p>
+          <ul class="space-y-4 list-none pl-0">
+            <li class="flex gap-4 p-4 rounded-xl border border-gray-100 bg-white shadow-sm">
+              <svg class="w-6 h-6 text-airtur-blue flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              <span><strong>Formularz kontaktowy</strong> – umożliwiający przesłanie zapytania ofertowego.</span>
+            </li>
+            <li class="flex gap-4 p-4 rounded-xl border border-gray-100 bg-white shadow-sm">
+              <svg class="w-6 h-6 text-airtur-blue flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2-2v14a2 2 0 002 2z" /></svg>
+              <span><strong>Kalkulatory techniczne</strong> – narzędzia do wstępnego doboru mocy i analizy ROI.</span>
+            </li>
+            <li class="flex gap-4 p-4 rounded-xl border border-gray-100 bg-white shadow-sm">
+              <svg class="w-6 h-6 text-airtur-blue flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+              <span><strong>Baza Wiedzy</strong> – dostęp do merytorycznych treści edukacyjnych.</span>
+            </li>
           </ul>
         </section>
 
-        <section class="bg-blue-50 p-8 rounded-2xl border border-blue-100">
-          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§3. Odpowiedzialność za wyniki kalkulacji</h2>
+        <section id="odpowiedzialnosc" class="scroll-mt-32 mb-16 p-8 bg-amber-50 rounded-3xl border-2 border-amber-100 relative overflow-hidden">
+          <div class="absolute -top-4 -right-4 text-amber-100 opacity-50">
+            <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+          </div>
+          <h2 class="text-2xl font-bold text-amber-900 flex items-center gap-3 mt-0 mb-6 relative z-10">
+            <span class="w-8 h-8 rounded-lg bg-amber-200/50 flex items-center justify-center text-sm font-bold">§3</span>
+            Odpowiedzialność za wyniki
+          </h2>
+          <div class="relative z-10 text-amber-900/80 italic font-medium">
+            <p>
+              Wszelkie wyniki generowane przez narzędzia diagnostyczne (Kalkulatory) mają charakter wyłącznie <strong>poglądowy i szacunkowy</strong>. 
+            </p>
+            <p class="mb-0">
+              Nie stanowią one oferty handlowej w rozumieniu Kodeksu Cywilnego. Ostateczne parametry techniczne ustalane są zawsze podczas bezpłatnego audytu technicznego u Klienta.
+            </p>
+          </div>
+        </section>
+
+        <section id="prawa" class="scroll-mt-32 mb-16">
+          <h2 class="text-2xl font-bold text-airtur-dark flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">§4</span>
+            Prawa autorskie
+          </h2>
           <p>
-            Wszelkie wyniki generowane przez Kalkulatory dostępne w Serwisie mają charakter wyłącznie <strong>poglądowy i szacunkowy</strong>. Nie stanowią one oficjalnego projektu inżynieryjnego ani oferty handlowej w rozumieniu Art. 66 par. 1 Kodeksu Cywilnego.
-          </p>
-          <p class="mt-4">
-            Ostateczny dobór mocy oraz wiążąca wycena są możliwe wyłącznie po przeprowadzeniu bezpłatnej wizji lokalnej przez specjalistę {companyConfig.name}.
+            Wszystkie treści, algorytmy obliczeniowe oraz materiały wizualne są własnością firmy <strong>{companyConfig.name}</strong> i podlegają ochronie prawnej. Kopiowanie lub wykorzystywanie ich bez zgody jest zabronione.
           </p>
         </section>
 
-        <section>
-          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§4. Prawa autorskie</h2>
+        <section id="kontakt" class="scroll-mt-32 border-t border-gray-100 pt-12">
+          <h2 class="text-2xl font-bold text-airtur-dark flex items-center gap-3 mb-6">
+            <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500">§5</span>
+            Kontakt i Reklamacje
+          </h2>
           <p>
-            Wszelkie treści, zdjęcia oraz algorytmy narzędzi diagnostycznych są własnością firmy {companyConfig.name}. Kopiowanie lub wykorzystywanie ich bez pisemnej zgody jest zabronione.
+            Wszelkie uwagi dotyczące funkcjonowania serwisu oraz zgłoszenia reklamacyjne prosimy kierować bezpośrednio na nasz adres e-mail:
           </p>
+          
+          <div class="mt-8 p-8 bg-airtur-dark rounded-3xl text-center text-white relative overflow-hidden shadow-xl">
+             <div class="relative z-10">
+                <p class="text-gray-400 text-sm mb-2 font-bold uppercase tracking-widest">Masz pytania dotyczące Regulaminu?</p>
+                <a href={companyConfig.contact.emailLink} class="text-2xl font-bold text-airtur-blue hover:text-white transition-colors">
+                  {companyConfig.contact.email}
+                </a>
+                <p class="mt-4 text-xs text-gray-500">Odpowiadamy zazwyczaj w ciągu 24h roboczych.</p>
+             </div>
+             <div class="absolute top-0 right-0 w-32 h-32 bg-airtur-blue/10 rounded-full -mt-16 -mr-16 blur-2xl"></div>
+          </div>
         </section>
 
-        <section>
-          <h2 class="text-2xl font-bold text-airtur-dark mb-4">§5. Kontakt i Reklamacje</h2>
-          <p>
-            Wszelkie uwagi dotyczące działania serwisu należy kierować na adres e-mail: 
-            <a href={companyConfig.contact.emailLink} class="text-airtur-blue font-bold">{companyConfig.contact.email}</a>.
-          </p>
-        </section>
-
-      </div>
+      </article>
     </div>
   </main>
 </Layout>
+
+<style>
+  html { scroll-behavior: smooth; }
+  /* Zabezpieczenie dla czytelności na iOS */
+  article p { margin-bottom: 1.5rem; }
+</style>

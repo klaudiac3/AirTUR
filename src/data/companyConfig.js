@@ -3,14 +3,19 @@
 export const companyConfig = {
   name: "AirTUR",
   fullName: "F. H. U. Krzysztof Turek",
-  nip: "123-456-78-90", // Tutaj wpisz swój prawdziwy NIP
-  regon: "123456789",   // Tutaj wpisz swój prawdziwy REGON
-  
+  nip: "7343503023", // [WPISZ TUTAJ]: Twój poprawny NIP
+  regon: "363715700",   // [WPISZ TUTAJ]: Twój poprawny REGON
+
   address: {
-    street: "Zarzecze 9", // Do uzupełnienia
+    street: "Zarzecze 9",
     postCode: "33-390",
     city: "Łącko",
-    full: "Zarzecze 9, 33-390 Łącko"
+    full: "Zarzecze 9, 33-390 Łącko",
+    // Współrzędne dla Map Google i Schema.org
+    geo: {
+      latitude: 49.555,
+      longitude: 20.444
+    }
   },
 
   contact: {
@@ -21,16 +26,21 @@ export const companyConfig = {
     emailLink: "mailto:kontakt@airtur.pl"
   },
 
+  socials: {
+    facebook: "", // [UZUPEŁNIJ LUB ZOSTAW PUSTE]
+    instagram: "",
+  },
+
   workingHours: {
     weekdays: "8:00 – 17:00",
     saturday: "10:00 – 12:00",
     sunday: "nieczynne",
   },
 
-  // Obszar działania z podziałem na regiony (używane w Kontakcie i Stopce)
+  // Struktura dla UI (wykorzystasz ją w sekcji "Gdzie działamy")
   serviceAreas: [
     {
-      region: "Kraków i Północ",
+      region: "Małopolska - Kraków",
       places: [
         { label: "Kraków", desc: "Wszystkie dzielnice" },
         { label: "Powiat krakowski", desc: "Skawina, Wieliczka, Niepołomice, Zabierzów" },
@@ -45,17 +55,35 @@ export const companyConfig = {
         { label: "Podhale", desc: "Nowy Targ, Zakopane, Rabka-Zdrój, Szczawnica" }
       ]
     },
-    {
+{
       region: "Wschód i Zachód",
       places: [
-        { label: "Tarnów i okolice", desc: "Wojnicz, Tuchów, Żabno" },
+        { label: "Powiat Tarnowski", desc: "Tarnów, Wojnicz, Tuchów, Żabno" },
         { label: "Powiat Gorlicki", desc: "Gorlice, Biecz" },
-        { label: "Szerszy zasięg", desc: "Wadowice, Oświęcim, a także wybrane lokalizacje na Śląsku i Podkarpaciu" }
+        { label: "Województwo Śląskie i Podkarpackie", desc: "Katowice, Przemyśl, Jasło" }
+
       ]
     }
+
   ],
+
+  // Automatyczna płaska lista dla Schema.org (Google AreaServed)
+  // [LOGIKA]: Mapujemy tablicę serviceAreas, aby wyciągnąć same nazwy miast dla SEO.
+  get seoServiceArea() {
+    return this.serviceAreas.flatMap(area => 
+      area.places.map(p => p.label)
+    );
+  },
 
   links: {
     privacyPolicy: "/polityka-prywatnosci",
+    regulamin: "/regulamin",
+    cookies: "/polityka-cookies",
+  },
+
+  dates: {
+    lastUpdateRegulamin: "2 marca 2026", // Synchronizacja z Twoim plikiem Regulaminu
+    privacyPolicy: "2 marca 2026",
+    cookies: "2 marca 2026",
   }
 };

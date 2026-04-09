@@ -1,48 +1,47 @@
 ---
-// src/components/o-firmie/MisjaCTA.astro
+// [LOGIKA]: Ostatnia sekcja podstrony O firmie
 ---
-
-<section class="bg-white py-16 md:py-24 border-b border-gray-100">
+<section 
+  id="misja-i-kontakt" 
+  class="relative bg-white pt-12 md:pt-16 pb-24 md:pb-32 border-b border-gray-100" 
+  aria-labelledby="mission-title"
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    
-    <!-- GRID: 1 kolumna na mobilnych, 2 kolumny na dużych ekranach -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       
-      <!-- LEWA KOLUMNA: MISJA -->
-      <div class="text-left">
-        <h3 class="text-2xl md:text-3xl font-bold text-airtur-dark mb-8">
+      <article class="text-left flex flex-col items-start">
+        <h3 id="mission-title" class="text-2xl md:text-3xl font-black text-airtur-dark mb-8 tracking-tight">
           Nasz cel jest prosty.
         </h3>
 
-        <div class="relative">
-          <!-- Ozdobny cudzysłów -->
-          <span class="absolute -top-6 -left-6 text-8xl text-airtur-blue opacity-10 font-serif leading-none">"</span>
-          
-          <p class="text-lg md:text-xl text-gray-600 italic leading-relaxed font-light relative z-10">
-            Tworzę firmę, z&nbsp;której usług sam chciałbym korzystać – opartą na&nbsp;zaufaniu, precyzji i&nbsp;pasji do&nbsp;solidnie wykonanej pracy. Dajemy liderom takim jak Ty władzę nad komfortem i&nbsp;pewność, że ich dom jest w&nbsp;dobrych rękach.
-          </p>
+        <div class="relative w-full">
+          <blockquote class="text-lg md:text-xl text-gray-500 italic leading-relaxed font-medium relative z-10 text-pretty
+                      before:content-['„'] before:absolute before:-top-8 before:-left-8 before:text-[120px] before:text-airtur-blue before:opacity-10 before:font-black before:leading-none
+                      after:content-['”'] after:absolute after:-bottom-16 after:right-0 after:text-[120px] after:text-airtur-blue after:opacity-10 after:font-black after:leading-none">
+            <p>
+              Buduję firmę, z której usług sam chciałbym korzystać – opartą na zaufaniu, fachowej wiedzy i solidnym wykonaniu. Chcę, abyś miał pewność, że instalacja w Twoim domu jest wykonana zgodnie ze sztuką i będzie Ci służyć przez lata.
+            </p>
+          </blockquote>
         </div>
 
-        <div class="mt-8">
-          <p class="text-lg font-bold text-airtur-dark">Krzysztof Turek</p>
-          <p class="text-sm text-gray-500 uppercase tracking-wide font-medium">Założyciel AirTUR</p>
-        </div>
-      </div>
+        <footer class="mt-10 flex flex-col items-start border-l-4 border-airtur-blue/30 pl-6 py-1">
+          <p class="font-black text-airtur-dark uppercase tracking-[0.2em] text-sm">Krzysztof Turek</p>
+          <p class="text-gray-400 text-xs italic mt-1 font-medium">Założyciel AirTUR</p>
+        </footer>
+      </article>
 
-      <!-- PRAWA KOLUMNA: CTA -->
-      <div class="bg-gray-50 rounded-3xl p-10 md:p-12 text-center shadow-lg border border-gray-100 flex flex-col justify-center h-full">
-        <h2 class="text-2xl md:text-3xl font-bold text-airtur-dark mb-8 leading-tight">
-          Szukasz partnera,który podziela te wartości?
+      <aside class="group bg-gray-50 rounded-3xl p-10 md:p-14 text-center shadow-xl border border-airtur-blue/10 flex flex-col justify-center items-center transition-all duration-300 hover:shadow-2xl">
+        <h2 class="text-2xl md:text-4xl font-black text-airtur-dark mb-8 leading-tight tracking-tight">
+          Szukasz partnera,<span class="text-airtur-blue"> który podziela te wartości?
         </h2>
-
-        <div>
-          <a href="/kontakt" class="inline-block bg-airtur-blue text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-opacity-90 transition shadow-lg uppercase transform hover:-translate-y-1">
-            POROZMAWIAJMY O&nbsp;TWOIM PROJEKCIE
-          </a>
-        </div>
-      </div>
+        <a href="/kontakt" class="group inline-flex items-center justify-center bg-airtur-blue text-white px-10 py-5 rounded-xl font-black text-sm tracking-widest hover:bg-airtur-navy transition-all shadow-xl shadow-airtur-blue/20 uppercase w-full sm:w-auto">
+          <span>Porozmawiajmy o Twoim projekcie</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5 ml-4 group-hover:translate-x-2 transition-transform" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+      </aside>
 
     </div>
-
   </div>
 </section>

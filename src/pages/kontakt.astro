@@ -1,26 +1,89 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { companyConfig } from '../data/companyConfig';
+
+// Komponenty
 import Wprowadzenie from '../components/kontakt/Wprowadzenie.astro';
 import FormularzKontaktowy from '../components/kontakt/FormularzKontaktowy.astro';
-// Import nowej sekcji
 import CzegoOczekiwac from '../components/kontakt/CzegoOczekiwac.astro';
 import ObszarDzialania from '../components/kontakt/ObszarDzialania.astro';
+
+// [SEO]: Meta-dane
+const pageTitle = "Kontakt i Bezpłatna Wycena | AirTUR";
+const pageDescription = "Skontaktuj się z ekspertami AirTUR. Zamów bezpłatną analizę techniczną i wycenę montażu klimatyzacji w Twoim domu lub biurze.";
+
+// [SEO/UX]: Offset dla sticky headera
+const sectionWrapperClass = "scroll-mt-24";
+
+// [SENIOR]: Dane strukturalne dla strony Kontaktu (Schema.org)
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "mainEntity": {
+    "@type": "LocalBusiness",
+    "name": companyConfig.name,
+    "image": "https://airtur.pl/assets/hero.jpg",
+    "telephone": companyConfig.contact.phoneFull,
+    "email": companyConfig.contact.email,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": companyConfig.address.street,
+      "addressLocality": companyConfig.address.city,
+      "postalCode": companyConfig.address.postCode,
+      "addressCountry": "PL"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "08:00", // Przykładowo, warto wyciągnąć z configu jeśli masz tam godziny "od-do"
+        "closes": "16:00"
+      }
+    ]
+  }
+};
 ---
 
-<Layout title="Kontakt - Zamów Analizę - AirTUR">
-  
-  <main>
-    <!-- Sekcja 1: Wprowadzenie -->
-    <Wprowadzenie />
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-    <!-- Sekcja 2: Główny Formularz i Dane -->
-    <FormularzKontaktowy />
+  <main id="main-content" class="overflow-x-hidden outline-none">
+    
+    <section id="wprowadzenie" class={sectionWrapperClass} aria-label="Wprowadzenie do kontaktu">
+      <Wprowadzenie />
+    </section>
 
-    <!-- Sekcja 3: Czego możesz się spodziewać -->
-    <CzegoOczekiwac />
+    <section id="formularz-kontaktowy" class={sectionWrapperClass} aria-label="Formularz zapytania o wycenę">
+      <FormularzKontaktowy />
+    </section>
 
-    <!-- Sekcja 4: Obszar Działania (Mapa) -->
-    <ObszarDzialania />
+    <section id="czego-oczekiwac" class={sectionWrapperClass} aria-label="Informacje o procesie po wysłaniu zgłoszenia">
+      <CzegoOczekiwac />
+    </section>
+
+    <section id="obszar-dzialania" class={sectionWrapperClass} aria-label="Mapa i zasięg świadczonych usług">
+      <ObszarDzialania />
+    </section>
+    
   </main>
-
 </Layout>
+
+<style is:global>
+  /**
+   * [UX]: Spójność systemowa przewijania i dotyku
+   */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Wygląd tekstu "Premium" */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+</style>

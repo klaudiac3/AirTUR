@@ -2,70 +2,95 @@
 // src/components/baza-wiedzy/FAQ.astro
 import { knowledgeData } from '../../data/knowledgeData';
 
-// Filtrujemy tylko pytania FAQ
-const faqs = knowledgeData.filter(item => item.type === 'faq');
+const allFaqs = knowledgeData.filter(item => item.type === 'faq');
+const activeCategoryKeys = [...new Set(allFaqs.map(faq => faq.category))].filter(Boolean);
 
-// Konfiguracja kategorii
+const labelMap = {
+    'all': 'Wszystkie',
+    'ogolne': 'Ogólne',
+    'montaz': 'Montaż',
+    'finanse': 'Finanse i ROI',
+    'zdrowie': 'Zdrowie',
+    'technologia': 'Technologia',
+    'realizacje': 'Realizacje'
+};
+
 const categories = [
-  { id: 'all', label: 'Wszystkie' },
-  { id: 'ogolne', label: 'Ogólne' },
-  { id: 'montaz', label: 'Montaż' },
-  { id: 'finanse', label: 'Finanse' },
-  { id: 'zdrowie', label: 'Zdrowie' },
+    { id: 'all', label: labelMap['all'] },
+    ...activeCategoryKeys.map(key => ({
+        id: key,
+        label: labelMap[key] || key.charAt(0).toUpperCase() + key.slice(1)
+    }))
 ];
 
 const defaultCategory = 'montaz';
 
-// Dane strukturalne dla Google
+const stripHtml = (html) => html.replace(/<[^>]*>?/gm, '');
 const schemaData = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  "mainEntity": faqs.map(faq => ({
+  "mainEntity": allFaqs.map(faq => ({
     "@type": "Question",
     "name": faq.title,
-    "acceptedAnswer": { "@type": "Answer", "text": faq.answer }
+    "acceptedAnswer": { "@type": "Answer", "text": stripHtml(faq.answer) }
   }))
 };
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
 
-<!-- Kontener główny - usunięto <section> i paddingi, aby komponent wypełniał kolumnę gridu -->
 <div id="faq-section" class="w-full">
-  
-  <!-- Nagłówek sekcji i taby -->
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
       <h2 class="text-lg font-bold text-airtur-dark uppercase tracking-tight">Szybkie odpowiedzi</h2>
 
-      <div class="flex flex-wrap gap-1.5" id="faq-tabs">
+      <nav class="flex flex-wrap gap-1.5" id="faq-tabs" aria-label="Filtrowanie FAQ">
       {categories.map((cat) => (
           <button 
-            class={`faq-tab-btn px-3 py-1 rounded-full text-[10px] font-bold border transition-all duration-300 ${cat.id === defaultCategory ? 'active bg-airtur-blue text-white border-airtur-blue' : 'bg-white text-gray-400 border-gray-100 hover:border-airtur-blue hover:text-airtur-blue'}`}
+            class:list={[
+              "faq-tab-btn px-3 py-1 rounded-full text-[10px] font-bold border transition-all duration-300",
+              cat.id === defaultCategory 
+                ? "active bg-airtur-blue text-white border-airtur-blue shadow-sm" 
+                : "bg-white text-gray-400 border-gray-100 hover:border-airtur-blue hover:text-airtur-blue"
+            ]}
             data-category={cat.id}
           >
             {cat.label}
           </button>
       ))}
-      </div>
+      </nav>
   </div>
 
-  <!-- Lista pytań -->
   <div class="space-y-2.5" id="faq-container">
-    {faqs.map((faq) => (
+    {allFaqs.map((faq) => (
       <div 
           id={faq.id} 
-          class={`faq-item border border-gray-100 rounded-xl overflow-hidden transition-all duration-300 hover:border-airtur-blue/30 bg-white shadow-sm scroll-mt-32 ${defaultCategory !== 'all' && faq.category !== defaultCategory ? 'hidden' : ''}`} 
+          class:list={[
+            "faq-item border border-gray-100 rounded-xl overflow-hidden transition-all duration-300 hover:border-airtur-blue/30 bg-white shadow-sm scroll-mt-32",
+            faq.category !== defaultCategory ? 'hidden' : ''
+          ]} 
           data-category={faq.category}
+          data-state="closed"
       >
-        <button class="faq-toggle w-full flex justify-between items-center p-4 text-left focus:outline-none group">
+        <button 
+            class="faq-toggle w-full flex justify-between items-center p-4 text-left focus:outline-none group"
+            aria-expanded="false"
+            aria-controls={`content-${faq.id}`}
+        >
           <span class="text-sm font-bold text-airtur-dark group-hover:text-airtur-blue pr-4 leading-snug">{faq.title}</span>
           <div class="relative w-4 h-4 flex items-center justify-center text-airtur-blue flex-shrink-0">
-            <span class="absolute w-full h-0.5 bg-current transform transition-transform duration-300 icon-horizontal"></span>
+            <span class="absolute w-full h-0.5 bg-current transform transition-transform duration-300"></span>
             <span class="absolute h-full w-0.5 bg-current transform transition-transform duration-300 icon-vertical"></span>
           </div>
         </button>
-        <div class="faq-answer max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-          <div class="p-4 pt-0 text-xs text-gray-500 leading-relaxed border-t border-transparent" set:html={faq.answer}></div>
+        <div 
+            id={`content-${faq.id}`}
+            class="faq-answer overflow-hidden transition-[max-height] duration-500 ease-in-out"
+            style="max-height: 0px;"
+            role="region"
+        >
+          <div class="p-4 pt-0 text-xs text-gray-500 leading-relaxed border-t border-transparent content-wrapper">
+              <div set:html={faq.answer}></div>
+          </div>
         </div>
       </div>
     ))}
@@ -73,10 +98,21 @@ const schemaData = {
 </div>
 
 <style is:global>
+  /* Stylizacja stanów poprzez atrybuty - czystszy kod CSS */
+  .faq-item[data-state="open"] {
+    border-color: #0ab3c6; /* airtur-blue */
+    background-color: rgba(240, 249, 255, 0.5); /* blue-50/50 */
+  }
+
+  .faq-item[data-state="open"] .icon-vertical {
+    transform: rotate(90deg);
+    opacity: 0;
+  }
+
   .faq-highlight {
     animation: faqPulse 2.5s ease-out forwards;
-    border-radius: 12px;
   }
+
   @keyframes faqPulse {
     0% { background-color: rgba(10, 179, 198, 0.2); }
     100% { background-color: white; }
@@ -84,103 +120,111 @@ const schemaData = {
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const tabs = document.querySelectorAll('.faq-tab-btn');
-  const items = document.querySelectorAll('.faq-item');
+class FAQEngine {
+  constructor() {
+    this.tabs = document.querySelectorAll('.faq-tab-btn');
+    this.items = document.querySelectorAll('.faq-item');
+    this.init();
+  }
 
-  const filterFaqs = (categoryId) => {
-    tabs.forEach(t => {
-      const target = t as HTMLElement;
-      const isTarget = target.dataset.category === categoryId;
+  init() {
+    // Obsługa Tabów (Filtrowanie)
+    this.tabs.forEach(tab => {
+      tab.addEventListener('click', () => this.filter(tab.dataset.category || 'all'));
+    });
+
+    // Obsługa Akordeonu
+    this.items.forEach(item => {
+      const toggle = item.querySelector('.faq-toggle');
+      toggle?.addEventListener('click', () => this.handleToggle(item));
+    });
+
+    // Eventy zewnętrzne (np. z wyszukiwarki)
+    window.addEventListener('faq-navigate', (e) => {
+      const { hash, category } = e.detail;
+      this.filter(category);
+      setTimeout(() => this.open(hash.replace('#', '')), 200);
+    });
+
+    this.handleInitialState();
+  }
+
+  filter(catId) {
+    this.tabs.forEach(t => {
+      const isTarget = t.dataset.category === catId;
+      // Zarządzanie klasami wizualnymi tabów
       t.classList.toggle('bg-airtur-blue', isTarget);
       t.classList.toggle('text-white', isTarget);
       t.classList.toggle('border-airtur-blue', isTarget);
+      t.classList.toggle('active', isTarget);
       t.classList.toggle('bg-white', !isTarget);
       t.classList.toggle('text-gray-400', !isTarget);
       t.classList.toggle('border-gray-100', !isTarget);
-      t.classList.toggle('active', isTarget);
     });
 
-    items.forEach(item => {
-      if (categoryId === 'all' || (item as HTMLElement).dataset.category === categoryId) {
-        item.classList.remove('hidden');
-      } else {
-        item.classList.add('hidden');
-      }
+    this.items.forEach(item => {
+      const isVisible = catId === 'all' || item.dataset.category === catId;
+      item.classList.toggle('hidden', !isVisible);
+      if (!isVisible) this.close(item); // Zamknij ukrywane elementy
     });
-  };
+  }
 
-  const openFaq = (id) => {
-    const target = document.getElementById(id);
-    if (!target) return;
+  handleToggle(item) {
+    const isOpen = item.getAttribute('data-state') === 'open';
+    isOpen ? this.close(item) : this.open(item.id);
+  }
 
-    document.querySelectorAll('.faq-answer').forEach(ans => {
-        if (ans.parentElement !== target) {
-            (ans as HTMLElement).style.maxHeight = '0px';
-            ans.classList.add('max-h-0');
-            ans.closest('.faq-item')?.classList.remove('bg-blue-50/50', 'border-airtur-blue');
-            const icon = ans.closest('.faq-item')?.querySelector('.icon-vertical');
-            if (icon) icon.classList.remove('rotate-90', 'opacity-0');
-        }
-    });
+  open(id) {
+    const item = document.getElementById(id);
+    if (!item) return;
 
-    const answer = target.querySelector('.faq-answer') as HTMLElement;
-    const iconVert = target.querySelector('.icon-vertical');
+    // Zamknij inne jeśli chcesz tryb "single open" (opcjonalnie)
+    this.items.forEach(i => i !== item && this.close(i));
+
+    const answer = item.querySelector('.faq-answer');
+    const toggle = item.querySelector('.faq-toggle');
+    const wrapper = item.querySelector('.content-wrapper');
+
+    if (!answer || !wrapper) return;
+
+    item.setAttribute('data-state', 'open');
+    toggle?.setAttribute('aria-expanded', 'true');
     
-    if (answer) {
-      answer.classList.remove('max-h-0');
-      answer.style.maxHeight = answer.scrollHeight + 'px';
-      target.classList.add('bg-blue-50/50', 'border-airtur-blue');
-      if (iconVert) iconVert.classList.add('rotate-90', 'opacity-0');
-    }
+    // Klucz do płynności: scrollHeight
+    answer.style.maxHeight = `${wrapper.scrollHeight}px`;
 
+    // Highlight & Scroll
     setTimeout(() => {
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        target.classList.add('faq-highlight');
-        setTimeout(() => target.classList.remove('faq-highlight'), 3000);
-    }, 100);
-  };
+      item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      item.classList.add('faq-highlight');
+      setTimeout(() => item.classList.remove('faq-highlight'), 2000);
+    }, 300);
+  }
 
-  tabs.forEach(tab => tab.addEventListener('click', () => filterFaqs((tab as HTMLElement).dataset.category)));
+  close(item) {
+    const answer = item.querySelector('.faq-answer');
+    const toggle = item.querySelector('.faq-toggle');
 
-  document.querySelectorAll('.faq-toggle').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const item = btn.closest('.faq-item');
-        const answer = btn.nextElementSibling as HTMLElement;
-        const isOpen = !answer.classList.contains('max-h-0');
-        
-        if (isOpen) {
-            answer.style.maxHeight = '0px';
-            answer.classList.add('max-h-0');
-            item?.classList.remove('bg-blue-50/50', 'border-airtur-blue');
-            const icon = item?.querySelector('.icon-vertical');
-            if (icon) icon.classList.remove('rotate-90', 'opacity-0');
-        } else {
-            if (item) openFaq(item.id);
-        }
-    });
-  });
+    if (!answer) return;
 
-  window.addEventListener('faq-navigate', (e: any) => {
-    const { hash, category } = e.detail;
-    const id = hash.replace('#', '');
-    filterFaqs(category);
-    setTimeout(() => openFaq(id), 150);
-  });
+    item.setAttribute('data-state', 'closed');
+    toggle?.setAttribute('aria-expanded', 'false');
+    answer.style.maxHeight = '0px';
+  }
 
-  const handleHashOnLoad = () => {
+  handleInitialState() {
     const hash = window.location.hash;
-    if (hash && hash.startsWith('#faq-')) {
-        const id = hash.substring(1);
-        const item = document.getElementById(id);
-        if (item) {
-            filterFaqs(item.dataset.category);
-            setTimeout(() => openFaq(id), 600);
-        }
+    if (hash?.startsWith('#faq-')) {
+      const id = hash.substring(1);
+      const item = document.getElementById(id);
+      if (item) {
+        this.filter(item.dataset.category || 'all');
+        setTimeout(() => this.open(id), 500);
+      }
     }
-  };
+  }
+}
 
-  window.addEventListener('load', handleHashOnLoad);
-  window.addEventListener('hashchange', handleHashOnLoad);
-});
+// Inicjalizacja po załadowaniu DOM
+document.addEventListener('DOMContentLoaded', () => new FAQEngine());
 </script>

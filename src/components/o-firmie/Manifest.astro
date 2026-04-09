@@ -1,39 +1,35 @@
 ---
-// src/components/o-firmie/Manifest.astro
+// [LOGIKA]: ID sekcji to "manifest", zsynchronizowane z pages i HeroO.
 ---
+<section 
+  id="manifest" 
+  class="bg-white pt-8 md:pt-12 pb-12 md:pb-16" 
+  aria-labelledby="manifest-title"
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-16 h-1.5 bg-airtur-blue mb-8 rounded-full" aria-hidden="true"></div>
 
-<section id="historia" class="bg-white py-20 md:py-28">
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-    
-    <!-- Ozdobna linia / akcent - teraz po lewej -->
-    <div class="w-20 h-1 bg-airtur-blue mb-10 rounded-full"></div>
-
-    <!-- NAGŁÓWEK H2 - Wyrównany do lewej -->
-    <h2 class="text-3xl md:text-4xl font-bold text-airtur-dark mb-10 leading-tight text-left">
-      Dlaczego kontrola i&nbsp;porządek są dla nas najważniejsze?
+    <h2 id="manifest-title" class="text-3xl md:text-5xl lg:text-6xl font-black text-airtur-dark mb-10 leading-[1.1] tracking-tight text-balance">
+      Dlaczego rzetelność oraz <span class="text-airtur-blue">porządek są dla nas kluczowe?</span>
     </h2>
 
-    <!-- TREŚĆ MANIFESTU - Wyrównana do lewej -->
-    <div class="text-lg md:text-xl text-gray-600 leading-relaxed space-y-8 font-light text-left">
-      
+    <div class="text-lg md:text-xl text-gray-500 leading-relaxed space-y-8 font-medium text-pretty">
       <p>
-        "Przez lata zdobywałem doświadczenie na&nbsp;jednych z&nbsp;najbardziej wymagających rynków w&nbsp;Europie. Niemcy nauczyły mnie, że termin to świętość. Austria pokazała, że po&nbsp;skończonej pracy miejsce montażu musi lśnić czystością. Francja – że technologia musi służyć człowiekowi.
+        "Przez lata zdobywałem doświadczenie na jednych z najbardziej wymagających rynków w Europie. W Niemczech nauczyłem się, że ustalony termin jest wiążący. W Austrii zobaczyłem, że porządek po zakończonej pracy to standard, a nie opcja dodatkowa. Francja z kolei pokazała mi, jak nowoczesna technologia powinna realnie ułatwiać codzienne życie.
       </p>
 
       <p>
-        To był czas intensywnej nauki. Realizowałem setki instalacji – od&nbsp;domów prywatnych po&nbsp;zaawansowane systemy przemysłowe. Jednak w&nbsp;sercu zawsze nosiłem plan powrotu. Chciałem przenieść te standardy tutaj, do&nbsp;moich rodzinnych stron.
+        To był czas intensywnej nauki. Realizowałem setki instalacji – od domów prywatnych po zaawansowane systemy przemysłowe, jednak w sercu zawsze nosiłem plan powrotu. Wróciłem w rodzinne strony z jednym celem: chciałem przenieść te sprawdzone wzorce tutaj, do Małopolski.
       </p>
 
-      <p class="font-medium text-airtur-dark text-xl md:text-2xl border-l-4 border-airtur-blue pl-6 italic">
-        Tak narodziło się AirTUR. Firma, która nie idzie na&nbsp;kompromisy. Stworzyłem ją, bo&nbsp;wierzę, że Małopolska zasługuje na&nbsp;jakość, która na&nbsp;Zachodzie jest normą. Nie jesteśmy tylko instalatorami. Jesteśmy architektami Twojego spokoju."
-      </p>
-
+      <blockquote class="relative border-l-4 border-airtur-blue pl-8 py-2 text-airtur-dark font-black text-2xl md:text-3xl lg:text-4xl italic tracking-tight">
+        Tak narodziło się AirTUR. Firma, która stawia na konkret i jakość, bez dróg na skróty."
+      </blockquote>
     </div>
 
-    <!-- Podpis - zostawiamy po prawej dla równowagi -->
-    <div class="mt-12 text-right">
-      <p class="font-bold text-airtur-dark">Założyciel AirTUR</p>
-    </div>
-
+    <footer class="mt-12 text-right">
+      <p class="font-black text-airtur-dark uppercase tracking-[0.2em] text-sm md:text-base">Krzysztof Turek</p>
+      <p class="text-gray-400 text-xs md:text-sm italic mt-1 font-medium">Założyciel AirTUR</p>
+    </footer>
   </div>
 </section>

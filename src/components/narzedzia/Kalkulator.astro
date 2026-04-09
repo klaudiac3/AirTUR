@@ -1,7 +1,5 @@
 ---
 // src/components/narzedzia/Kalkulator.astro
-
-// Importujemy poszczególne kroki
 import Step1 from './kalkulator/Step1.astro';
 import Step2 from './kalkulator/Step2.astro';
 import Step3 from './kalkulator/Step3.astro';
@@ -9,11 +7,8 @@ import Step4 from './kalkulator/Step4.astro';
 ---
 
 <section id="kalkulator-app" class="relative bg-white min-h-[600px] transition-all duration-300 pb-24 scroll-mt-24">
-  
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    
     <div class="relative pt-8">
-        
         <Step1 />
         <Step2 />
         <Step3 />
@@ -32,567 +27,615 @@ import Step4 from './kalkulator/Step4.astro';
             <h3 class="text-xl font-bold text-airtur-dark mb-1 animate-pulse">Przetwarzanie danych...</h3>
             <p class="text-sm text-gray-500">Analiza fizyki budynku i kosztów energii</p>
         </div>
-
     </div>
-
   </div>
 </section>
 
+<div id="error-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] pointer-events-none opacity-0 translate-y-10 transition-all duration-500">
+  <div class="bg-airtur-dark text-white px-8 py-5 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10 flex items-center gap-5 min-w-[320px]">
+    <div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center shrink-0 shadow-lg animate-pulse">
+      <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M6 18L18 6M6 6l12 12" /></svg>
+    </div>
+    <div class="flex flex-col text-left">
+      <span class="text-[10px] font-black uppercase tracking-[0.2em] text-airtur-blue">Uwaga</span>
+      <span id="error-toast-message" class="text-sm font-bold tracking-tight text-white">Proszę wybrać opcję.</span>
+    </div>
+  </div>
+</div>
+
 <script>
-  // IMPORT Z PLIKU KONFIGURACYJNEGO
   import { models, MARKET_DATA, selectThreeModels, TIERS, transitionContent } from './kalkulator/models.js';
 
   document.addEventListener('DOMContentLoaded', () => {
 
-    // --- STAN APLIKACJI ---
-    let state = {
+    // ============================================================
+    // 1. CENTRALNY STAN
+    // ============================================================
+    const state = {
+      currentStep: 0,
       buildingType: '',
       buildingFactor: 1.0,
       goal: '',
-      area: 25,          
-      sunFactor: 0.10,   
-      peopleLoad: 0,     
+      area: 25,
+      sunFactor: 0.10,
+      peopleLoad: 0,
       calculatedPower: 0,
-      billAmount: 800,   
-      
-      selectedFuel: null, 
-      comfortLevel: 'standard', 
-      
-      // Nowe pola do obsługi 3 modeli
+      billAmount: 800,
+      selectedFuel: null,
+      comfortLevel: 'standard',
       selectedModels: { eco: null, smart: null, premium: null },
-      activeModelKey: 'smart', // Domyślnie wybieramy środkowy (To nasz TIER)
-      
-      recommendedModel: '', 
-      recommendedDesc: '', 
-      
+      activeModelKey: 'smart',
+      recommendedModel: '',
+      recommendedDesc: '',
       savingsYear: 0,
       savings5Years: 0,
       savings10Years: 0
     };
 
-    // --- ELEMENTY DOM ---
-    const steps = [
-      document.getElementById('step-1'),
-      document.getElementById('step-2'),
-      document.getElementById('step-3'),
-      document.getElementById('step-4')
-    ];
-    const stepLoading = document.getElementById('step-loading');
-    const progressLine = document.getElementById('progress-line');
-    const appContainer = document.getElementById('kalkulator-app'); 
-
     // ============================================================
-    // 1. SYNCHRONIZACJA Z FORMULARZEM
+    // 2. REFERENCJE DOM
     // ============================================================
-    function syncWithConversionForm() {
-        const goalBtn = document.querySelector(`.goal-btn[data-goal="${state.goal}"]`);
-        const goalLabel = goalBtn ? goalBtn.innerText.split('\n')[0] : state.goal; 
-        
-        const fuelData = state.selectedFuel ? MARKET_DATA.fuels[state.selectedFuel] : null;
-        const fuelName = fuelData ? fuelData.name : 'Nieznane';
-
-        let sunLabel = "Średnie";
-        if(state.sunFactor === 0.08) sunLabel = "Niskie";
-        if(state.sunFactor === 0.13) sunLabel = "Wysokie";
-
-        let comfortLabel = "Standardowy (21°C)";
-        if(state.comfortLevel === 'low') comfortLabel = "Oszczędny (<20°C)";
-        if(state.comfortLevel === 'high') comfortLabel = "Wysoki (>22°C)";
-
-        const setVal = (selector, val) => {
-            document.querySelectorAll(selector).forEach(el => el.value = val);
-        };
-
-        setVal('.calc-field-area', state.area + " m²"); 
-        setVal('.calc-field-power', state.calculatedPower + " kW");
-        setVal('.calc-field-goal', goalLabel);
-        
-        setVal('.calc-field-savings', state.savingsYear + " zł");
-        setVal('.calc-field-savings5', state.savings5Years + " zł");   
-        setVal('.calc-field-savings10', state.savings10Years + " zł"); 
-
-        // 🔥 KLUCZOWA ZMIANA: Wysyłamy nie tylko nazwę, ale i wybrany TIER (eco/smart/premium)
-        setVal('.calc-field-model', state.recommendedModel);
-        setVal('.calc-field-tier', state.activeModelKey);
-        
-        setVal('.calc-field-explanation', state.recommendedDesc);
-
-        setVal('.calc-field-bill', state.billAmount + " zł");
-        setVal('.calc-field-fuel', fuelName);
-        setVal('.calc-field-comfort', comfortLabel);
-        setVal('.calc-field-sun', sunLabel);
-        setVal('.calc-field-people', state.peopleLoad > 0 ? "3+" : "1-2");
-        setVal('.calc-field-building', state.buildingType ? state.buildingType.toUpperCase() : '');
-    }
-
-    // ============================================================
-    // 2. NAWIGACJA I UI - PROFESJONALNY SCROLL
-    // ============================================================
-    
-    function scrollToTop() {
-        if (appContainer) {
-            setTimeout(() => {
-                appContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 50); 
-        }
-    }
-
-    function goToStep(stepIndex) {
-      if(!steps[stepIndex]) return;
-      steps.forEach(s => s && s.classList.add('hidden'));
-      steps[stepIndex].classList.remove('hidden');
-      scrollToTop();
-      updateProgress(stepIndex + 1);
-    }
-
-    function updateProgress(stepNumber) {
-      if(progressLine) {
-          if(stepNumber === 1) progressLine.style.width = '0%';
-          if(stepNumber === 2) progressLine.style.width = '50%';
-          if(stepNumber >= 3) progressLine.style.width = '100%';
-      }
-      const circles = document.querySelectorAll('.w-10.h-10.rounded-full'); 
-      circles.forEach((circle, idx) => {
-          if(idx + 1 <= stepNumber || (stepNumber === 4 && idx === 2)) {
-              circle.classList.remove('bg-white', 'text-gray-400', 'border-2', 'border-gray-200');
-              circle.classList.add('bg-airtur-blue', 'text-white');
-          } else {
-              circle.classList.remove('bg-airtur-blue', 'text-white');
-              circle.classList.add('bg-white', 'text-gray-400', 'border-2', 'border-gray-200');
-          }
-      });
-    }
-
-    document.querySelectorAll('.back-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-          const prevStep = parseInt(btn.dataset.prev);
-          goToStep(prevStep - 1);
-      });
-    });
-
-    document.querySelectorAll('.reset-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-          if(confirm("Czy na pewno chcesz zresetować kalkulator i zacząć od początku?")) {
-              location.reload(); 
-          }
-      });
-    });
-
-    const scrollToElement = (element) => {
-        if(element) {
-            setTimeout(() => {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 300);
-        }
+    const dom = {
+      steps: [
+        document.getElementById('step-1'),
+        document.getElementById('step-2'),
+        document.getElementById('step-3'),
+        document.getElementById('step-4')
+      ],
+      loader: document.getElementById('step-loading'),
+      progressLine: document.getElementById('progress-line'),
+      appContainer: document.getElementById('kalkulator-app'),
+      toast: document.getElementById('error-toast'),
+      toastMsg: document.getElementById('error-toast-message')
     };
 
-    // Obsługa Inputów Step 2
-    document.querySelectorAll('input[name="sun"]').forEach(r => {
-      r.addEventListener('change', (e) => { 
-          state.sunFactor = parseFloat(e.target.value);
-          updateSunDescription(state.sunFactor);
-          const peopleContainer = document.querySelector('input[name="people"]')?.closest('.mb-10');
-          scrollToElement(peopleContainer);
-      });
-    });
-
-    document.querySelectorAll('input[name="people"]').forEach(r => {
-      r.addEventListener('change', (e) => { 
-          state.peopleLoad = parseFloat(e.target.value); 
-          const calcBtn = document.getElementById('calculate-btn');
-          scrollToElement(calcBtn);
-      });
-    });
-
-    // Obsługa Inputów Step 3
-    const heatBtns = document.querySelectorAll('.heat-btn');
-    heatBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-          heatBtns.forEach(b => {
-              b.classList.remove('border-airtur-blue', 'bg-blue-50');
-              b.classList.add('border-gray-200');
-          });
-          btn.classList.remove('border-gray-200');
-          btn.classList.add('border-airtur-blue', 'bg-blue-50');
-          state.selectedFuel = btn.dataset.fuel;
-          
-          const comfortContainer = document.querySelector('input[name="comfort"]')?.closest('.mb-12');
-          scrollToElement(comfortContainer);
-      });
-    });
-
-    const comfortRadios = document.querySelectorAll('input[name="comfort"]');
-    comfortRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            state.comfortLevel = e.target.value;
-            const roiBtn = document.getElementById('roi-btn');
-            scrollToElement(roiBtn);
-        });
-    });
-
-
     // ============================================================
-    // 3. LOGIKA KROKU 1 (PROFIL BUDYNKU)
+    // 3. UTILS (ULTRA UX & GUARDS)
     // ============================================================
-    const typeBtns = document.querySelectorAll('.type-btn');
-    const goalBtns = document.querySelectorAll('.goal-btn');
-
-    typeBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-          typeBtns.forEach(b => {
-              b.classList.remove('border-airtur-blue', 'bg-blue-50');
-              b.classList.add('border-gray-200');
-              b.querySelector('svg')?.classList.remove('text-airtur-blue');
-              b.querySelector('svg')?.classList.add('text-gray-400');
-          });
-          btn.classList.remove('border-gray-200');
-          btn.classList.add('border-airtur-blue', 'bg-blue-50');
-          btn.querySelector('svg')?.classList.remove('text-gray-400');
-          btn.querySelector('svg')?.classList.add('text-airtur-blue');
-          
-          state.buildingType = btn.dataset.value;
-          state.buildingFactor = parseFloat(btn.dataset.factor);
-          
-          const goalSection = document.querySelector('.goal-btn')?.closest('div')?.parentElement;
-          scrollToElement(goalSection);
-
-          checkStep1Completion();
-      });
-    });
-
-    goalBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-          if(!state.buildingType) {
-              alert("Proszę najpierw wybrać typ budynku.");
-              return;
-          }
-          goalBtns.forEach(b => {
-              b.classList.remove('border-airtur-blue', 'bg-blue-50');
-              b.classList.add('border-gray-200');
-          });
-          btn.classList.remove('border-gray-200');
-          btn.classList.add('border-airtur-blue', 'bg-blue-50');
-          state.goal = btn.dataset.goal;
-          checkStep1Completion();
-      });
-    });
-
-    function checkStep1Completion() {
-      if(state.buildingType && state.goal) {
-          steps[0].classList.add('hidden');
-          if(stepLoading) {
-              stepLoading.classList.remove('hidden');
-              stepLoading.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-          
-          setTimeout(() => {
-              if(stepLoading) stepLoading.classList.add('hidden');
-              setupStep2Defaults();
-              goToStep(1); 
-          }, 1000); 
-      }
+    function showAirTurError(message) {
+      if (dom.toastMsg) dom.toastMsg.innerText = message;
+      dom.toast?.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+      setTimeout(() => dom.toast?.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none'), 3000);
     }
 
-    // ============================================================
-    // 4. LOGIKA KROKU 2 (DOBÓR MOCY) - NOWA OBSŁUGA KART
-    // ============================================================
-    function setupStep2Defaults() {
-      const sunRadios = document.querySelectorAll('input[name="sun"]');
-      sunRadios.forEach(r => { if(r.value === "0.10") r.checked = true; });
-      if(state.buildingType === 'poddasze') {
-          sunRadios.forEach(r => { if(r.value === "0.13") r.click(); });
-      } else {
-          updateSunDescription(0.10);
-      }
+    let isAutoScrolling = false;
+
+    function isInViewport(el) {
+      if (!el) return false;
+      const rect = el.getBoundingClientRect();
+      return rect.top >= 0 && rect.top <= window.innerHeight * 0.6;
     }
-    
+
+    function scrollToElement(el, position = 'center') {
+      if (!el || isInViewport(el) || isAutoScrolling) return;
+      isAutoScrolling = true;
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: 'smooth', block: position });
+        setTimeout(() => { isAutoScrolling = false; }, 600);
+      }, 200);
+    }
+
+    function highlight(el) {
+      if (!el) return;
+      el.classList.add('ring-4', 'ring-airtur-blue/40', 'transition-all', 'duration-500', 'rounded-2xl');
+      setTimeout(() => {
+        el.classList.remove('ring-4', 'ring-airtur-blue/40');
+      }, 1200);
+    }
+
+    // PRZYWRÓCONE: Opisy nasłonecznienia
     function updateSunDescription(factor) {
         const desc = document.getElementById('sun-desc');
         if(desc) {
             if(factor === 0.08) desc.innerText = "Okna od północy/wschodu, parter, dobra izolacja.";
-            if(factor === 0.10) desc.innerText = "Okna od zachodu, standardowe mieszkanie.";
-            if(factor === 0.13) desc.innerText = "Okna od południa, duże przeszklenia, poddasze.";
+            else if(factor === 0.10) desc.innerText = "Okna od zachodu, standardowe mieszkanie.";
+            else if(factor === 0.13) desc.innerText = "Okna od południa, duże przeszklenia, poddasze.";
         }
     }
 
-    const areaSlider = document.getElementById('area-slider');
-    const areaInput = document.getElementById('area-input');
-    
-    areaSlider?.addEventListener('input', (e) => {
-      if(areaInput) areaInput.value = e.target.value;
-      state.area = parseInt(e.target.value);
-    });
-    areaInput?.addEventListener('input', (e) => {
-      let val = parseInt(e.target.value);
-      if(val > 500) val = 500; 
-      if(val < 10) val = 10;
-      if(areaSlider) areaSlider.value = val;
-      state.area = val;
-    });
+    function syncWithConversionForm() {
+      const setVal = (selector, val) => {
+        document.querySelectorAll(selector).forEach(el => (el as HTMLInputElement).value = String(val));
+      };
+      const goalBtn = document.querySelector(`.goal-btn[data-goal="${state.goal}"]`) as HTMLElement;
+      // Zamiast ucinać po enterze, zamieniamy wszystkie entery i podwójne spacje na jedną spację
+      const goalLabel = goalBtn ? goalBtn.innerText.replace(/\s+/g, ' ').trim() : state.goal;
+      const fuelName = state.selectedFuel ? MARKET_DATA.fuels[state.selectedFuel]?.name : 'Nieznane';
+      const sunLabel = state.sunFactor === 0.08 ? "Niskie" : (state.sunFactor === 0.13 ? "Wysokie" : "Średnie");
+      const comfortLabels = { low: "Oszczędny (<20°C)", standard: "Standardowy (21°C)", high: "Wysoki (>22°C)" };
 
-    document.getElementById('calculate-btn')?.addEventListener('click', () => {
-      let basePower = (state.area * state.sunFactor) + state.peopleLoad;
-      let finalPower = basePower * state.buildingFactor;
-      state.calculatedPower = finalPower.toFixed(1);
+      setVal('.calc-field-area', `${state.area} m²`);
+      setVal('.calc-field-power', `${state.calculatedPower} kW`);
+      setVal('.calc-field-goal', goalLabel);
+      setVal('.calc-field-savings', `${state.savingsYear} zł`);
+      setVal('.calc-field-savings5', `${state.savings5Years} zł`);
+      setVal('.calc-field-savings10', `${state.savings10Years} zł`);
+      setVal('.calc-field-model', state.recommendedModel);
+      setVal('.calc-field-tier', state.activeModelKey);
+      setVal('.calc-field-explanation', state.recommendedDesc);
+      setVal('.calc-field-bill', `${state.billAmount} zł`);
+      setVal('.calc-field-fuel', fuelName);
+      setVal('.calc-field-comfort', comfortLabels[state.comfortLevel]);
+      setVal('.calc-field-sun', sunLabel);
 
+      const isMultiInput = document.querySelector('input[name="isMultisplit"]');
+if (isMultiInput) isMultiInput.value = state.isMultisplit ? 'true' : 'false';
+
+      // Mapujemy dokładne wartości matematyczne na etykiety tekstowe
+      const peopleLabels = { 0: "1-2 osoby", 0.3: "3-4 osoby", 0.6: "5+ osób" };
+      setVal('.calc-field-people', peopleLabels[state.peopleLoad] || "1-2 osoby");
+      setVal('.calc-field-building', state.buildingType ? state.buildingType.toUpperCase() : '');
+    }
+
+    // ============================================================
+    // 4. NAWIGACJA
+    // ============================================================
+    function goToStep(index) {
+      if (!dom.steps[index]) return;
+      state.currentStep = index;
+      
+      dom.steps.forEach((s, i) => {
+        if (!s) return;
+        if (i === index) {
+          s.classList.remove('hidden');
+          void s.offsetWidth; 
+          s.classList.add('animate-fade-in');
+        } else {
+          s.classList.add('hidden');
+          s.classList.remove('animate-fade-in');
+        }
+      });
+      updateProgressUI(index + 1);
+      scrollToElement(dom.appContainer, 'start');
+    }
+
+    function updateProgressUI(stepNumber) {
+      if (dom.progressLine) {
+        dom.progressLine.style.width = `${((stepNumber - 1) / (dom.steps.length - 1)) * 100}%`;
+      }
+      const nodes = document.querySelectorAll('.step-node');
+      const labels = document.querySelectorAll('.step-label');
+
+      nodes.forEach((node, idx) => {
+        const isCurrentOrPast = (idx + 1) <= stepNumber;
+        if (isCurrentOrPast) {
+          node.classList.add('bg-airtur-blue', 'text-white', 'shadow-xl', 'ring-4', 'ring-white');
+          node.classList.remove('bg-white', 'text-gray-400', 'border-2', 'border-gray-100', 'shadow-sm');
+          if (labels[idx]) {
+            labels[idx].classList.remove('text-gray-400');
+            labels[idx].classList.add('text-airtur-dark', 'bg-white/50');
+          }
+        } else {
+          node.classList.remove('bg-airtur-blue', 'text-white', 'shadow-xl', 'ring-4', 'ring-white');
+          node.classList.add('bg-white', 'text-gray-400', 'border-2', 'border-gray-100', 'shadow-sm');
+          if (labels[idx]) {
+            labels[idx].classList.remove('text-airtur-dark', 'bg-white/50');
+            labels[idx].classList.add('text-gray-400');
+          }
+        }
+      });
+    }
+
+    // ============================================================
+    // 5. OBLICZENIA I MODELE
+    // ============================================================
+    function setupStep2Defaults() {
+      const sunRadios = document.querySelectorAll('input[name="sun"]');
+      sunRadios.forEach(r => { if((r as HTMLInputElement).value === "0.10") (r as HTMLInputElement).checked = true; });
+      updateSunDescription(0.10); // Auto update teksu
+
+      if(state.buildingType === 'poddasze') {
+        sunRadios.forEach(r => { if((r as HTMLInputElement).value === "0.13") (r as HTMLElement).click(); });
+      }
+    }
+
+    function calculatePowerAndModels() {
+      const basePower = (state.area * state.sunFactor) + state.peopleLoad;
+      state.calculatedPower = (basePower * state.buildingFactor).toFixed(1);
+      
       const tempRes = document.getElementById('temp-result-power');
-      if(tempRes) tempRes.innerText = state.calculatedPower;
-      
-      calculateAndShow3Models();
+      if (tempRes) tempRes.innerText = state.calculatedPower;
 
-      const interResult = document.getElementById('intermediate-result');
-      if(interResult) {
-          interResult.classList.remove('hidden');
-          interResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const p = parseFloat(state.calculatedPower);
+      
+      // Tworzenie banera Multi Split (w locie) jeśli go jeszcze nie ma
+      const ecoCard = document.getElementById('card-eco');
+      let multiBox = document.getElementById('multisplit-box');
+      
+      if (!multiBox && ecoCard) {
+          multiBox = document.createElement('div');
+          multiBox.id = 'multisplit-box';
+          // Stylizujemy to na piękny, szeroki baner Premium
+          multiBox.className = 'col-span-full bg-airtur-dark text-white p-8 md:p-10 rounded-[2rem] text-center border border-airtur-blue shadow-2xl mb-6 hidden';
+          multiBox.innerHTML = `
+              <h3 class="text-2xl font-black text-airtur-blue mb-4">System Multi Split</h3>
+              <p class="text-gray-300 leading-relaxed mb-4 text-sm md:text-base">Twój metraż i zapotrzebowanie na moc (<strong>${state.calculatedPower} kW</strong>) przekracza możliwości standardowych, pojedynczych klimatyzatorów ściennych. Zastosowanie jednego potężnego urządzenia wygenerowałoby uciążliwy hałas i nieprzyjemne przeciągi.</p>
+              <p class="text-white leading-relaxed font-bold text-sm md:text-base bg-white/10 p-4 rounded-xl border border-white/20">Rekomendujemy dyskretny system Multi Split (jeden cichy agregat na zewnątrz zasilający kilka jednostek wewnątrz). Taka konfiguracja wymaga indywidualnego projektu, dlatego naszą wycenę przygotujemy dla Ciebie osobiście.</p>
+          `;
+          ecoCard.parentNode.insertBefore(multiBox, ecoCard);
+      } else if (multiBox) {
+          // Aktualizacja mocy w tekście, jeśli klient zmienił suwak i przeliczył ponownie
+          multiBox.querySelector('strong').innerText = `${state.calculatedPower} kW`;
       }
 
-      syncWithConversionForm();
-    });
-
-    document.getElementById('go-to-roi-btn')?.addEventListener('click', () => {
-        goToStep(2);
-    });
-
-    // ============================================================
-    // OBSŁUGA KLIKNIĘĆ W KARTY MODELI (Step 2)
-    // ============================================================
-    function activateCard(cardType) {
-        const cards = ['eco', 'smart', 'premium'];
-        cards.forEach(type => {
-            const cardEl = document.getElementById(`card-${type}`);
-            if(cardEl) {
-                if(type === cardType) {
-                    cardEl.classList.add('ring-4', 'ring-airtur-blue/50');
-                } else {
-                    cardEl.classList.remove('ring-4', 'ring-airtur-blue/50');
-                }
-            }
-        });
-
-        // 🔥 To jest krytyczne: zapisujemy, że wybrał 'eco', 'smart' lub 'premium'
-        state.activeModelKey = cardType;
-        const selectedModel = state.selectedModels[cardType];
-        
-        if (selectedModel) {
-            state.recommendedModel = selectedModel.name;
-            state.recommendedDesc = selectedModel.desc;
-            
-            const finalModelName = document.getElementById('final-model-name');
-            if(finalModelName) finalModelName.innerText = selectedModel.name;
-        }
-        syncWithConversionForm();
-    }
-
-    ['eco', 'smart', 'premium'].forEach(type => {
-        const card = document.getElementById(`card-${type}`);
-        if(card) {
-            card.addEventListener('click', () => activateCard(type));
-            card.style.cursor = 'pointer'; 
-        }
-    });
-
-
-    // ============================================================
-    // 5. LOGIKA KROKU 3 (FINANSE)
-    // ============================================================
-    const billSlider = document.getElementById('bill-slider');
-    const billInput = document.getElementById('bill-input');
-
-    billSlider?.addEventListener('input', (e) => {
-      if(billInput) billInput.value = e.target.value;
-      state.billAmount = parseInt(e.target.value);
-    });
-    billInput?.addEventListener('input', (e) => {
-      let val = parseInt(e.target.value);
-      if(val > 10000) val = 10000;
-      if(val < 100) val = 100;
-      if(billSlider) billSlider.value = val;
-      state.billAmount = val;
-    });
-
-    document.getElementById('roi-btn')?.addEventListener('click', () => {
-      if(!state.selectedFuel) {
-          alert("Proszę wybrać obecne źródło ogrzewania.");
-          return;
-      }
-      calculateAdvancedFinancials(); 
-      syncWithConversionForm();
-      
-      populateStep4Table();
-
-      goToStep(3);
-      
-      setTimeout(() => {
-          const step4 = document.getElementById('step-4');
-          if (step4) {
-              step4.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-      }, 1200);
-    });
-
-    // ============================================================
-    // 6. NOWE FUNKCJE BIZNESOWE (3 MODELE)
-    // ============================================================
-    
-    function calculateAndShow3Models() {
-      const power = parseFloat(state.calculatedPower);
-      let basket = '2.5';
-      
-      if(power <= 2.8) basket = '2.5';
-      else if(power <= 3.8) basket = '3.5';
-      else if(power <= 5.5) basket = '5.0';
-      else if(power <= 7.2) basket = '7.0';
-      else basket = '7.0'; 
-
-      let availableModels = [];
-      
-      if (typeof models !== 'undefined' && models[state.goal] && models[state.goal][basket]) {
-         availableModels = models[state.goal][basket];
+      // 🔥 LOGIKA DECYZYJNA: MULTI SPLIT CZY STANDARD?
+      if (p > 7.2) {
+          state.isMultisplit = true;
+          state.recommendedModel = 'Indywidualny System Multi Split';
+          state.activeModelKey = 'multisplit';
+          state.recommendedDesc = 'Zaprojektujemy optymalne rozmieszczenie jednostek dla Twojej przestrzeni, gwarantując ciszę i brak stref zimna.';
+          
+          // Ukrywamy 3 karty, pokazujemy baner
+          ['eco', 'smart', 'premium'].forEach(k => document.getElementById(`card-${k}`)?.classList.add('hidden'));
+          if (multiBox) multiBox.classList.remove('hidden');
+          
       } else {
-         availableModels = [
-             { name: 'Model Podstawowy', desc: 'Opis...', cat: 'Standard' },
-             { name: 'Model Ekspert', desc: 'Opis...', cat: 'Złoty Środek' },
-             { name: 'Model Premium', desc: 'Opis...', cat: 'Premium' }
-         ];
+          state.isMultisplit = false;
+          
+          // Pokazujemy 3 karty, ukrywamy baner
+          ['eco', 'smart', 'premium'].forEach(k => document.getElementById(`card-${k}`)?.classList.remove('hidden'));
+          if (multiBox) multiBox.classList.add('hidden');
+
+          // Standardowe dobieranie modeli
+          let basket = '2.5';
+          if (p <= 2.8) basket = '2.5';
+          else if (p <= 3.8) basket = '3.5';
+          else if (p <= 5.5) basket = '5.0';
+          else basket = '7.0';
+
+          const available = models[state.goal]?.[basket] || [];
+          state.selectedModels = selectThreeModels(available);
+
+          ['eco', 'smart', 'premium'].forEach(key => {
+            const m = state.selectedModels[key];
+            if (m) {
+              const nameEl = document.getElementById(`model-${key}-name`);
+              const descEl = document.getElementById(`model-${key}-desc`);
+              if (nameEl) nameEl.innerText = m.name;
+              if (descEl) descEl.innerText = m.desc;
+            }
+          });
+          
+          activateModelCard('smart'); // Domyślny wybór na froncie
       }
 
-      const selection = selectThreeModels(availableModels);
-      state.selectedModels = selection;
-
-      if(selection.eco) {
-          const elName = document.getElementById('model-eco-name');
-          const elDesc = document.getElementById('model-eco-desc');
-          if(elName) elName.innerText = selection.eco.name;
-          if(elDesc) elDesc.innerText = selection.eco.desc;
-      }
-      if(selection.smart) {
-          const elName = document.getElementById('model-smart-name');
-          const elDesc = document.getElementById('model-smart-desc');
-          if(elName) elName.innerText = selection.smart.name;
-          if(elDesc) elDesc.innerText = selection.smart.desc;
-      }
-      if(selection.premium) {
-          const elName = document.getElementById('model-premium-name');
-          const elDesc = document.getElementById('model-premium-desc');
-          if(elName) elName.innerText = selection.premium.name;
-          if(elDesc) elDesc.innerText = selection.premium.desc;
-      }
-
-      activateCard('smart');
+      // Zawsze synchronizujemy z ukrytym formularzem i odkrywamy wyniki
+      syncWithConversionForm();
+      document.getElementById('intermediate-result')?.classList.remove('hidden');
     }
 
-    function populateStep4Table() {
-        const { eco, smart, premium } = state.selectedModels;
-        
-        const fillText = (id, text) => {
-            const el = document.getElementById(id);
-            if(el) el.innerText = text || '-';
-        };
-
-        fillText('summary-area', `${state.area} m²`);
-        let sunTxt = "Standardowe";
-        if(state.sunFactor === 0.08) sunTxt = "Niskie";
-        if(state.sunFactor === 0.13) sunTxt = "Wysokie";
-        fillText('summary-sun', sunTxt);
-        fillText('summary-power', `${state.calculatedPower} kW`); 
-
-        const content = transitionContent[state.goal];
-        if (content) {
-            fillText('transition-headline', content.headline);
-            fillText('transition-subtext', content.subtext);
-        }
-
-        if(eco) {
-            fillText('table-eco-name', eco.name);
-            fillText('table-eco-energy', eco.energy_class);
-            fillText('table-eco-noise', eco.noise);
-            fillText('table-eco-filter', eco.filter);
-        }
-        if(smart) {
-            fillText('table-smart-name', smart.name);
-            fillText('table-smart-energy', smart.energy_class);
-            fillText('table-smart-noise', smart.noise);
-            fillText('table-smart-filter', smart.filter);
-        }
-        if(premium) {
-            fillText('table-premium-name', premium.name);
-            fillText('table-premium-energy', premium.energy_class);
-            fillText('table-premium-noise', premium.noise);
-            fillText('table-premium-filter', premium.filter);
-        }
+    function activateModelCard(key) {
+      state.activeModelKey = key;
+      const m = state.selectedModels[key];
+      if (m) {
+        state.recommendedModel = m.name;
+        state.recommendedDesc = m.desc;
+        const finalName = document.getElementById('final-model-name');
+        if (finalName) finalName.innerText = m.name;
+      }
+      document.querySelectorAll('[id^="card-"]').forEach(c => c.classList.remove('ring-4', 'ring-airtur-blue/50'));
+      document.getElementById(`card-${key}`)?.classList.add('ring-4', 'ring-airtur-blue/50');
+      syncWithConversionForm();
     }
 
-    function calculateAdvancedFinancials() {
-        const bill = state.billAmount; 
-        const fuel = MARKET_DATA.fuels[state.selectedFuel]; 
-        
-        if (!fuel) return;
+    function calculateFinancials() {
+      const fuel = MARKET_DATA.fuels[state.selectedFuel];
+      if (!fuel) return;
 
-        const fuelUnits = bill / fuel.price; 
-        const theoreticalEnergy = fuelUnits * fuel.value;
-        let effectiveHeat = theoreticalEnergy * fuel.efficiency;
+      const energyNeeded = (state.billAmount / fuel.price) * fuel.value * fuel.efficiency;
+      const comfortMult = state.comfortLevel === 'low' ? 1.25 : (state.comfortLevel === 'standard' ? 1.05 : 1.0);
+      const costAirTUR = Math.round((energyNeeded * comfortMult / MARKET_DATA.airturSCOP) * MARKET_DATA.electricityPrice);
+      
+      const costOld = state.billAmount;
+      const savingsMonth = costOld - costAirTUR;
+      
+      state.savingsYear = savingsMonth * 5; 
+      state.savings5Years = state.savingsYear * 5;
+      state.savings10Years = state.savingsYear * 10;
 
-        if (state.comfortLevel === 'low') {
-            effectiveHeat = effectiveHeat * 1.25; 
-        } else if (state.comfortLevel === 'standard') {
-            effectiveHeat = effectiveHeat * 1.05; 
+      const fill = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+
+      // 1. NAPRAWA BŁĘDU ROI (Koszty i Pasek)
+      const costOldEl = document.getElementById('cost-old');
+      const costNewEl = document.getElementById('cost-new');
+      if(costOldEl) costOldEl.innerText = `${costOld} zł`;
+      if(costNewEl) costNewEl.innerText = `~${costAirTUR} zł`;
+      
+      // Animacja paska AirTUR
+      const barWidth = Math.min((costAirTUR / costOld) * 100, 100);
+      setTimeout(() => {
+          const barNew = document.getElementById('bar-new');
+          if(barNew) barNew.style.width = `${barWidth}%`;
+      }, 500);
+
+      // 2. NAPRAWA NASŁONECZNIENIA I PODSUMOWANIA
+      fill('summary-area', `${state.area} m²`);
+      fill('summary-power', `${state.calculatedPower} kW`);
+      
+      let sunTxt = "Standardowe";
+      if(state.sunFactor === 0.08) sunTxt = "Niskie";
+      if(state.sunFactor === 0.13) sunTxt = "Wysokie";
+      fill('summary-sun', sunTxt);
+      
+      // 3. NAPRAWA TEKSTÓW PRZEJŚCIOWYCH Z MODELS.JS
+      const content = transitionContent[state.goal];
+      if (content) {
+          fill('transition-headline', content.headline);
+          // Używamy innerHTML, aby tagi <strong> lub <i> z models.js działały poprawnie
+          const subEl = document.getElementById('transition-subtext');
+          if (subEl) subEl.innerHTML = content.subtext;
+      }
+      
+      // Wypełnienie Tabeli
+      ['eco', 'smart', 'premium'].forEach(k => {
+        const m = state.selectedModels[k];
+        if(m) {
+          fill(`table-${k}-name`, m.name);
+          fill(`table-${k}-energy`, m.energy_class);
+          fill(`table-${k}-noise`, m.noise);
+          fill(`table-${k}-filter`, m.filter);
         }
+      });
 
-        const electricityNeeded = effectiveHeat / MARKET_DATA.airturSCOP;
-        const costAirTUR = Math.round(electricityNeeded * MARKET_DATA.electricityPrice);
-        const costOld = bill;
-
-        const savingsMonth = costOld - costAirTUR;
-        
-        state.savingsYear = savingsMonth * 5; 
-        state.savings5Years = state.savingsYear * 5;
-        state.savings10Years = state.savingsYear * 10;
-
-        const costOldEl = document.getElementById('cost-old');
-        const costNewEl = document.getElementById('cost-new');
-        
-        if(costOldEl) costOldEl.innerText = `${costOld} zł`;
-        if(costNewEl) costNewEl.innerText = `~${costAirTUR} zł`;
-        
-        const barWidth = Math.min((costAirTUR / costOld) * 100, 100);
-        setTimeout(() => {
-            const barNew = document.getElementById('bar-new');
-            if(barNew) barNew.style.width = `${barWidth}%`;
-        }, 500);
-
-        animateValue('savings-year', 0, Math.max(0, state.savingsYear), 2000);
-        animateValue('savings-5years', 0, Math.max(0, state.savings5Years), 2000);
-        animateValue('savings-10years', 0, Math.max(0, state.savings10Years), 2000);
+      // Animacja zysków
+      animateValue('savings-year', state.savingsYear);
+      animateValue('savings-5years', state.savings5Years);
+      animateValue('savings-10years', state.savings10Years);
     }
 
-    function animateValue(id, start, end, duration) {
+    function animateValue(id, end) {
       const obj = document.getElementById(id);
-      if(!obj) return;
+      if (!obj) return;
       let startTimestamp = null;
+      const duration = 2000; // czas trwania animacji (2 sekundy)
       const step = (timestamp) => {
-          if (!startTimestamp) startTimestamp = timestamp;
-          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-          obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString('pl-PL');
-          if (progress < 1) {
-              window.requestAnimationFrame(step);
-          }
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        // dodajemy toLocaleString('pl-PL'), żeby ładnie formatowało z przerwami tysięcznymi (np. 15 000)
+        obj.innerText = Math.floor(progress * end).toLocaleString('pl-PL');
+        if (progress < 1) window.requestAnimationFrame(step);
       };
       window.requestAnimationFrame(step);
     }
+    // ============================================================
+    // 6. EVENT LISTENERS & UX FLOW
+    // ============================================================
+
+    // KROK 1
+    document.querySelectorAll('.type-btn').forEach(btn => btn.addEventListener('click', (e) => {
+      const target = e.currentTarget as HTMLElement;
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('border-airtur-blue', 'bg-blue-50'));
+      target.classList.add('border-airtur-blue', 'bg-blue-50');
+      state.buildingType = target.dataset.value;
+      state.buildingFactor = parseFloat(target.dataset.factor);
+      
+      const goalSection = document.querySelector('.goal-btn')?.closest('div')?.parentElement;
+      scrollToElement(goalSection);
+      highlight(goalSection);
+
+      if (state.goal) checkStep1();
+    }));
+
+    document.querySelectorAll('.goal-btn').forEach(btn => btn.addEventListener('click', (e) => {
+      const target = e.currentTarget as HTMLElement;
+      if (!state.buildingType) return showAirTurError("Proszę najpierw wybrać typ budynku.");
+      document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('border-airtur-blue', 'bg-blue-50'));
+      target.classList.add('border-airtur-blue', 'bg-blue-50');
+      state.goal = target.dataset.goal;
+      checkStep1();
+    }));
+
+    function checkStep1() {
+      if (state.buildingType && state.goal) {
+        dom.loader?.classList.remove('hidden');
+        scrollToElement(dom.loader);
+
+        setTimeout(() => { 
+          dom.loader?.classList.add('hidden'); 
+          setupStep2Defaults();
+          goToStep(1); 
+        }, 1000);
+      }
+    }
+
+    // KROK 2: Parametry
+    const areaInput = document.getElementById('area-input') as HTMLInputElement;
+    const areaSlider = document.getElementById('area-slider') as HTMLInputElement;
+
+    const syncArea = (val) => {
+      const clamped = Math.min(Math.max(parseInt(val) || 10, 10), 500);
+      state.area = clamped;
+      if (areaInput) areaInput.value = String(clamped);
+      if (areaSlider) {
+        areaSlider.value = String(clamped);
+        const pc = ((clamped - 10) / (500 - 10)) * 100;
+        areaSlider.style.background = `linear-gradient(to right, #0ab3c6 0%, #0ab3c6 ${pc}%, #e5e7eb ${pc}%, #e5e7eb 100%)`;
+      }
+    };
+
+    areaInput?.addEventListener('input', (e) => syncArea((e.target as HTMLInputElement).value));
+    
+    // UI Upgrade #1: Scroll po PUSZCZENIU suwaka (change event)
+    areaSlider?.addEventListener('input', (e) => syncArea((e.target as HTMLInputElement).value));
+    areaSlider?.addEventListener('change', (e) => {
+      const sunSection = document.querySelector('input[name="sun"]')?.closest('.mb-12') || document.querySelector('input[name="sun"]')?.closest('.mb-10');
+      scrollToElement(sunSection);
+      highlight(sunSection);
+    });
+
+    document.querySelectorAll('input[name="sun"]').forEach(r => r.addEventListener('change', (e) => {
+      state.sunFactor = parseFloat((e.target as HTMLInputElement).value);
+      updateSunDescription(state.sunFactor);
+      
+      const peopleContainer = document.querySelector('input[name="people"]')?.closest('.mb-12') || document.querySelector('input[name="people"]')?.closest('.mb-10');
+      scrollToElement(peopleContainer);
+      highlight(peopleContainer);
+    }));
+
+    document.querySelectorAll('input[name="people"]').forEach(r => r.addEventListener('change', (e) => {
+      state.peopleLoad = parseFloat((e.target as HTMLInputElement).value);
+      
+      const calcBtn = document.getElementById('calculate-btn');
+      scrollToElement(calcBtn);
+      highlight(calcBtn);
+    }));
+
+    // UI Upgrade #3: Poprawiony scroll po obliczeniach
+    document.getElementById('calculate-btn')?.addEventListener('click', () => {
+      if (navigator.vibrate) navigator.vibrate(15);
+      calculatePowerAndModels();
+      syncWithConversionForm();
+      
+      const resultsBox = document.getElementById('intermediate-result');
+      scrollToElement(resultsBox, 'start');
+
+      setTimeout(() => {
+        const ctaBtn = document.getElementById('go-to-roi-btn');
+        scrollToElement(ctaBtn);
+      }, 400);
+    });
+
+    // UI Upgrade #2 & BONUS: Klik w kartę = auto forward
+    ['eco', 'smart', 'premium'].forEach(key => {
+      document.getElementById(`card-${key}`)?.addEventListener('click', () => {
+        activateModelCard(key);
+        
+        // Pokaż, że złapaliśmy akcję
+        const ctaBtn = document.getElementById('go-to-roi-btn');
+        scrollToElement(ctaBtn);
+        highlight(ctaBtn);
+
+        // Apple/Stripe Level: Przenieś dalej automatycznie
+        if (navigator.vibrate) navigator.vibrate(10);
+        setTimeout(() => {
+          document.getElementById('go-to-roi-btn')?.click();
+        }, 500);
+      });
+    });
+
+    // Przejście Krok 2 -> Krok 3
+    // Przejście Krok 2 -> Krok 3 z miękkim lądowaniem
+    document.getElementById('go-to-roi-btn')?.addEventListener('click', () => {
+      goToStep(2); 
+      
+      // Płynny wjazd dokładnie na slider z rachunkami
+      setTimeout(() => {
+        const billSection = document.getElementById('bill-input')?.closest('.max-w-5xl');
+        scrollToElement(billSection, 'center');
+      }, 300);
+    });
+
+    // KROK 3: Finanse
+    // KROK 3: Finanse
+    const billInput = document.getElementById('bill-input');
+    const billSlider = document.getElementById('bill-slider');
+    
+    const syncBill = (val) => {
+      const clamped = Math.min(Math.max(parseInt(val) || 100, 100), 5000);
+      state.billAmount = clamped;
+      if (billInput) billInput.value = String(clamped);
+      if (billSlider) {
+        billSlider.value = String(clamped);
+        // Malowanie gradientu dla rachunku
+        const pc = ((clamped - 100) / (5000 - 100)) * 100;
+        billSlider.style.background = `linear-gradient(to right, #0ab3c6 0%, #0ab3c6 ${pc}%, #e5e7eb ${pc}%, #e5e7eb 100%)`;
+      }
+    };
+
+    billInput?.addEventListener('input', (e) => syncBill((e.target as HTMLInputElement).value));
+    
+    // UI Upgrade #5: Scroll na sliderze (dopiero po puszczeniu - 'change')
+    billSlider?.addEventListener('input', (e) => syncBill((e.target as HTMLInputElement).value));
+    billSlider?.addEventListener('change', (e) => {
+      const heatSection = document.querySelector('.heat-btn')?.closest('div')?.parentElement;
+      scrollToElement(heatSection);
+      highlight(heatSection);
+    });
+
+    document.querySelectorAll('.heat-btn').forEach(btn => btn.addEventListener('click', (e) => {
+      const target = e.currentTarget as HTMLElement;
+      
+      // 1. Reset wszystkich przycisków
+      document.querySelectorAll('.heat-btn').forEach(b => {
+        b.classList.remove('border-airtur-blue', 'bg-blue-50', 'shadow-xl');
+        b.classList.add('border-gray-100', 'bg-white');
+        
+        const iconBox = b.querySelector('div');
+        if(iconBox) {
+          iconBox.classList.remove('text-airtur-blue', 'bg-white');
+          iconBox.classList.add('text-gray-400', 'bg-gray-50');
+        }
+      });
+
+      // 2. Aktywacja klikniętego (Z tłem bg-blue-50!)
+      target.classList.remove('border-gray-100', 'bg-white');
+      target.classList.add('border-airtur-blue', 'bg-blue-50', 'shadow-xl');
+      
+      const targetIconBox = target.querySelector('div');
+      if(targetIconBox) {
+        targetIconBox.classList.remove('text-gray-400', 'bg-gray-50');
+        targetIconBox.classList.add('text-airtur-blue', 'bg-white');
+      }
+
+      state.selectedFuel = target.dataset.fuel;
+      
+      // 3. Płynny scroll do komfortu
+      const comfortContainer = document.querySelector('input[name="comfort"]')?.closest('.mb-14') || document.querySelector('input[name="comfort"]')?.closest('.mb-12');
+      scrollToElement(comfortContainer);
+      highlight(comfortContainer);
+    }));
+
+    // [WALIDACJA FINALNA] & Finałowy Auto-Scroll
+    document.getElementById('roi-btn')?.addEventListener('click', () => {
+      if (!state.selectedFuel) return showAirTurError("Proszę wybrać obecne źródło ogrzewania.");
+      state.comfortLevel = (document.querySelector('input[name="comfort"]:checked') as HTMLInputElement)?.value || 'standard';
+      
+      calculateFinancials();
+      syncWithConversionForm();
+      
+      goToStep(3); // Idź do Krok 4 (Wyniki)
+
+      document.dispatchEvent(new CustomEvent('calculator:completed'));
+
+      // Złota zasada CRO: 
+      // 1. Dajemy 2.5 sekundy na podziwianie animacji zysków (która trwa 2s)
+      // 2. Miękko zsuwamy usera do tabeli i CTA, żeby dokończył konwersję.
+      setTimeout(() => {
+        // Celujemy w nagłówek pod ROI (zamiast starego 'conversion-section')
+        const nextSection = document.getElementById('transition-headline');
+        scrollToElement(nextSection, 'start');
+      }, 2500); 
+    });
 
     // ============================================================
-    // 7. OBSŁUGA WYBORU W STEP 4 - STEROWANIE KONWERSJĄ
+    // LOGIKA KONWERSJI CTA (Step 4) - PRZEBUDOWANA POD DYNAMICZNE TEKSTY Z ATTRYBUTÓW
     // ============================================================
     const conversionSection = document.getElementById('conversion-section');
     const mainPhoneContainer = document.getElementById('main-phone-container');
     const secondaryPhoneSection = document.getElementById('secondary-phone-section');
     
-    // A. "Chcę wycenę z montażem" (Gorący Lead)
+    // Funkcja budująca dynamiczną listę benefitów z haczykami SVG
+    const updateBenefitsList = (benefitsJsonString, modelName) => {
+        const ul = document.getElementById('conversion-benefits-list');
+        if (!ul || !benefitsJsonString) return;
+        try {
+            const benefits = JSON.parse(benefitsJsonString);
+            ul.innerHTML = benefits.map(b => `
+                <li class="flex items-start gap-4 animate-fade-in-down">
+                    <div class="flex-shrink-0 mt-1"><div class="w-6 h-6 rounded-full bg-airtur-blue flex items-center justify-center shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg></div></div>
+                    <span class="text-gray-200">${b.replace(/{{MODEL}}/g, modelName || 'wybranego')}</span>
+                </li>
+            `).join('');
+        } catch(e) { console.error('Błąd parsowania benefitów', e); }
+    };
+    
+    // AKCJA 1: KLIKNIĘCIE W DARMOWĄ WYCENĘ
     document.getElementById('cta-request-quote')?.addEventListener('click', () => {
-        conversionSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        scrollToElement(conversionSection, 'center');
+        highlight(mainPhoneContainer);
         
         document.querySelectorAll('input[name="cel"]').forEach(input => {
-            input.value = 'chce_montaz'; 
+            (input as HTMLInputElement).value = 'chce_wycene'; 
         });
 
         if(mainPhoneContainer) {
@@ -600,28 +643,33 @@ import Step4 from './kalkulator/Step4.astro';
             const phoneInput = mainPhoneContainer.querySelector('input');
             if(phoneInput) phoneInput.required = true;
         }
-        if(secondaryPhoneSection) {
-            secondaryPhoneSection.classList.add('hidden');
-        }
+        if(secondaryPhoneSection) secondaryPhoneSection.classList.add('hidden');
 
+        // Dynamiczna podmiana tekstu
         const header = conversionSection?.querySelector('h2');
         const sub = conversionSection?.querySelector('p');
-        if(header) {
-            header.innerText = "Świetna decyzja! Umówmy bezpłatną wycenę.";
-            header.classList.remove('text-white');
+        const activeModel = state.recommendedModel || 'Twojego';
+        
+        if(header && conversionSection) {
+            header.innerText = conversionSection.dataset.titleQuote || "Świetna decyzja! Umówmy wycenę.";
+            header.classList.remove('text-white', 'text-airtur-dark');
             header.classList.add('text-airtur-blue');
         }
-        if(sub) {
-            sub.innerText = `Nasz inżynier przeanalizuje wynik dla modelu ${state.recommendedModel}. Zostaw numer telefonu, abyśmy mogli przygotować ofertę.`;
+        if(sub && conversionSection) {
+            const rawSub = conversionSection.dataset.subQuote || "";
+            sub.innerText = rawSub.replace(/{{MODEL}}/g, activeModel);
         }
+
+        // Dynamiczna podmiana listy benefitów
+        if (conversionSection) updateBenefitsList(conversionSection.dataset.benefitsQuote, activeModel);
     });
 
-    // B. "Chcę tylko raport" (Zimny Lead)
+    // AKCJA 2: KLIKNIĘCIE W "TYLKO RAPORT"
     document.getElementById('cta-get-report')?.addEventListener('click', () => {
-        conversionSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        scrollToElement(conversionSection, 'center');
         
         document.querySelectorAll('input[name="cel"]').forEach(input => {
-            input.value = 'raport_wyslany'; 
+            (input as HTMLInputElement).value = 'raport_wyslany'; 
         });
 
         if(mainPhoneContainer) {
@@ -629,21 +677,75 @@ import Step4 from './kalkulator/Step4.astro';
             const phoneInput = mainPhoneContainer.querySelector('input');
             if(phoneInput) phoneInput.required = false;
         }
-        if(secondaryPhoneSection) {
-            secondaryPhoneSection.classList.remove('hidden');
-        }
+        if(secondaryPhoneSection) secondaryPhoneSection.classList.remove('hidden');
 
+        // Dynamiczna podmiana tekstu
         const header = conversionSection?.querySelector('h2');
         const sub = conversionSection?.querySelector('p');
-        if(header) {
-            header.innerText = "Twoja osobista Analiza Inwestycyjna jest gotowa.";
-            header.classList.remove('text-airtur-blue');
+        const activeModel = state.recommendedModel || 'Twojego';
+        
+        if(header && conversionSection) {
+            header.innerText = conversionSection.dataset.titleReport || "Twoja osobista Analiza Inwestycyjna jest gotowa.";
+            header.classList.remove('text-airtur-blue', 'text-airtur-dark');
             header.classList.add('text-white');
         }
-        if(sub) {
-            sub.innerText = "Wyniki Twoich obliczeń to doskonały fundament. Odbierz pełny raport PDF na swój e-mail.";
+        if(sub && conversionSection) {
+            const rawSub = conversionSection.dataset.subReport || "Odbierz pełny raport PDF.";
+            sub.innerText = rawSub.replace(/{{MODEL}}/g, activeModel);
         }
+
+        // Dynamiczna podmiana listy benefitów
+        if (conversionSection) updateBenefitsList(conversionSection.dataset.benefitsReport, activeModel);
     });
 
+    // UI Upgrade #4: Inteligentny BACK z resetem stanu
+    document.querySelectorAll('.back-btn').forEach(btn => btn.addEventListener('click', () => {
+      const prev = parseInt((btn as HTMLElement).dataset.prev || "1");
+
+      if (prev === 1) { // Cofamy do Kroku 1
+        state.buildingType = '';
+        state.goal = '';
+        document.querySelectorAll('.type-btn, .goal-btn').forEach(b => b.classList.remove('border-airtur-blue', 'bg-blue-50'));
+      }
+      
+      if (prev === 2) { // Cofamy do Kroku 2
+        state.activeModelKey = 'smart';
+        document.getElementById('intermediate-result')?.classList.add('hidden');
+      }
+      
+      if (prev === 3) { // Cofamy z Kroku 4 do Kroku 3
+        state.selectedFuel = null;
+        document.querySelectorAll('.heat-btn').forEach(b => b.classList.remove('border-airtur-blue', 'bg-blue-50'));
+        
+        // 🔥 WYSYŁAMY EVENT, ABY ZWINĄĆ (UKRYĆ) FORMULARZ KONWERSJI
+        document.dispatchEvent(new CustomEvent('calculator:reset'));
+      }
+
+      goToStep(prev - 1);
+    }));
+
+    document.querySelectorAll('.reset-btn').forEach(btn => btn.addEventListener('click', () => {
+      if(confirm("Czy na pewno chcesz zresetować kalkulator?")) location.reload();
+    }));
+
+    // Inicjalizacja
+    syncArea(state.area);
+    syncBill(state.billAmount);
   });
 </script>
+
+<style>
+  /* Zachowujemy slider UI */
+  .custom-slider::-webkit-slider-thumb {
+    appearance: none; width: 24px; height: 24px; background: #ffffff;
+    border: 4px solid #0ab3c6; border-radius: 50%; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(10, 179, 198, 0.3); transition: all 0.2s ease;
+  }
+  
+  /* Bezpieczna animacja pojawiania (zapobiega załamaniu układu) */
+  .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+  @keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(15px); } 
+    to { opacity: 1; transform: translateY(0); } 
+  }
+</style>

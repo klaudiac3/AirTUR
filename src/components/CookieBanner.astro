@@ -4,52 +4,55 @@
 
 <div 
   id="cookie-banner" 
-  class="fixed bottom-0 left-0 w-full z-[100] transform translate-y-full transition-transform duration-700 ease-in-out"
+  class="fixed bottom-20 md:bottom-6 left-0 w-full z-[100] transform translate-y-[200%] transition-transform duration-1000 ease-in-out pointer-events-none"
 >
-  <div class="max-w-7xl mx-auto px-4 pb-6 sm:px-6 lg:px-8">
-    <div class="bg-airtur-dark border border-white/10 rounded-2xl shadow-2xl p-4 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+  <div class="max-w-5xl mx-auto px-4 lg:px-8 pointer-events-auto">
+    <div class="bg-airtur-tech border border-white/10 rounded-2xl shadow-2xl p-5 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-6">
       
       <div class="flex items-center gap-4">
-        <div class="bg-airtur-blue/20 p-3 rounded-full hidden sm:block">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+        <div class="bg-airtur-blue/10 p-3 rounded-full hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-airtur-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <p class="text-gray-300 text-sm leading-relaxed text-center md:text-left">
-          Nasza witryna wykorzystuje pliki cookies, aby zapewnić Ci najlepszą jakość obsługi, zapamiętać wyniki kalkulatora oraz analizować ruch. Szczegóły znajdziesz w 
-          <a href="/polityka-cookies" class="text-white font-bold hover:text-airtur-blue underline underline-offset-4 transition-colors">Polityce Cookies</a>.
+        <p class="text-airtur-gray/80 text-xs sm:text-sm leading-relaxed text-center md:text-left">
+Wykorzystujemy pliki cookies, aby zapewnić Ci najlepszą jakość usługi oraz kontrolę nad narzędziami analitycznymi na naszej stronie.
+Dzięki nim system zapamięta Twoje wyliczenia w        <span class="text-white font-bold">kalkulatorze ROI</span> oraz pozwala nam analizować ruch. 
+           Szczegóły znajdziesz w naszej <a href="/polityka-cookies" class="text-airtur-blue hover:underline font-medium transition-all">Polityce Cookies</a>.
         </p>
       </div>
 
-      <div class="flex items-center gap-3 w-full md:w-auto">
-        <button 
-          id="accept-cookies" 
-          class="flex-1 md:flex-none bg-airtur-blue hover:bg-airtur-navy text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 whitespace-nowrap shadow-lg"
-        >
-          Rozumiem
-        </button>
-      </div>
+      <button 
+        id="accept-cookies" 
+        class="w-full md:w-auto bg-airtur-blue hover:bg-airtur-navy text-white font-bold py-3 px-10 rounded-xl transition-all duration-300 whitespace-nowrap shadow-lg active:scale-95 text-sm"
+      >
+        Akceptuję
+      </button>
 
     </div>
   </div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  const initCookies = () => {
     const banner = document.getElementById('cookie-banner');
     const acceptBtn = document.getElementById('accept-cookies');
-    const STORAGE_KEY = 'airtur_cookie_consent';
+    const STORAGE_KEY = 'airtur_consent_v1';
 
-    // Pokazujemy baner tylko jeśli nie ma jeszcze zgody
     if (!localStorage.getItem(STORAGE_KEY)) {
+      // Pokazujemy z delikatnym opóźnieniem, żeby nie stresować użytkownika
       setTimeout(() => {
-        banner?.classList.remove('translate-y-full');
-      }, 1500); // Małe opóźnienie dla lepszego efektu
+        banner?.classList.remove('translate-y-[200%]');
+      }, 2000);
     }
 
     acceptBtn?.addEventListener('click', () => {
-      localStorage.setItem(STORAGE_KEY, 'accepted');
-      banner?.classList.add('translate-y-full');
+      localStorage.setItem(STORAGE_KEY, 'true');
+      banner?.classList.add('translate-y-[200%]');
     });
-  });
+  };
+
+  // Obsługa standardowa + Astro View Transitions
+  initCookies();
+  document.addEventListener('astro:page-load', initCookies);
 </script>

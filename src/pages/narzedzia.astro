@@ -1,77 +1,108 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { companyConfig } from '../data/companyConfig';
+
+// Komponenty
 import Wprowadzenie from '../components/narzedzia/Wprowadzenie.astro';
 import Kalkulator from '../components/narzedzia/Kalkulator.astro';
 import Konwersja from '../components/narzedzia/Konwersja.astro';
+
+// [SEO]: Meta-dane
+const pageTitle = "Kalkulator Doboru i Oszczędności Klimatyzacji | AirTUR";
+const pageDescription = "Skorzystaj z darmowego narzędzia AirTUR. Oblicz zapotrzebowanie na moc chłodniczą i grzewczą, poznaj potencjalne oszczędności i otrzymaj raport PDF.";
+
+const sectionWrapperClass = "scroll-mt-24";
+
+// [SEO & SENIOR]: Schema WebApplication + PotentialAction
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Kalkulator Oszczędności i Doboru Klimatyzacji AirTUR",
+  "url": "https://airtur.pl/narzedzia",
+  "description": pageDescription,
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "All",
+  "provider": {
+    "@type": "LocalBusiness",
+    "name": companyConfig.name,
+    "telephone": companyConfig.contact.phoneFull,
+    "image": "https://airtur.pl/assets/hero.jpg"
+  },
+  "potentialAction": {
+    "@type": "UseAction",
+    "target": "https://airtur.pl/narzedzia"
+  }
+};
 ---
 
-<Layout title="Narzędzia i Kalkulator | AirTUR">
-  
-  <main class="bg-white">
-    
-    <!-- 1. Pasek górny (Wąski) -->
-    <Wprowadzenie />
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-    <!-- 2. Kalkulator (Główna sekcja) -->
-    <!-- ZMIANA: Usunięto pt-8 (zmieniono na pt-0), aby kalkulator był bliżej paska postępu -->
-    <div class="pt-0 pb-0">
-        <Kalkulator />
-    </div>
+  <main id="main-content" class="bg-white overflow-x-hidden outline-none">
     
-    <!-- 3. Sekcja Konwersji (Raport PDF) -->
-    <!-- ZMIANA: Dodano '-mt-24' i 'relative z-10'. 
-         To "wciąga" sekcję formularza o 96px w górę, niwelując wewnętrzny padding dolny Kalkulatora. 
-         Dzięki temu formularz pojawia się tuż pod wynikami. -->
-    <div id="conversion-section" class="hidden opacity-0 translate-y-10 transition-all duration-1000 ease-out border-t border-gray-100 -mt-24 relative z-10">
+    <section id="wprowadzenie" class={sectionWrapperClass} aria-label="Wprowadzenie do narzędzia">
+      <Wprowadzenie />
+    </section>
+
+    <section id="kalkulator-interfejs" class="pt-0 pb-0" aria-label="Interfejs kalkulatora doboru mocy">
+        <Kalkulator />
+    </section>
+    
+    <section id="konwersja-wrapper" aria-hidden="true" aria-live="polite" class="hidden opacity-0 translate-y-10 transition-all duration-1000 ease-out border-t border-gray-100 -mt-24 relative z-10" aria-label="Formularz wysyłki raportu">
         <Konwersja />
-    </div>
+    </section>
     
   </main>
-
 </Layout>
 
 <script>
-  // Logika pojawiania się sekcji Konwersji (Obserwator)
+  /**
+   * [ARCHITEKTURA]: Event-Driven Pattern. 
+   * Czekamy aż Kalkulator rzuci eventem 'calculator:completed' lub 'calculator:reset'.
+   * Zero hard-dependencies (jak DOM MutationObserver).
+   */
   document.addEventListener('DOMContentLoaded', () => {
-    // Element 'step-4' znajduje się wewnątrz komponentu <Kalkulator />
-    const conversionSection = document.getElementById('conversion-section');
-    const step4 = document.getElementById('step-4');
+    const konwersjaWrapper = document.getElementById('konwersja-wrapper');
+    if (!konwersjaWrapper) return;
 
-    if (step4 && conversionSection) {
-      
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-            
-            // Sprawdzamy czy klasa 'hidden' została usunięta (czyli użytkownik jest w kroku 4)
-            if (!step4.classList.contains('hidden')) {
-                
-                // 1. Odkryj sekcję (żeby była w DOM i gotowa na scroll)
-                conversionSection.classList.remove('hidden');
-                
-                // 2. Animuj wjazd (fade in)
-                setTimeout(() => {
-                    conversionSection.classList.remove('opacity-0', 'translate-y-10');
-                }, 100);
+    // EVENT: Koniec Kalkulatora (Pokazanie konwersji)
+    document.addEventListener('calculator:completed', () => {
+        // 1. Zdejmujemy display: none
+        konwersjaWrapper.classList.remove('hidden');
+        konwersjaWrapper.setAttribute('aria-hidden', 'false');
+        
+        // 2. Wymuszamy Reflow przeglądarki (żeby CSS Transition zaskoczyło po display:none)
+        void konwersjaWrapper.offsetWidth; 
 
-                // ❌ USUNIĘTO AUTOMATYCZNY SCROLL
-                // Teraz scrollowanie wywołują przyciski w Step 4 ("Wycena" lub "Raport")
-                /*
-                setTimeout(() => {
-                    conversionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 600);
-                */
-
-            } else {
-                // Ukryj ponownie przy resecie
-                conversionSection.classList.add('hidden', 'opacity-0', 'translate-y-10');
-            }
-
-          }
+        // 3. Odpalamy animację
+        requestAnimationFrame(() => {
+            konwersjaWrapper.classList.remove('opacity-0', 'translate-y-10');
         });
-      });
 
-      observer.observe(step4, { attributes: true });
-    }
+        // 4. [ANALYTICS]: Wysyłamy event do GTM / GA4
+        if (typeof window !== 'undefined' && window.gtag) {
+            window.gtag('event', 'conversion_section_shown', {
+                'event_category': 'Calculator',
+                'event_label': 'Step 4 Reached'
+            });
+        }
+    });
+
+    // EVENT: Reset Kalkulatora (Ukrycie konwersji)
+    document.addEventListener('calculator:reset', () => {
+        konwersjaWrapper.classList.add('opacity-0', 'translate-y-10');
+        konwersjaWrapper.setAttribute('aria-hidden', 'true');
+        
+        // Czekamy na koniec animacji (1000ms zadeklarowane w Tailwind) zanim damy display:none
+        setTimeout(() => {
+            konwersjaWrapper.classList.add('hidden');
+        }, 1000);
+    });
   });
 </script>
+
+<style is:global>
+  html { scroll-behavior: smooth; }
+  body { -webkit-overflow-scrolling: touch; text-rendering: optimizeLegibility; }
+  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+</style>

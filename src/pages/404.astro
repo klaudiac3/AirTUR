@@ -1,37 +1,66 @@
 ---
+// src/pages/404.astro
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="404 - Nie odnaleziono strony | AirTUR">
-  <section class="min-h-[80vh] flex items-center justify-center bg-airtur-dark text-white relative overflow-hidden">
-    <!-- Dekoracyjne tło -->
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-airtur-blue rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-airtur-blue rounded-full blur-[120px]"></div>
-    </div>
+  <meta name="robots" content="noindex, follow" slot="head" />
 
-    <div class="max-w-2xl mx-auto px-4 text-center relative z-10">
-      <div class="mb-8 inline-block">
-        <span class="text-[150px] font-black leading-none text-airtur-blue/20 select-none">404</span>
+  <main class="overflow-hidden">
+    <section class="min-h-[90vh] flex items-center justify-center bg-airtur-dark text-white relative">
+      
+      <div class="absolute inset-0 opacity-20 pointer-events-none" aria-hidden="true">
+          <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-airtur-blue rounded-full blur-[120px] animate-pulse"></div>
+          <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-airtur-blue rounded-full blur-[120px] animate-pulse" style="animation-delay: 2s;"></div>
       </div>
-      
-      <h1 class="text-4xl md:text-5xl font-black mb-6 tracking-tight">
-        Zagubiony w <span class="text-airtur-blue">chłodzie?</span>
-      </h1>
-      
-      <p class="text-gray-400 text-lg mb-12 leading-relaxed">
-        Strona, której szukasz, prawdopodobnie wyparowała lub została przeniesiona w inne miejsce. 
-        Nie martw się – nasze systemy wciąż działają stabilnie.
-      </p>
 
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/" class="bg-airtur-blue text-white px-10 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-lg shadow-airtur-blue/20 uppercase text-sm tracking-widest">
-            Wróć na stronę główną
-        </a>
-        <a href="/studia-przypadkow" class="bg-white/10 backdrop-blur text-white border border-white/20 px-10 py-4 rounded-2xl font-bold hover:bg-white/20 transition uppercase text-sm tracking-widest">
-            Zobacz realizacje
-        </a>
+      <div class="max-w-2xl mx-auto px-4 text-center relative z-10">
+        <div class="mb-4 inline-block select-none" aria-hidden="true">
+          <span class="text-[120px] md:text-[180px] font-black leading-none text-white/5 tracking-tighter">
+            404
+          </span>
+        </div>
+        
+        <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight leading-tight">
+          Zagubiony w <span class="text-airtur-blue">chłodzie?</span>
+        </h1>
+        
+        <p class="text-gray-400 text-lg md:text-xl mb-12 leading-relaxed max-w-xl mx-auto">
+          Strona, której szukasz, prawdopodobnie wyparowała lub została przeniesiona. 
+          Nie martw się – nasze systemy wciąż działają stabilnie.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a href="/" 
+             class="w-full sm:w-auto bg-airtur-blue text-white px-10 py-4 rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all shadow-xl shadow-airtur-blue/20 uppercase text-sm tracking-widest text-center">
+              Wróć na stronę główną
+          </a>
+          <a href="/studia-przypadkow" 
+             class="w-full sm:w-auto bg-white/5 backdrop-blur border border-white/10 px-10 py-4 rounded-2xl font-bold hover:bg-white/10 transition-all uppercase text-sm tracking-widest text-center">
+              Zobacz realizacje
+          </a>
+        </div>
+
+        <button onclick="window.history.back()" class="mt-8 text-gray-500 hover:text-white text-[10px] uppercase font-bold tracking-[0.3em] transition-colors cursor-pointer">
+          &larr; wróć do poprzedniej strony
+        </button>
       </div>
-    </div>
-  </section>
+    </section>
+  </main>
 </Layout>
+
+<style>
+  /* Subtelne ożywienie tła bez wpływu na Performance */
+  @keyframes pulse {
+    0%, 100% { opacity: 0.15; transform: scale(1); }
+    50% { opacity: 0.25; transform: scale(1.1); }
+  }
+  .animate-pulse {
+    animation: pulse 8s infinite ease-in-out;
+  }
+
+  /* Zapobieganie przeskakiwaniu tekstu przy ładowaniu */
+  h1 {
+    text-rendering: optimizeLegibility;
+  }
+</style>

@@ -2,14 +2,14 @@
 import { companyConfig } from '../../data/companyConfig';
 ---
 
-<section class="pt-8 pb-16 md:pb-24 bg-gray-50">
+<section class="pt-8 pb-12 md:pb-16 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
     <div class="grid grid-cols-1 lg:grid-cols-5 bg-white shadow-2xl rounded-3xl overflow-hidden">
       
       <div class="lg:col-span-3 p-8 md:p-12 lg:p-16">
         
-        <h2 class="text-3xl font-bold text-airtur-dark mb-8">Formularz Kontaktowy</h2>
+        <h2 class="text-3xl font-black text-airtur-dark mb-8 tracking-tight">Formularz Kontaktowy</h2>
         
         <form 
           id="main-contact-form"
@@ -18,6 +18,10 @@ import { companyConfig } from '../../data/companyConfig';
           class="space-y-6"
           novalidate
         >
+          <div class="hidden" aria-hidden="true">
+            <input type="text" name="b_website" tabindex="-1" value="" autocomplete="off" />
+          </div>
+
           <input type="hidden" name="form-name" value="kontakt-glowny" />
           <input type="hidden" name="source" value="strona_kontaktowa_glowna" />
           <input type="hidden" name="cel" value="kontakt" />
@@ -25,7 +29,7 @@ import { companyConfig } from '../../data/companyConfig';
           <div>
             <label for="name" class="block text-sm font-bold text-gray-700 mb-1">Imię i Nazwisko <span class="text-airtur-blue">*</span></label>
             <input type="text" id="name" name="imie" required 
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
+              class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/20 outline-none transition bg-white" 
               placeholder="Jan Kowalski">
             <div id="err-imie" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
           </div>
@@ -34,7 +38,7 @@ import { companyConfig } from '../../data/companyConfig';
             <div>
               <label for="email" class="block text-sm font-bold text-gray-700 mb-1">Adres e-mail</label>
               <input type="email" id="email" name="email" 
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
+                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/20 outline-none transition bg-white" 
                 placeholder="jan@przyklad.pl">
               <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Wygodna opcja dla zapytań ofertowych</p>
               <div id="err-email" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Proszę podać poprawny adres e-mail.</div>
@@ -43,7 +47,7 @@ import { companyConfig } from '../../data/companyConfig';
             <div>
               <label for="phone" class="block text-sm font-bold text-gray-700 mb-1">Numer telefonu</label>
               <input type="tel" id="phone" name="telefon" 
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
+                class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/20 outline-none transition bg-white" 
                 placeholder="+48 000 000 000">
               <p class="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Dla szybkiego kontaktu telefonicznego</p>
               <div id="err-telefon" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Numer telefonu musi mieć minimum 9 cyfr.</div>
@@ -57,7 +61,7 @@ import { companyConfig } from '../../data/companyConfig';
           <div>
             <label for="message" class="block text-sm font-bold text-gray-700 mb-1">Treść wiadomości (Opcjonalne)</label>
             <textarea id="message" name="wiadomosc" rows="5" 
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-white" 
+              class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/20 outline-none transition bg-white" 
               placeholder="Dzień dobry, interesuje mnie [montaż / serwis] w miejscowości…&#10;Mój przybliżony metraż to..."></textarea>
           </div>
 
@@ -76,21 +80,20 @@ import { companyConfig } from '../../data/companyConfig';
           </div>
 
           <div class="pt-4">
-            <button type="submit" class="submit-btn w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide transform hover:-translate-y-0.5 cursor-pointer">
-              WYŚLIJ WIADOMOŚĆ
+            <button type="submit" id="submit-btn" class="submit-btn w-full bg-airtur-blue text-white font-black py-4 rounded-xl hover:bg-airtur-navy transition-all shadow-lg uppercase tracking-widest flex items-center justify-center gap-3 transform hover:-translate-y-0.5 cursor-pointer disabled:opacity-50">
+              <span class="btn-text">WYŚLIJ WIADOMOŚĆ</span>
+              <svg class="spinner hidden w-5 h-5 animate-spin text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             </button>
-            <p class="text-xs text-gray-400 text-center mt-4">
+            <p class="text-xs text-gray-400 text-center mt-4 italic font-medium">
               * Imię i Nazwisko oraz przynajmniej jedna forma kontaktu są wymagane.
             </p>
           </div>
-
         </form>
       </div>
 
       <div class="lg:col-span-2 flex flex-col">
-        
         <div class="bg-airtur-dark p-8 md:p-10 text-white">
-          <h2 class="text-2xl md:text-3xl font-bold mb-4">Zadzwoń już teraz</h2>
+          <h2 class="text-2xl md:text-3xl font-black mb-4 tracking-tight">Zadzwoń już teraz</h2>
           <p class="text-gray-300 mb-8 text-sm md:text-base">Wolisz kontakt bezpośredni? Zadzwoń do nas lub napisz e-mail.</p>
           
           <div class="space-y-6">
@@ -101,8 +104,8 @@ import { companyConfig } from '../../data/companyConfig';
                 </svg>
               </div>
               <div>
-                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-0.5">Telefon</p>
-                <p class="text-xl font-bold text-white group-hover:text-airtur-blue transition-colors">{companyConfig.contact.phoneFull}</p>
+                <p class="text-xs text-gray-400 uppercase font-black tracking-widest mb-0.5">Telefon</p>
+                <p class="text-xl font-black text-white group-hover:text-airtur-blue transition-colors">{companyConfig.contact.phoneFull}</p>
               </div>
             </a>
 
@@ -113,8 +116,8 @@ import { companyConfig } from '../../data/companyConfig';
                 </svg>
               </div>
               <div>
-                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-0.5">E-mail</p>
-                <p class="text-xl font-bold text-white group-hover:text-airtur-blue transition-colors">{companyConfig.contact.email}</p>
+                <p class="text-xs text-gray-400 uppercase font-black tracking-widest mb-0.5">E-mail</p>
+                <p class="text-xl font-black text-white group-hover:text-airtur-blue transition-colors">{companyConfig.contact.email}</p>
               </div>
             </a>
           </div>
@@ -123,7 +126,7 @@ import { companyConfig } from '../../data/companyConfig';
         <div class="bg-white p-8 md:p-10 flex-grow flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-gray-100">
           <div class="space-y-8">
             <div>
-              <h3 class="text-xl font-bold text-airtur-dark mb-4">Dane Firmy:</h3>
+              <h3 class="text-xl font-black text-airtur-dark mb-4 tracking-tight">Dane Firmy:</h3>
               <div class="flex items-start gap-4">
                 <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-airtur-blue">
@@ -132,7 +135,7 @@ import { companyConfig } from '../../data/companyConfig';
                   </svg>
                 </div>
                 <div class="text-gray-600 text-sm leading-relaxed">
-                  <p class="font-bold text-airtur-dark text-base">{companyConfig.name}</p>
+                  <p class="font-black text-airtur-dark text-base">{companyConfig.name}</p>
                   <p>{companyConfig.address.street}</p>
                   <p>{companyConfig.address.postCode} {companyConfig.address.city}</p>
                 </div>
@@ -147,11 +150,11 @@ import { companyConfig } from '../../data/companyConfig';
                   </svg>
                 </div>
                 <div>
-                  <p class="font-bold text-airtur-dark mb-1 text-base">Godziny otwarcia biura:</p>
+                  <p class="font-black text-airtur-dark mb-1 text-base tracking-tight">Godziny otwarcia biura:</p>
                   <div class="text-gray-600 text-sm space-y-1">
-                    <p><span class="font-medium">Pn – Pt:</span> {companyConfig.workingHours.weekdays}</p>
-                    <p><span class="font-medium">Sobota:</span> {companyConfig.workingHours.saturday}</p>
-                    <p><span class="font-medium">Niedziela:</span> {companyConfig.workingHours.sunday}</p>
+                    <p><span class="font-bold text-airtur-dark">Pn – Pt:</span> {companyConfig.workingHours.weekdays}</p>
+                    <p><span class="font-bold text-airtur-dark">Sobota:</span> {companyConfig.workingHours.saturday}</p>
+                    <p><span class="font-bold text-red-500">Niedziela:</span> {companyConfig.workingHours.sunday}</p>
                   </div>
                 </div>
               </div>
@@ -159,8 +162,8 @@ import { companyConfig } from '../../data/companyConfig';
           </div>
 
           <div class="mt-10 pt-6 border-t border-gray-100">
-            <p class="font-bold text-airtur-dark mb-2">{companyConfig.fullName}</p>
-            <div class="flex flex-col gap-1 text-xs text-gray-500">
+            <p class="font-black text-airtur-dark mb-2 tracking-tight">{companyConfig.fullName}</p>
+            <div class="flex flex-col gap-1 text-xs text-gray-400 font-bold uppercase tracking-widest">
               <p>NIP: {companyConfig.nip}</p>
               <p>REGON: {companyConfig.regon}</p>
             </div>
@@ -172,163 +175,130 @@ import { companyConfig } from '../../data/companyConfig';
 </section>
 
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-      console.log("🚀 KONTAKT DOM READY: Szukam formularza...");
+  /**
+   * AirTUR Main Form v4.0 - Senior Refactor
+   * Gwarancja 100% wyglądu + formatowanie telefonu + blokada spamu
+   */
+  const initMainContactForm = () => {
+    const form = document.getElementById('main-contact-form');
+    if (!form) return;
 
-      const form = document.getElementById('main-contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const phoneInput = document.getElementById('phone');
+    const errors = {
+      imie: document.getElementById('err-imie'),
+      email: document.getElementById('err-email'),
+      telefon: document.getElementById('err-telefon'),
+      zgoda: document.getElementById('err-zgoda'),
+      general: document.getElementById('contact-error')
+    };
+
+    // --- 1. Formatuje telefon "w locie" (np. 123 456 789) ---
+    phoneInput?.addEventListener('input', (e) => {
+      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+      e.target.value = !x[2] ? x[1] : `${x[1]} ${x[2]}${x[3] ? ' ' + x[3] : ''}`;
+    });
+
+    // --- 2. Logika walidacji i wysyłki ---
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
       
-      // Walidatory
-      const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      let hasError = false;
 
-      if (!form) {
-          console.error("❌ BŁĄD: Nie znaleziono formularza #main-contact-form");
-          return;
+      // [ANTISPAM] Honeypot - Silent Fail
+      if (data.b_website) {
+        window.location.assign('/podziekowanie/?cel=kontakt');
+        return;
       }
 
-      form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          console.log("🚀 SUBMIT EVENT ZŁAPANY!");
-
-          const targetForm = e.currentTarget;
-          const submitBtn = targetForm.querySelector('.submit-btn');
-          const originalBtnText = submitBtn?.innerText || "WYŚLIJ WIADOMOŚĆ";
-
-          // Elementy formularza
-          const nameInput = targetForm.querySelector('input[name="imie"]');
-          const emailInput = targetForm.querySelector('input[name="email"]');
-          const phoneInput = targetForm.querySelector('input[name="telefon"]');
-          const consentInput = targetForm.querySelector('input[name="zgoda"]');
-
-          // Elementy błędów
-          const errName = document.getElementById('err-imie');
-          const errEmail = document.getElementById('err-email');
-          const errPhone = document.getElementById('err-telefon');
-          const errConsent = document.getElementById('err-zgoda');
-          const errGeneral = document.getElementById('contact-error');
-
-          let hasError = false;
-
-          // 1. Walidacja Imienia
-          if (nameInput.value.trim().length < 3) {
-             hasError = true;
-             nameInput.classList.add('border-red-400', 'bg-red-50');
-             nameInput.classList.remove('border-gray-300');
-             if(errName) errName.classList.remove('hidden');
-          }
-
-          // 2. Walidacja Formy kontaktu (Oba puste?)
-          const emailVal = emailInput.value.trim();
-          const phoneVal = phoneInput.value.trim();
-
-          if (!emailVal && !phoneVal) {
-              hasError = true;
-              if(errGeneral) errGeneral.classList.remove('hidden');
-          } 
-          
-          // 3. Walidacja konkretnych pól jeśli są wypełnione
-          // EMAIL
-          if (emailVal && !isValidEmail(emailVal)) {
-              hasError = true;
-              emailInput.classList.add('border-red-400', 'bg-red-50');
-              emailInput.classList.remove('border-gray-300');
-              if(errEmail) errEmail.classList.remove('hidden');
-          }
-          // TELEFON
-          if (phoneVal && !isValidPhone(phoneVal)) {
-              hasError = true;
-              phoneInput.classList.add('border-red-400', 'bg-red-50');
-              phoneInput.classList.remove('border-gray-300');
-              if(errPhone) errPhone.classList.remove('hidden');
-          }
-
-          // 4. Walidacja Zgody
-          if (!consentInput.checked) {
-              hasError = true;
-              if(errConsent) errConsent.classList.remove('hidden');
-          }
-
-          // STOP JEŚLI BŁĘDY
-          if (hasError) return;
-
-          // --- LOGIKA WYSYŁKI ---
-          if (submitBtn) {
-              submitBtn.disabled = true;
-              submitBtn.innerText = "WYSYŁANIE...";
-          }
-
-          const formData = new FormData(targetForm);
-          const dataObj = Object.fromEntries(formData.entries());
-
-          try {
-              console.log("📡 Wysyłam fetch do /api/send-form...");
-
-              const response = await fetch('/api/send-form', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(dataObj)
-              });
-
-              console.log("📡 Status odpowiedzi:", response.status);
-
-              if (!response.ok) {
-                  const errorText = await response.text();
-                  console.error("❌ Błąd serwera treść:", errorText);
-                  throw new Error(`Błąd serwera: ${response.status}`);
-              }
-
-              console.log("✅ SUKCES! Przekierowanie...");
-              
-              // <<< TUTAJ JEST TWOJA ZMIANA Z POPRAWIONYM LINKIEM >>>
-              window.location.assign('/podziekowanie/?cel=kontakt');
-
-          } catch (error) {
-              console.error("❌ BŁĄD WYSYŁKI (CATCH):", error);
-              alert("Wystąpił błąd podczas wysyłania. Spróbuj ponownie lub zadzwoń bezpośrednio.");
-              
-              if (submitBtn) {
-                  submitBtn.disabled = false;
-                  submitBtn.innerText = originalBtnText;
-              }
-          }
-      });
-
-      // --- CZYSZCZENIE BŁĘDÓW W CZASIE RZECZYWISTYM ---
-      // Uniwersalny handler dla inputów tekstowych
-      const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea');
-      inputs.forEach(input => {
-         input.addEventListener('input', () => {
-             // 1. Usuń czerwone ramki
-             input.classList.remove('border-red-400', 'bg-red-50');
-             input.classList.add('border-gray-300'); 
-             
-             // 2. Ukryj błąd dedykowany dla tego pola (szukamy po ID w pobliżu)
-             // Zakładamy strukturę: input #name -> błąd #err-imie
-             let errId = '';
-             if (input.name === 'imie') errId = 'err-imie';
-             else if (input.name === 'email') errId = 'err-email';
-             else if (input.name === 'telefon') errId = 'err-telefon';
-
-             if(errId) {
-                const errDiv = document.getElementById(errId);
-                if(errDiv) errDiv.classList.add('hidden');
-             }
-
-             // 3. Jeśli użytkownik wpisuje cokolwiek w email lub telefon, ukryj błąd ogólny
-             if (input.name === 'email' || input.name === 'telefon') {
-                 const errGeneral = document.getElementById('contact-error');
-                 if(errGeneral) errGeneral.classList.add('hidden');
-             }
-         });
-      });
-
-      // Handler dla checkboxa zgody
-      const consentBox = form.querySelector('input[name="zgoda"]');
-      if(consentBox) {
-          consentBox.addEventListener('change', () => {
-              const errConsent = document.getElementById('err-zgoda');
-              if(errConsent) errConsent.classList.add('hidden');
-          });
+      // [ANTISPAM] Rate Limiting (30 sek)
+      const lastSent = localStorage.getItem('last_main_sent');
+      if (lastSent && Date.now() - parseInt(lastSent) < 30000) {
+        alert("Wiadomość została już wysłana. Prosimy o chwilę odstępu.");
+        return;
       }
-  });
+
+      // Reset wizualny błędów
+      Object.values(errors).forEach(el => el?.classList.add('hidden'));
+      form.querySelectorAll('input, textarea').forEach(el => el.classList.remove('border-red-400', 'bg-red-50'));
+
+      // --- Walidacja Senior ---
+      // Imię
+      if (data.imie.trim().length < 3) {
+        hasError = true;
+        errors.imie.classList.remove('hidden');
+        form.querySelector('[name="imie"]').classList.add('border-red-400', 'bg-red-50');
+      }
+
+      // Logika: Email lub Telefon
+      const emailVal = data.email.trim();
+      const phoneVal = data.telefon.replace(/\D/g, "");
+
+      if (!emailVal && !phoneVal) {
+        hasError = true;
+        errors.general.classList.remove('hidden');
+      }
+
+      if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+        hasError = true;
+        errors.email.classList.remove('hidden');
+        form.querySelector('[name="email"]').classList.add('border-red-400', 'bg-red-50');
+      }
+
+      if (phoneVal && phoneVal.length < 9) {
+        hasError = true;
+        errors.telefon.classList.remove('hidden');
+        form.querySelector('[name="telefon"]').classList.add('border-red-400', 'bg-red-50');
+      }
+
+      if (!data.zgoda) {
+        hasError = true;
+        errors.zgoda.classList.remove('hidden');
+      }
+
+      if (hasError) return;
+
+      // --- Start Wysyłki ---
+      const btnText = submitBtn.querySelector('.btn-text');
+      const spinner = submitBtn.querySelector('.spinner');
+      
+      submitBtn.disabled = true;
+      btnText.innerText = "WYSYŁANIE...";
+      spinner.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/send-form', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          localStorage.setItem('last_main_sent', Date.now().toString());
+          window.location.assign('/podziekowanie/?cel=kontakt');
+        } else throw new Error();
+      } catch {
+        alert("Problem z wysyłką. Zadzwoń bezpośrednio do nas!");
+        submitBtn.disabled = false;
+        btnText.innerText = "WYŚLIJ WIADOMOŚĆ";
+        spinner.classList.add('hidden');
+      }
+    });
+
+    // Czyścimy błędy przy pisaniu
+    form.querySelectorAll('input, textarea').forEach(inp => {
+      inp.addEventListener('input', () => {
+        inp.classList.remove('border-red-400', 'bg-red-50');
+        const name = inp.name;
+        if(errors[name]) errors[name].classList.add('hidden');
+        errors.general.classList.add('hidden');
+        if(name === 'zgoda') errors.zgoda.classList.add('hidden');
+      });
+    });
+  };
+
+  initMainContactForm();
+  document.addEventListener('astro:page-load', initMainContactForm);
 </script>

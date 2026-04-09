@@ -3,8 +3,25 @@
   publish = "dist"
 
 [functions]
+  # Przekazujemy do środowiska Serverless TYLKO pliki czytane dynamicznie przez 'fs'
+  # Skrypty JS i szablony HTML z '?raw' są już wbudowane w kod przez Vite!
   included_files = [
-    "src/templates/report-template.html", 
-    "src/scripts/raport_logic.js",
-    "public/fonts/*.ttf"
+    "public/fonts/*.ttf",
+    "public/logo.png"
   ]
+
+# ==========================================
+# OPTYMALIZACJA WYDAJNOŚCI (CACHE)
+# ==========================================
+
+# Wymuszamy agresywny cache na czcionki (szybkie ładowanie strony)
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Wymuszamy agresywny cache na logo firmy i inne obrazki
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

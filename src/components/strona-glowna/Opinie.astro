@@ -1,120 +1,158 @@
 ---
-// Importujemy dane z Twojego pliku JS
 import { reviewsData } from '../../data/reviewsData.js';
 
-// Przygotowanie danych do nieskończonej pętli (duplikujemy zestaw)
+// Logika klonowania dla płynnego przejścia
 const loopedReviews = [...reviewsData, ...reviewsData];
+
+const STAR_SVG = `<svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.96 6.012h6.319c.969 0 1.353 1.25.56 1.81l-5.11 3.713 1.96 6.012c.3.921-.755 1.688-1.54 1.127L10 17.062l-5.11 3.713c-.785.561-1.84-.156-1.54-1.127l1.96-6.012-5.11-3.713c-.793-.56-.409-1.81.56-1.81h6.319l1.96-6.012z"/></svg>`;
 ---
 
-<section class="bg-airtur-gray-light py-20 overflow-hidden">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="bg-gray-50 py-12 md:py-16 overflow-hidden" aria-labelledby="reviews-heading">
+  
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 md:mb-12 text-center">
+    <h2 id="reviews-heading" class="text-3xl md:text-5xl font-black text-airtur-dark tracking-tight leading-[1.1] max-w-4xl mx-auto">
+      Dowody Słuszności: <span class="text-airtur-blue">Opinie Naszych Klientów</span>
+    </h2>
+  </div>
 
-    <div class="text-center mb-16">
-      <h2 class="text-3xl md:text-4xl font-bold text-airtur-dark">
-        Dowody Słuszności: Zobacz, co mówią Nasi Klienci
-      </h2>
-    </div>
+  <div class="relative w-full group">
+    
+    <button 
+      id="prev-btn" 
+      class="absolute left-4 lg:left-12 top-1/2 -translate-y-1/2 z-30 
+             bg-white/95 backdrop-blur-sm p-4 rounded-full shadow-2xl text-airtur-blue 
+             hover:bg-airtur-navy hover:text-white transition-all duration-300
+             opacity-0 group-hover:opacity-100 hidden md:flex items-center justify-center border border-gray-100 select-none"
+      aria-label="Poprzednia opinia"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+    </button>
 
-    <!-- KONTENER KARUZELI -->
-    <div class="relative">
-      <div
-        id="review-track"
-        class="flex transition-transform duration-700 ease-out"
-        style="will-change: transform;"
-      >
+    <button 
+      id="next-btn" 
+      class="absolute right-4 lg:right-12 top-1/2 -translate-y-1/2 z-30 
+             bg-white/95 backdrop-blur-sm p-4 rounded-full shadow-2xl text-airtur-blue 
+             hover:bg-airtur-navy hover:text-white transition-all duration-300
+             opacity-0 group-hover:opacity-100 hidden md:flex items-center justify-center border border-gray-100 select-none"
+      aria-label="Następna opinia"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+    </button>
+
+    <div id="carousel-window" class="overflow-hidden cursor-grab active:cursor-grabbing px-4 md:px-0 py-4">
+      <div id="review-track" class="flex transition-transform duration-700 cubic-bezier(0.4, 0, 0.2, 1) will-change-transform">
         {loopedReviews.map((review) => (
-          <div class="review-card relative w-[90%] md:w-[48%] lg:w-1/3 shrink-0 p-8 bg-white rounded-xl shadow-lg border border-gray-100 mx-3 flex flex-col">
+          <div class="review-card w-[85%] sm:w-[80%] md:w-[48%] lg:w-[33.33%] shrink-0 px-3 md:px-4 flex">
+            <div class="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-gray-100 flex flex-col justify-between w-full transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 relative group/card">
+              
+              <div class="relative z-10">
+                <div class="flex text-yellow-400 mb-6 space-x-1" set:html={STAR_SVG.repeat(review.rating || 5)} />
+                
+                <blockquote class="text-gray-500 italic leading-relaxed text-base md:text-lg mb-8 text-pretty">
+                  "{review.text}"
+                </blockquote>
+              </div>
 
-            {/* GWIAZDKI (Dynamiczne na podstawie pola rating, domyślnie 5) */}
-            <div class="flex justify-center text-yellow-500 mb-6">
-              {Array.from({ length: review.rating || 5 }).map(() => (
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.96 6.012h6.319c.969 0 1.353 1.25.56 1.81l-5.11 3.713 1.96 6.012c.3.921-.755 1.688-1.54 1.127L10 17.062l-5.11 3.713c-.785.561-1.84-.156-1.54-1.127l1.96-6.012-5.11-3.713c-.793-.56-.409-1.81.56-1.81h6.319l1.96-6.012z"/>
-                </svg>
-              ))}
+              <div class="mt-auto pt-6 border-t border-gray-50 flex justify-end items-center">
+                 <cite class="text-airtur-dark font-black not-italic tracking-tight text-sm md:text-base">
+                    – {review.author}{review.city ? `, ${review.city}` : ''}
+                </cite>
+              </div>
             </div>
-
-            {/* TEKST OPINII */}
-            <p class="text-lg text-gray-700 italic mb-12">
-              "{review.text}"
-            </p>
-
-            {/* INTELIGENTNY AUTOR: Łączy author + city, zapobiega przecinkowi na końcu jeśli city brak */}
-            <p class="absolute bottom-6 right-6 text-airtur-dark font-semibold text-right">
-              – {review.author}{review.city ? `, ${review.city}` : ''}
-            </p>
-
           </div>
         ))}
       </div>
     </div>
-
   </div>
 </section>
 
-<style>
-  /* Całkowite ukrycie paska przewijania */
-  #review-track {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  #review-track::-webkit-scrollbar {
-    display: none;
-  }
-</style>
-
 <script>
-  function initCarousel() {
+  function setupCarousel() {
     const track = document.getElementById("review-track");
-    if (!track) return;
-
-    const cards = track.getElementsByClassName("review-card");
-    if (cards.length === 0) return;
+    const windowEl = document.getElementById("carousel-window");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    if (!track || !windowEl) return;
 
     let index = 0;
-    const autoplaySpeed = 4000; // Czas wyświetlania jednej klatki
+    let isPaused = false;
+    let startX = 0;
+    const cards = track.children;
     const originalLength = cards.length / 2;
 
-    // Funkcja obliczająca pełną szerokość karty wraz z marginesami
-    const getCardWidth = () => {
-      const card = cards[0] as HTMLElement;
-      const style = window.getComputedStyle(card);
-      const marginLeft = parseFloat(style.marginLeft);
-      const marginRight = parseFloat(style.marginRight);
-      return card.offsetWidth + marginLeft + marginRight;
+    const getMoveDistance = () => {
+      const card = cards[0];
+      return card ? card.getBoundingClientRect().width : 0;
     };
 
-    function move() {
-      index++;
-      
-      track.style.transition = "transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
-      track.style.transform = `translateX(-${index * getCardWidth()}px)`;
+    function updatePosition(smooth = true) {
+      track.style.transition = smooth ? "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)" : "none";
+      track.style.transform = `translateX(-${index * getMoveDistance()}px)`;
+    }
 
-      // Mechanizm pętli nieskończonej
+    function next() {
+      index++;
+      updatePosition();
       if (index >= originalLength) {
         setTimeout(() => {
-          track.style.transition = "none";
           index = 0;
-          track.style.transform = `translateX(0px)`;
-        }, 800); // Musi być równe czasowi trwania transition
+          updatePosition(false);
+        }, 700);
       }
     }
 
-    let interval = setInterval(move, autoplaySpeed);
+    function prev() {
+      if (index <= 0) {
+        index = originalLength;
+        updatePosition(false);
+        setTimeout(() => {
+          index--;
+          updatePosition();
+        }, 10);
+      } else {
+        index--;
+        updatePosition();
+      }
+    }
 
-    // Obsługa zmiany rozmiaru okna (responsywność premium)
-    window.addEventListener('resize', () => {
+    // Auto-play
+    let interval = setInterval(() => !isPaused && next(), 5000);
+
+    const resetInterval = () => {
       clearInterval(interval);
-      track.style.transition = "none";
+      interval = setInterval(() => !isPaused && next(), 5000);
+    };
+
+    windowEl.addEventListener('mouseenter', () => isPaused = true);
+    windowEl.addEventListener('mouseleave', () => isPaused = false);
+    
+    nextBtn?.addEventListener('click', () => { next(); resetInterval(); });
+    prevBtn?.addEventListener('click', () => { prev(); resetInterval(); });
+
+    // Touch Support
+    windowEl.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      isPaused = true;
+    }, {passive: true});
+
+    windowEl.addEventListener('touchend', (e) => {
+      const endX = e.changedTouches[0].clientX;
+      const diff = startX - endX;
+      if (Math.abs(diff) > 50) {
+        diff > 0 ? next() : prev();
+      }
+      isPaused = false;
+      resetInterval();
+    }, {passive: true});
+
+    // Resize handling
+    window.addEventListener('resize', () => {
       index = 0;
-      track.style.transform = `translateX(0px)`;
-      interval = setInterval(move, autoplaySpeed);
+      updatePosition(false);
     });
   }
 
-  // Uruchomienie skryptu
-  document.addEventListener("DOMContentLoaded", initCarousel);
-  
-  // Wsparcie dla Astro View Transitions (jeśli używasz)
-  document.addEventListener("astro:page-load", initCarousel);
+  // Astro Lifecycle
+  document.addEventListener("DOMContentLoaded", setupCarousel);
+  document.addEventListener("astro:page-load", setupCarousel);
 </script>

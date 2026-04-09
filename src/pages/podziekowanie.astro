@@ -1,16 +1,23 @@
 ---
-// src/pages/podziekowanie.astro
 import Layout from '../layouts/Layout.astro';
 import { companyConfig } from '../data/companyConfig';
 
+/** * [SENIOR NOTE]: Strona sukcesu (Conversion Page).
+ * Design: Skondensowany (Zero Waste), centrowany wertykalnie, spójny z Ofertą.
+ */
+
+const seoProps = {
+  title: "Dziękujemy za kontakt | AirTUR",
+  description: "Twoja wiadomość została bezpiecznie dostarczona do zespołu AirTUR.",
+  noindex: true 
+};
+
 export const prerender = true;
 
-
-// KONFIGURACJA TREŚCI - Mapowanie parametrów URL na teksty
 const contents = {
   kontakt: {
     title: "Dziękujemy za kontakt!",
-    subtitle: "Twoje zapytanie jest już w analizie.",
+    subtitle: "Sprawdzamy przesłane informacje, aby nasza rozmowa była jak najbardziej konkretna.",
     desc: "Nasz specjalista skontaktuje się z Tobą w ciągu maksymalnie 24 godzin roboczych.",
     pdfEnabled: true, 
     pdfType: 'static', 
@@ -21,109 +28,116 @@ const contents = {
     navLabel: 'Odwiedź Bazę Wiedzy'
   },
   montaz: {
-    title: "Zgłoszenie montażu przyjęte",
-    subtitle: "Rozpoczynamy przygotowanie audytu.",
-    desc: "Inżynier techniczny oddzwoni do Ciebie, aby umówić bezpłatną wizję lokalną i omówić szczegóły instalacji.",
+    title: "Zgłoszenie przyjęte",
+    subtitle: "Przygotowujemy dla Ciebie zestawienie opcji montażu.",
+    desc: "Nasz Specjalista skontaktuje się z Tobą aby omówić możliwości, podpowiedzieć najlepsze rozwiązania i – jeśli będziesz tego potrzebować – zaplanować dalsze kroki.",
     pdfEnabled: true,
     pdfType: 'static',
     pdfFile: 'przewodnik-audyt-techniczny.pdf', 
-    pdfLabel: 'Pobierz: Jak przygotować dom do montażu? (PDF)',
-    pdfDesc: 'Krótki poradnik o tym, gdzie najlepiej umieścić jednostki przed naszą wizytą.',
-    navLink: '/narzedzia',
-    navLabel: 'Oblicz oszczędności w Narzędziach'
+    pdfLabel: 'Pobierz: Przewodnik Audytu (PDF)',
+    pdfDesc: 'Jak przygotować dom do wizyty naszego inżyniera.',
+    navLink: '/studia-przypadkow',
+    navLabel: 'Zobacz studia przypadków'
   },
   serwis: {
-    title: "Zgłoszenie serwisowe zarejestrowane",
-    subtitle: "Twój komfort jest naszym priorytetem.",
-    desc: "Technik odpowiedzialny za Twój region skontaktuje się z Tobą, aby ustalić dogodny termin wizyty.",
+    title: "Przyjęliśmy Twoje zgłoszenie serwisowe",
+    subtitle: "Zadbamy o to, by Twoje urządzenia pracowały bezawaryjnie i czysto.",
+    desc: "Nasz specjalista odezwie się do Ciebie, aby wspólnie znaleźć najbliższy wolny termin i przywrócić komfort w Twoim domu.",
     pdfEnabled: false,
     navLink: '/baza-wiedzy',
-    navLabel: 'Jak dbać o klimatyzację? (Blog)'
+    navLabel: 'Jak dbać o system? (Blog)'
   },
-  // NOWE: Obsługa konkretnych wyników kalkulatora
   ogrzewanie: {
-    title: "Twoja Analiza Oszczędności Gotowa!",
+    title: "Analiza Gotowa!",
     subtitle: "Ogrzewanie klimatyzacją to mądry wybór.",
-    desc: "Poniżej znajdziesz podsumowanie Twoich oszczędności. Raport PDF z detalami technicznymi wysłaliśmy również na Twój e-mail.",
+    desc: "Podsumowanie Twoich oszczędności wygenerowaliśmy poniżej. Kopia raportu została wysłana na e-mail.",
     pdfEnabled: true,
     pdfType: 'generated', 
-    pdfLabel: 'POBIERZ TWÓJ RAPORT ANALITYCZNY (PDF)',
-    pdfDesc: 'Kliknij, aby pobrać kopię zapasową swoich obliczeń mocy i zwrotu z inwestycji.',
+    pdfLabel: 'POBIERZ RAPORT ANALITYCZNY',
+    pdfDesc: 'Szczegółowa kalkulacja mocy i szacowanego ROI.',
     navLink: '/baza-wiedzy',
-    navLabel: 'Jak oszczędzać na ogrzewaniu?'
+    navLabel: 'Wiedza o pompach ciepła'
   },
   chlodzenie: {
     title: "Analiza Komfortu Gotowa!",
     subtitle: "Przygotuj się na idealną temperaturę.",
-    desc: "Wyliczyliśmy moc potrzebną do skutecznego schłodzenia Twojego domu. Szczegóły znajdziesz w raporcie poniżej.",
+    desc: "Wyliczyliśmy moc potrzebną do schłodzenia Twojego domu. Szczegóły znajdziesz w raporcie poniżej.",
     pdfEnabled: true,
     pdfType: 'generated', 
-    pdfLabel: 'POBIERZ RAPORT CHŁODZENIA (PDF)',
-    pdfDesc: 'Pobierz podsumowanie doboru mocy i rekomendowanych modeli urządzeń.',
-    navLink: '/baza-wiedzy',
-    navLabel: 'Wszystko o czystym powietrzu'
-  },
-  raport: {
-    title: "Analiza Inwestycyjna Gotowa!",
-    subtitle: "Twoje wyniki zostały przetworzone.",
-    desc: "Poniżej znajdziesz podsumowanie swoich obliczeń. Możesz pobrać je jako profesjonalny raport PDF.",
-    pdfEnabled: true,
-    pdfType: 'generated', 
-    pdfLabel: 'POBIERZ TWÓJ RAPORT ANALITYCZNY (PDF)',
-    pdfDesc: 'Kliknij poniżej, aby pobrać podsumowanie obliczeń.',
+    pdfLabel: 'POBIERZ RAPORT CHŁODZENIA',
+    pdfDesc: 'Dobór mocy i rekomendowane modele urządzeń.',
     navLink: '/baza-wiedzy',
     navLabel: 'Baza Wiedzy AirTUR'
+  },
+  raport: {
+    title: "Wyniki Gotowe!",
+    subtitle: "Twoje obliczenia zostały przetworzone.",
+    desc: "Poniżej znajdziesz podsumowanie swoich wyników. Możesz je pobrać jako profesjonalny dokument PDF.",
+    pdfEnabled: true,
+    pdfType: 'generated', 
+    pdfLabel: 'POBIERZ TWÓJ RAPORT (PDF)',
+    pdfDesc: 'Kliknij poniżej, aby pobrać kopię swoich obliczeń.',
+    navLink: '/baza-wiedzy',
+    navLabel: 'Odwiedź Bazę Wiedzy'
   }
 };
 ---
 
-<Layout title="Dziękujemy | AirTUR">
-  
-  <section class="pt-32 pb-24 bg-white min-h-[80vh] flex items-center overflow-hidden">
+<Layout title={seoProps.title} description={seoProps.description}>
+  <meta name="robots" content="noindex, nofollow" slot="head" />
+
+  <section class="min-h-screen flex items-center justify-center pt-20 pb-12 bg-white overflow-hidden">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       
-      <div class="mb-10 inline-flex items-center justify-center">
+      <div class="mb-8 inline-flex items-center justify-center">
         <div class="relative">
-            <div class="absolute inset-0 bg-airtur-blue rounded-full animate-ping opacity-20"></div>
-            <div class="relative bg-airtur-blue text-white p-8 rounded-full shadow-2xl">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-12 h-12">
+            <div class="absolute inset-0 bg-airtur-blue rounded-full animate-ping opacity-10"></div>
+            <div class="relative bg-airtur-blue text-white p-6 md:p-8 rounded-full shadow-[0_0_40px_rgba(10,179,198,0.3)]">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-10 h-10 md:w-12 md:h-12">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                 </svg>
             </div>
         </div>
       </div>
 
-      <div class="space-y-6 mb-16">
-        <h1 id="main-title" class="text-4xl md:text-5xl lg:text-6xl font-black text-airtur-dark leading-tight tracking-tight uppercase">
+      <div class="space-y-4 mb-10 md:mb-12">
+        <h1 id="main-title" class="text-3xl md:text-5xl lg:text-6xl font-black text-airtur-dark leading-[1.1] tracking-tight uppercase">
             Dziękujemy!
         </h1>
-        <p id="main-subtitle" class="text-xl md:text-2xl font-bold text-gray-400">
+        <p id="main-subtitle" class="text-lg md:text-2xl font-black text-airtur-blue tracking-tight">
             Wiadomość została wysłana.
         </p>
-        <p id="main-desc" class="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
-            Zajmiemy się Twoim zgłoszeniem niezwłocznie.
+        <p id="main-desc" class="text-base md:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium text-pretty">
+            Zajmiemy się Twoim zgłoszeniem niezwłocznie. Nasi specjaliści już analizują wprowadzone dane.
         </p>
+
+        <div id="scroll-hint" class="hidden pt-6 animate-bounce flex flex-col items-center gap-2">
+            <span class="text-[10px] font-black text-airtur-blue uppercase tracking-[0.2em]">Darmowe materiały do pobrania poniżej</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-airtur-blue">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+            </svg>
+        </div>
       </div>
 
-      <div id="pdf-section" class="hidden mb-16 transform transition-all duration-1000">
-        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-[3rem] p-8 md:p-12 text-left relative overflow-hidden">
-            <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+      <div id="pdf-section" class="hidden mb-12 opacity-0 transform translate-y-8 transition-all duration-1000">
+        <div class="bg-airtur-blue/5 border border-airtur-blue/10 rounded-[2.5rem] p-6 md:p-10 text-left relative overflow-hidden">
+            <div class="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
                 <div class="flex-grow text-center md:text-left">
-                    <span class="inline-block bg-airtur-blue text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest mb-4">Materiały dla Ciebie</span>
-                    <h2 id="pdf-label-text" class="text-2xl font-black text-airtur-dark mb-2 leading-tight">Twój dokument jest gotowy</h2>
-                    <p id="pdf-desc-text" class="text-gray-500 text-sm leading-relaxed">Pobierz plik, aby zachować kopię obliczeń.</p>
+                    <span class="inline-block bg-airtur-blue text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest mb-3">Bonus Inwestycyjny</span>
+                    <h2 id="pdf-label-text" class="text-xl md:text-2xl font-black text-airtur-dark mb-2 leading-tight tracking-tight">Twoje materiały są gotowe</h2>
+                    <p id="pdf-desc-text" class="text-gray-500 text-sm font-medium leading-relaxed">Kliknij przycisk po prawej, aby pobrać dokument PDF.</p>
                 </div>
                 
-                <div class="flex-shrink-0">
-                    <button id="download-generated-btn" class="hidden items-center gap-3 bg-airtur-dark text-white px-8 py-5 rounded-2xl font-bold hover:bg-airtur-tech transition shadow-xl uppercase text-xs tracking-widest cursor-pointer group">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-airtur-blue group-hover:translate-y-0.5 transition-transform">
+                <div class="flex-shrink-0 w-full md:w-auto">
+                    <button id="download-generated-btn" class="hidden items-center justify-center w-full md:w-auto gap-3 bg-airtur-dark text-white px-8 py-5 rounded-2xl font-black hover:bg-black transition shadow-xl uppercase text-[11px] tracking-widest cursor-pointer group">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-airtur-blue group-hover:translate-y-1 transition-transform">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M7.5 12 12 16.5m0 0L16.5 12M12 16.5V3" />
                         </svg>
-                        POBIERZ RAPORT PDF
+                        <span class="btn-text">POBIERZ RAPORT</span>
                     </button>
 
-                    <a id="download-static-link" href="#" download class="hidden items-center gap-3 bg-airtur-blue text-white px-8 py-5 rounded-2xl font-bold hover:bg-opacity-90 transition shadow-xl uppercase text-xs tracking-widest group">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:translate-y-0.5 transition-transform">
+                    <a id="download-static-link" href="#" download class="hidden items-center justify-center w-full md:w-auto gap-3 bg-airtur-blue text-white px-8 py-5 rounded-2xl font-black hover:bg-airtur-navy transition shadow-xl uppercase text-[11px] tracking-widest group">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 group-hover:translate-y-1 transition-transform">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M7.5 12 12 16.5m0 0L16.5 12M12 16.5V3" />
                         </svg>
                         POBIERZ PDF
@@ -133,95 +147,80 @@ const contents = {
         </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row justify-center gap-4 border-t border-gray-100 pt-12">
-          <a id="dynamic-nav-link" href="/baza-wiedzy" class="px-8 py-4 rounded-xl border-2 border-airtur-blue text-airtur-blue font-bold hover:bg-airtur-blue hover:text-white transition-all text-sm uppercase tracking-widest text-center">
+      <div class="flex flex-col sm:flex-row justify-center gap-4 border-t border-gray-100 pt-10">
+          <a id="dynamic-nav-link" href="/baza-wiedzy" class="px-8 py-4 rounded-xl border-2 border-gray-200 text-gray-400 font-black hover:border-airtur-blue hover:text-airtur-blue transition-all text-[11px] uppercase tracking-widest text-center">
               Odwiedź Bazę Wiedzy
           </a>
-          <a href="/" class="px-8 py-4 rounded-xl bg-airtur-dark text-white font-bold hover:bg-airtur-tech transition text-sm shadow-xl uppercase tracking-widest text-center">
-              Wróć na stronę główną
+          <a href="/" class="px-8 py-4 rounded-xl bg-airtur-dark text-white font-black hover:bg-black transition text-[11px] shadow-lg uppercase tracking-widest text-center">
+              Wróć do strony głównej
           </a>
       </div>
 
     </div>
   </section>
-
 </Layout>
 
-<script define:vars={{ contents }}>
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const cel = params.get('cel');
+<script is:inline define:vars={{ contents }}>
+  const handleSuccessPage = () => {
+    const params = new URLSearchParams(window.location.search);
+    const cel = params.get('cel') || 'kontakt'; 
+    const data = contents[cel];
+
+    if (!data) return;
+
+    // 1. Dynamiczne treści
+    document.getElementById('main-title').innerText = data.title;
+    document.getElementById('main-subtitle').innerText = data.subtitle;
+    document.getElementById('main-desc').innerText = data.desc;
+
+    const navLink = document.getElementById('dynamic-nav-link');
+    if (navLink) {
+        navLink.href = data.navLink;
+        navLink.innerText = data.navLabel;
+    }
+
+    // 2. Obsługa PDF
+    if (data.pdfEnabled) {
+        const pdfSection = document.getElementById('pdf-section');
+        const scrollHint = document.getElementById('scroll-hint');
+        const staticLink = document.getElementById('download-static-link');
+        const generatedBtn = document.getElementById('download-generated-btn');
+
+        pdfSection.classList.remove('hidden');
+        scrollHint.classList.remove('hidden');
         
-        // 1. Obsługa treści dynamicznej (Nagłówki itp.)
-        if (cel && contents[cel]) {
-            const data = contents[cel];
-            
-            document.getElementById('main-title').innerText = data.title;
-            document.getElementById('main-subtitle').innerText = data.subtitle;
-            document.getElementById('main-desc').innerText = data.desc;
+        setTimeout(() => {
+            pdfSection.classList.remove('opacity-0', 'translate-y-8');
+        }, 100);
 
-            const navLink = document.getElementById('dynamic-nav-link');
-            if (navLink) {
-                navLink.href = data.navLink;
-                navLink.innerText = data.navLabel;
+        document.getElementById('pdf-label-text').innerText = data.pdfLabel;
+        document.getElementById('pdf-desc-text').innerText = data.pdfDesc;
+
+        if (data.pdfType === 'generated') {
+            const pdfBase64 = sessionStorage.getItem('currentReportPdf');
+            const pdfFilename = sessionStorage.getItem('currentReportFilename');
+
+            if (pdfBase64) {
+                generatedBtn.style.display = 'inline-flex';
+                generatedBtn.addEventListener('click', () => {
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = `data:application/pdf;base64,${pdfBase64}`;
+                    downloadLink.download = pdfFilename || 'Raport_AirTUR.pdf';
+                    downloadLink.click();
+                });
+            } else {
+                generatedBtn.style.display = 'inline-flex';
+                generatedBtn.querySelector('.btn-text').innerText = "WYSŁANO NA E-MAIL";
+                generatedBtn.disabled = true;
+                generatedBtn.style.opacity = "0.5";
             }
-
-            // 2. Obsługa sekcji PDF
-            if (data.pdfEnabled) {
-                const pdfSection = document.getElementById('pdf-section');
-                const staticLink = document.getElementById('download-static-link');
-                const generatedBtn = document.getElementById('download-generated-btn');
-
-                pdfSection.classList.remove('hidden');
-                pdfSection.classList.add('animate-fade-in-up');
-                document.getElementById('pdf-label-text').innerText = data.pdfLabel;
-                document.getElementById('pdf-desc-text').innerText = data.pdfDesc;
-
-                // 🔥 NOWOŚĆ: Auto-scroll do sekcji PDF po 1 sekundzie
-                setTimeout(() => {
-                    pdfSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 1000);
-
-                if (data.pdfType === 'generated') {
-                    // Pobieranie PDF z pamięci (sessionStorage) zapisanego w Konwersja.astro
-                    const pdfBase64 = sessionStorage.getItem('currentReportPdf');
-                    const pdfFilename = sessionStorage.getItem('currentReportFilename');
-
-                    if (pdfBase64) {
-                        generatedBtn.style.display = 'inline-flex';
-                        generatedBtn.innerText = "POBIERZ RAPORT PDF";
-                        
-                        generatedBtn.addEventListener('click', () => {
-                            const linkSource = `data:application/pdf;base64,${pdfBase64}`;
-                            const downloadLink = document.createElement("a");
-                            downloadLink.href = linkSource;
-                            downloadLink.download = pdfFilename || 'Raport_AirTUR.pdf';
-                            downloadLink.click();
-                        });
-                    } else {
-                        // Failover: Jeśli PDF nie dotarł lub sesja wygasła
-                        generatedBtn.style.display = 'inline-flex';
-                        generatedBtn.innerText = "RAPORT WYSŁANO NA EMAIL";
-                        generatedBtn.disabled = true;
-                        generatedBtn.style.opacity = "0.5";
-                        generatedBtn.style.cursor = "default";
-                    }
-                } else {
-                    // Link statyczny (dla checklist itp.)
-                    staticLink.style.display = 'inline-flex';
-                    staticLink.href = `/do-pobrania/${data.pdfFile}`;
-                }
-            }
+        } else {
+            staticLink.style.display = 'inline-flex';
+            staticLink.href = `/do-pobrania/${data.pdfFile}`;
         }
-    });
-</script>
+    }
+  };
 
-<style>
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out forwards;
-  }
-</style>
+  handleSuccessPage();
+  document.addEventListener('astro:page-load', handleSuccessPage);
+</script>

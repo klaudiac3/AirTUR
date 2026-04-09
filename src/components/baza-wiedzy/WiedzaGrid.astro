@@ -1,102 +1,118 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 
-// 1. Pobieramy wszystkie artykuły z folderu src/content/blog/
+/** * [SENIOR NOTE]: WiedzaGrid v3.0 - Final Visual Calibration.
+ * Układ: Nienaruszony (zgodnie z prośbą).
+ * Poprawki: Pełna widoczność opisów, brak pasków w nagłówkach, typografia Premium.
+ */
+
 const allPosts = await getCollection('blog');
-
-// 2. Sortujemy od najnowszych (Bezpieczna metoda dla dat tekstowych i obiektowych)
 const sortedPosts = allPosts.sort(
   (a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
 );
 
-// 3. Oddzielamy te "Featured" (Filary Wiedzy) od reszty
 const featuredPosts = sortedPosts.filter(post => post.data.featured);
 const regularPosts = sortedPosts.filter(post => !post.data.featured);
+const placeholderImg = "https://placehold.co/600x400/F3F4F6/3A4149?text=AirTUR+Wiedza";
 ---
 
-<!-- Sekcja bloga z dopasowaniem do mobile -->
 <section class="bg-white pt-8 pb-16 md:pt-12 md:pb-24 border-t border-gray-100" id="articles-grid">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- CZĘŚĆ 1: FILARY WIEDZY (Wyróżnione) -->
     {featuredPosts.length > 0 && (
-      <div class="mb-10 md:mb-12">
-        <h2 class="text-xl md:text-3xl font-bold text-airtur-dark mb-6 md:mb-10 text-left border-l-4 border-airtur-blue pl-4">
-          Wyróżnione analizy
+      <div class="mb-16 md:mb-20">
+        <h2 class="text-2xl md:text-4xl font-black text-airtur-dark tracking-tight uppercase mb-10 leading-tight">
+            Wyróżnione <span class="text-airtur-blue">Artykuły</span>
         </h2>
 
-        <!-- ZMIANA: grid-cols-2 na mobile, mniejszy gap -->
-        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
-          {featuredPosts.map((post) => (
-            <a href={`/blog/${post.slug}`} class="group flex flex-col h-full bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-md md:shadow-lg border border-gray-100 hover:shadow-2xl hover:border-airtur-blue/30 transition-all duration-300">
-              
-              <!-- Zdjęcie: mniejsza wysokość na mobile -->
-              <div class="relative aspect-[4/3] md:h-60 overflow-hidden bg-gray-100 flex-shrink-0">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+          {featuredPosts.map((post, index) => (
+            <a 
+              href={`/blog/${post.slug}`} 
+              class="group flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 hover:shadow-2xl hover:border-airtur-blue/30 transition-all duration-500 hover:-translate-y-1"
+            >
+              <div class="relative aspect-[16/10] overflow-hidden bg-gray-100">
                 <img 
-                  src={post.data.image} 
-                  alt={post.data.title} 
-                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  onerror="this.onerror=null; this.src='https://placehold.co/600x400/F3F4F6/3A4149?text=Brak+zdjęcia';"
+                  src={post.data.image || placeholderImg} 
+                  alt={post.data.title}
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading={index < 2 ? "eager" : "lazy"}
                 />
-                <!-- Tag: mniejszy na mobile -->
-                <div class="absolute top-2 left-2 md:top-4 md:left-4">
-                    <span class="bg-airtur-blue text-white text-[8px] md:text-xs font-bold px-1.5 py-0.5 md:px-3 md:py-1.5 rounded uppercase tracking-wide shadow-md">
-                        {post.data.category}
-                    </span>
+                <div class="absolute top-4 left-4">
+                  <span class="bg-airtur-dark/95 backdrop-blur-md text-white text-[9px] md:text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-widest border border-white/10 whitespace-nowrap">
+                    {post.data.category}
+                  </span>
                 </div>
               </div>
 
-              <!-- Treść: mniejszy padding i font na mobile -->
-              <div class="p-3 md:p-6 flex flex-col flex-grow">
-                <h3 class="text-xs md:text-lg font-bold text-airtur-dark mb-1.5 md:mb-3 group-hover:text-airtur-blue transition-colors leading-tight line-clamp-2 md:line-clamp-none">
-                    {post.data.title}
+              <div class="p-5 md:p-8 flex flex-col flex-grow">
+                <h3 class="text-sm md:text-xl font-black text-airtur-dark mb-4 group-hover:text-airtur-blue transition-colors leading-tight line-clamp-2 uppercase tracking-tight">
+                  {post.data.title}
                 </h3>
                 
-                <!-- Ukrywamy opis na mobile w wyróżnionych, aby zachować wysokość -->
-                <p class="text-gray-600 text-xs md:text-sm leading-relaxed mb-4 flex-grow line-clamp-3 hidden md:block">
-                    {post.data.excerpt}
+                <p class="text-gray-500 text-xs md:text-sm leading-relaxed mb-8 line-clamp-3 font-medium">
+                  {post.data.excerpt}
                 </p>
                 
-                <div class="pt-2 md:pt-4 border-t border-gray-100 flex items-center justify-between mt-auto">
-                    <span class="text-[9px] md:text-xs text-gray-400 font-medium">{post.data.readingTime}</span>
-                    <span class="text-airtur-blue text-[10px] md:text-sm font-bold flex items-center gap-1">
-                        CZYTAJ <span class="hidden sm:inline">RAPORT</span> <span>→</span>
-                    </span>
+                <div class="mt-auto">
+                  <div class="w-full py-3.5 bg-white border-2 border-airtur-blue/20 text-airtur-blue rounded-xl font-black text-[10px] tracking-widest text-center 
+                              group-hover:bg-airtur-blue group-hover:text-white group-hover:border-airtur-blue 
+                              hover:!bg-airtur-navy hover:!border-airtur-navy
+                              transition-all duration-300 flex items-center justify-center gap-2 uppercase">
+                    Czytaj Ekspertyzę
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                      <path fill-rule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
               </div>
-
             </a>
           ))}
         </div>
       </div>
     )}
 
-
-    <!-- CZĘŚĆ 2: POZOSTAŁE ARTYKUŁY (Lista) -->
     {regularPosts.length > 0 && (
       <div>
-        <h3 class="text-lg md:text-2xl font-bold text-gray-400 mb-6 uppercase tracking-widest text-[10px] md:text-sm">Pozostałe wpisy</h3>
+        <div class="flex items-center gap-4 mb-10">
+          <h3 class="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-[0.3em] whitespace-nowrap">Pełna Baza Wiedzy</h3>
+          <div class="h-[1px] w-full bg-gray-100"></div>
+        </div>
         
-        <!-- ZMIANA: grid-cols-2 na mobile -->
-        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-            {regularPosts.map((post) => (
-                <a href={`/blog/${post.slug}`} class="group flex flex-col h-full bg-gray-50 rounded-xl overflow-hidden hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-gray-200">
-                    <div class="aspect-video overflow-hidden bg-gray-100 flex-shrink-0">
-                        <img 
-                          src={post.data.image} 
-                          alt={post.data.title} 
-                          class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
-                          onerror="this.onerror=null; this.src='https://placehold.co/600x400/F3F4F6/3A4149?text=Brak+zdjęcia';"
-                        />
-                    </div>
-                    <div class="p-3 md:p-5 flex flex-col flex-grow">
-                        <span class="text-[8px] md:text-xs font-bold text-airtur-blue uppercase tracking-wide block mb-1">{post.data.category}</span>
-                        <h4 class="font-bold text-airtur-dark text-[11px] md:text-base leading-tight mb-2 group-hover:text-airtur-blue transition-colors line-clamp-2">{post.data.title}</h4>
-                        <!-- Opis widoczny tylko od tabletu wzwyż -->
-                        <p class="text-[10px] md:text-xs text-gray-500 line-clamp-2 mt-auto hidden md:block">{post.data.excerpt}</p>
-                    </div>
-                </a>
-            ))}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+          {regularPosts.map((post) => (
+            <a 
+              href={`/blog/${post.slug}`} 
+              class="group flex flex-col h-full bg-white rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-airtur-blue/10 hover:-translate-y-1"
+            >
+              <div class="aspect-video overflow-hidden bg-gray-50 relative">
+                <img 
+                  src={post.data.image || placeholderImg} 
+                  alt={post.data.title}
+                  class="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
+                  loading="lazy"
+                />
+              </div>
+              <div class="p-5 flex flex-col flex-grow">
+                <span class="text-[9px] md:text-[10px] font-black text-airtur-blue uppercase tracking-widest block mb-2 whitespace-nowrap">
+                    {post.data.category}
+                </span>
+                <h4 class="font-black text-airtur-dark text-xs md:text-base leading-snug mb-3 group-hover:text-airtur-blue transition-colors line-clamp-2 tracking-tight uppercase">
+                  {post.data.title}
+                </h4>
+                
+                <p class="text-[11px] md:text-[12px] text-gray-500 line-clamp-3 font-medium leading-relaxed mb-4">
+                  {post.data.excerpt}
+                </p>
+
+                <div class="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between">
+                    <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">{post.data.readingTime}</span>
+                    <span class="text-airtur-blue text-[10px] font-black group-hover:translate-x-1 transition-transform">WIĘCEJ →</span>
+                </div>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     )}

@@ -1,8 +1,9 @@
 ---
-// Importujemy główny szablon (Layout)
 import Layout from '../layouts/Layout.astro';
+import { companyConfig } from '../data/companyConfig';
+import { reviewsData } from '../data/reviewsData'; // Import Twoich opinii
 
-// Importy komponentów ze specyficznego folderu strony głównej
+// Komponenty sekcji
 import Hero from '../components/strona-glowna/Hero.astro';
 import Fundamenty from '../components/strona-glowna/Fundamenty.astro';
 import ProblemRozwiazanie from '../components/strona-glowna/ProblemRozwiazanie.astro';
@@ -10,29 +11,110 @@ import Opinie from '../components/strona-glowna/Opinie.astro';
 import Narzedzia from '../components/strona-glowna/Narzedzia.astro';
 import OstatnieCTA from '../components/strona-glowna/OstatnieCTA.astro';
 
-// Header, Footer i MobileStickyBar są już wewnątrz Layout.astro, więc tu ich nie wstawiamy!
+const seoTitle = "Klimatyzacja z funkcją grzania i montaż | AirTUR";
+const seoDescription = "Nowoczesna klimatyzacja z funkcją grzania AirTUR. Oblicz zwrot z inwestycji (ROI) i zyskaj komfort przez 365 dni w roku.";
+
+/**
+ * [LOGIKA]: Obliczanie średniej ocen dla Google (SEO Power-Up)
+ * Zautomatyzowane wyciąganie danych z reviewsData.js
+ */
+const totalReviews = reviewsData.length;
+const averageRating = (reviewsData.reduce((acc, rev) => acc + rev.rating, 0) / totalReviews).toFixed(1);
+
+const serviceRegions = companyConfig.serviceAreas.map(area => area.region);
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://airtur.pl/#website",
+      "url": "https://airtur.pl",
+      "name": "AirTUR",
+      "publisher": { "@id": "https://airtur.pl/#organization" }
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://airtur.pl/#organization",
+      "name": companyConfig.name,
+      "legalName": companyConfig.fullName,
+      "url": "https://airtur.pl",
+      "logo": "https://airtur.pl/logo.png",
+      "image": "https://airtur.pl/assets/hero.jpg",
+      "telephone": companyConfig.contact.phoneFull,
+      "email": companyConfig.contact.email,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": companyConfig.address.street,
+        "addressLocality": companyConfig.address.city,
+        "postalCode": companyConfig.address.postCode,
+        "addressCountry": "PL"
+      },
+      "areaServed": serviceRegions,
+      "priceRange": "$$",
+      // [SEO]: Dodanie zagregowanych opinii do wizytówki Google
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": averageRating,
+        "reviewCount": totalReviews
+      }
+    }
+  ]
+};
+
+const sectionClass = "scroll-mt-24";
 ---
 
-<Layout title="Strona Główna">
-	
-	<main>
-		<!-- Sekcja 1: HERO -->
-		<Hero />
-		
-		<!-- Sekcja 2: FUNDAMENTY -->
-		<Fundamenty />
-		
-		<!-- Sekcja 3: PROBLEM I ROZWIĄZANIE -->
-		<ProblemRozwiazanie />
-		
-		<!-- Sekcja 4: OPINIE -->
-		<Opinie />
-		
-		<!-- Sekcja 5: NARZĘDZIA -->
-		<Narzedzia />
-		
-		<!-- Sekcja 6: OSTATNIE CTA -->
-		<OstatnieCTA />
-	</main>
+<Layout title={seoTitle} description={seoDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  
+  <main id="main-content" tabindex="-1" class="focus:outline-none">
+    
+    <section id="start" class={sectionClass} aria-label="Sekcja powitalna">
+      <Hero />
+    </section>
 
+    <section id="dlaczego-my" class={sectionClass} aria-label="Nasze standardy pracy">
+      <Fundamenty />
+    </section>
+
+    <section id="rozwiazania" class={sectionClass} aria-label="Rozwiązania HVAC">
+      <ProblemRozwiazanie />
+    </section>
+
+    <section id="opinie" class={sectionClass} aria-label="Opinie klientów">
+      <Opinie reviews={reviewsData} />
+    </section>
+
+    <section id="narzedzia" class={sectionClass} aria-label="Kalkulatory ROI">
+      <Narzedzia />
+    </section>
+
+    <section id="wycena" class={sectionClass} aria-label="Kontakt">
+      <OstatnieCTA />
+    </section>
+
+  </main>
 </Layout>
+
+<style is:global>
+  html {
+    scroll-behavior: smooth;
+    /* [UX]: Zapobieganie przesunięciom układu przy overflow */
+    overflow-x: hidden;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Przenosimy overflow tutaj, by nie blokować sticky na <main> */
+    overflow-x: hidden;
+    margin: 0;
+  }
+
+  #main-content:focus:not(:focus-visible) {
+    outline: none;
+  }
+</style>

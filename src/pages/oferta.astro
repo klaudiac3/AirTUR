@@ -1,36 +1,73 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { companyConfig } from '../data/companyConfig';
+
+// Komponenty sekcji
 import Wprowadzenie from '../components/oferta/Wprowadzenie.astro';
-import Montaz from '../components/oferta/Montaz.astro';
 import Partnerzy from '../components/oferta/Partnerzy.astro';
+import Montaz from '../components/oferta/Montaz.astro';
 import Serwis from '../components/oferta/Serwis.astro';
-// Import sekcji Analiza
 import Analiza from '../components/oferta/Analiza.astro';
-// IMPORTUJEMY NOWY PASEK NAWIGACJI
 import OfferProgressSideNav from '../components/oferta/OfferProgressSideNav.astro';
+
+// [SEO]: Meta-dane
+const seoTitle = "Kompleksowa Oferta Montażu i Serwisu HVAC | AirTUR";
+const seoDescription = "Poznaj pełen zakres usług AirTUR. Od precyzyjnego montażu klimatyzacji i pomp ciepła, po profesjonalny serwis. Sprawdź nasze standardy inżynierskie.";
+
+// [SEO/UX]: Konsekwentny offset dla nawigacji
+const sectionClass = "scroll-mt-24";
+
+// [SENIOR]: Dynamiczne dane strukturalne (zaciągnięte z configu!)
+const serviceRegions = companyConfig.serviceAreas.map(area => area.region);
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${companyConfig.websiteUrl}/oferta/#webpage`,
+      "url": `${companyConfig.websiteUrl}/oferta`,
+      "name": seoTitle,
+      "description": seoDescription,
+      "isPartOf": { "@id": `${companyConfig.websiteUrl}/#website` }
+    },
+    {
+      "@type": "Service",
+      "name": "Instalacje HVAC AirTUR",
+      "serviceType": "Montaż Klimatyzacji i Pomp Ciepła",
+      "areaServed": serviceRegions, // DYNAMICZNE!
+      "provider": { "@id": `${companyConfig.websiteUrl}/#organization` }
+    }
+  ]
+};
 ---
 
-<Layout title="Oferta">
+<Layout title={seoTitle} description={seoDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   
-  <!-- Dodajemy klasę relative dla kontekstu pozycjonowania -->
-  <main class="relative">
+  <main class="relative overflow-x-hidden">
     
-    <Wprowadzenie />
+    <section id="start" class={sectionClass} aria-label="Sekcja powitalna oferty">
+      <Wprowadzenie />
+    </section>
 
-    <!-- PRZENIESIONO: Partnerzy zaraz po wstępie budują zaufanie na start -->
-    <Partnerzy />
+    <section id="partnerzy" class="scroll-mt-32" aria-label="Nasi zaufani dostawcy technologii">
+      <Partnerzy />
+    </section>
 
-    <!-- Sekcje z ID (ukryte wewnątrz komponentów: id="montaz", id="serwis", id="analiza") -->
-    <Montaz />
+    <section id="montaz" class={sectionClass} aria-label="Montaż systemów klimatyzacji i grzania">
+      <Montaz />
+    </section>
 
-    <Serwis />
+    <section id="serwis" class={sectionClass} aria-label="Serwis i konserwacja urządzeń">
+      <Serwis />
+    </section>
 
-    <!-- SEKCJA 5: ANALIZA -->
-    <Analiza />
+    <section id="analiza" class={sectionClass} aria-label="Bezpłatna analiza i wycena Twojego przypadku">
+      <Analiza />
+    </section>
 
-    <!-- Dodajemy komponent paska bocznego -->
     <OfferProgressSideNav />
 
   </main>
-
 </Layout>

@@ -1,98 +1,113 @@
 ---
-// src/components/Header.astro
 import { companyConfig } from '../data/companyConfig';
+
+// Pobranie aktualnej ścieżki dla logiki "Active State" i SEO
+const pathname = new URL(Astro.request.url).pathname;
+
+const navLinks = [
+  { href: "/", label: "Strona Główna" },
+  { href: "/oferta", label: "Oferta" },
+  { href: "/narzedzia", label: "Narzędzia" },
+  { href: "/studia-przypadkow", label: "Studia Przypadków" },
+  { href: "/baza-wiedzy", label: "Baza Wiedzy" },
+  { href: "/o-firmie", label: "O Firmie" },
+  { href: "/kontakt", label: "Kontakt" },
+];
 ---
 
 <header class="sticky top-0 z-50 bg-white shadow-md font-sans">
-  <!-- Kontener na pełną szerokość -->
   <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12">
-    
-    <!-- Wysokość h-24 dla dużego logo -->
     <div class="flex justify-between items-center h-24">
       
-      <!-- LEWA STRONA: DUŻE LOGO -->
-      <div class="flex-shrink-0 cursor-pointer mr-4">
-        <a href="/">
+      <div class="flex-shrink-0 mr-4">
+        <a href="/" aria-label="AirTUR - Strona Główna">
           <img 
             class="h-16 md:h-20 w-auto object-contain" 
             src="/logo.svg" 
-            alt={`${companyConfig.name} Logo`} 
-            onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';" 
+            alt="Logo AirTUR"
+            width="180" 
+            height="80"
+            loading="eager"
+            fetchpriority="high"
           />
-          <span id="logo-text" style="display:none;" class="text-2xl font-bold text-airtur-navy">{companyConfig.name}</span>
         </a>
       </div>
 
-      <!-- ŚRODEK: MENU GŁÓWNE (Tylko Desktop) -->
-      <nav class="hidden lg:flex lg:space-x-4 xl:space-x-8 text-sm font-medium text-airtur-dark whitespace-nowrap">
-        <a href="/" class="hover:text-airtur-blue transition">Strona Główna</a>
-        <a href="/oferta" class="hover:text-airtur-blue transition">Oferta</a>
-        <a href="/narzedzia" class="hover:text-airtur-blue transition">Narzędzia</a>
-        <a href="/studia-przypadkow" class="hover:text-airtur-blue transition">Studia Przypadków</a>
-        <a href="/baza-wiedzy" class="hover:text-airtur-blue transition">Baza Wiedzy</a>
-        <a href="/o-firmie" class="hover:text-airtur-blue transition">O Firmie</a>
-        <a href="/kontakt" class="hover:text-airtur-blue transition">Kontakt</a>
+      <nav class="hidden lg:flex lg:space-x-4 xl:space-x-8 text-sm font-bold text-airtur-dark whitespace-nowrap">
+        {navLinks.map(link => (
+          <a 
+            href={link.href} 
+            class:list={[
+              "hover:text-airtur-blue transition-colors",
+              { "text-airtur-blue": pathname === link.href }
+            ]}
+            aria-current={pathname === link.href ? "page" : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
       </nav>
 
-      <!-- PRAWA STRONA: KONTAKT + CTA (Tylko Desktop) -->
       <div class="hidden lg:flex items-center gap-4 xl:gap-8 ml-4">
-        
-        <!-- Kolumna Kontaktowa (Telefon na górze, Email na dole) -->
         <div class="flex flex-col items-end gap-0.5">
-          <!-- Telefon -->
-          <a href={companyConfig.contact.phoneLink} class="flex items-center gap-2 text-airtur-dark font-semibold hover:text-airtur-blue transition whitespace-nowrap">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 text-airtur-blue">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
-              </svg>
+          <a href={companyConfig.contact.phoneLink} class="flex items-center gap-2 text-airtur-dark font-bold hover:text-airtur-blue transition whitespace-nowrap">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="size-4 text-airtur-blue" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+            </svg>
             <span class="text-base xl:text-lg leading-none">{companyConfig.contact.phone}</span>
           </a>
-          
-          <!-- E-mail (Mniejszy pod spodem) -->
-          <a href={companyConfig.contact.emailLink} class="flex items-center gap-2 text-gray-400 hover:text-airtur-blue transition text-[11px] xl:text-xs font-medium">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-            </svg>
+          <a href={companyConfig.contact.emailLink} class="text-gray-500 hover:text-airtur-blue transition text-[11px] xl:text-xs font-medium">
             {companyConfig.contact.email}
           </a>
         </div>
         
-        <!-- Przycisk CTA -->
-        <a href="/kontakt" class="bg-airtur-blue text-white px-4 xl:px-8 py-3 xl:py-4 rounded font-bold text-[10px] xl:text-xs tracking-wide hover:bg-opacity-90 transition shadow-md uppercase text-center whitespace-nowrap">
-          ZAMÓW BEZPŁATNĄ ANALIZĘ I WYCENĘ
+        <a 
+          href="/kontakt" 
+          class="bg-airtur-blue text-white px-4 xl:px-8 py-3 xl:py-4 rounded-xl font-bold text-[10px] xl:text-xs tracking-wide hover:bg-airtur-navy transition-all shadow-md uppercase whitespace-nowrap focus:ring-2 focus:ring-airtur-blue focus:ring-offset-2"
+        >
+          Bezpłatna wycena
         </a>
       </div>
 
-      <!-- IKONA HAMBURGERA (Tylko Mobilne) -->
-      <div class="lg:hidden flex items-center">
-        <button id="mobile-menu-button" class="text-airtur-dark hover:text-airtur-blue focus:outline-none">
+      <div class="lg:hidden">
+        <button 
+          id="mobile-menu-button" 
+          class="text-airtur-dark p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-airtur-blue" 
+          aria-label="Otwórz menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
           <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- MENU MOBILNE -->
-  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 h-screen absolute w-full shadow-xl top-24 left-0 z-50">
-    <nav class="flex flex-col p-6 space-y-4 text-lg">
-      <a href="/" class="block text-airtur-dark font-medium hover:text-airtur-blue">Strona Główna</a>
-      <a href="/oferta" class="block text-airtur-dark font-medium hover:text-airtur-blue">Oferta</a>
-      <a href="/narzedzia" class="block text-airtur-dark font-medium hover:text-airtur-blue">Narzędzia</a>
-      <a href="/studia-przypadkow" class="block text-airtur-dark font-medium hover:text-airtur-blue">Studia Przypadków</a>
-      <a href="/baza-wiedzy" class="block text-airtur-dark font-medium hover:text-airtur-blue">Baza Wiedzy</a>
-      <a href="/o-firmie" class="block text-airtur-dark font-medium hover:text-airtur-blue">O Firmie</a>
-      <a href="/kontakt" class="block text-airtur-dark font-medium hover:text-airtur-blue">Kontakt</a>
-      
-      <div class="pt-6 mt-6 border-t border-gray-100 flex flex-col gap-4">
-        <a href="/kontakt" class="block w-full text-center bg-airtur-blue text-white py-4 rounded font-bold text-lg shadow-md uppercase">
-            ZAMÓW BEZPŁATNĄ ANALIZĘ I WYCENĘ
+  <div 
+    id="mobile-menu" 
+    class="hidden lg:hidden bg-white border-t border-gray-100 absolute w-full shadow-2xl z-50 origin-top transition-all duration-300 ease-in-out"
+  >
+    <nav class="flex flex-col p-6 space-y-4">
+      {navLinks.map(link => (
+        <a 
+          href={link.href} 
+          class:list={[
+            "text-lg font-bold transition-colors",
+            pathname === link.href ? "text-airtur-blue" : "text-airtur-dark hover:text-airtur-blue"
+          ]}
+          aria-current={pathname === link.href ? "page" : undefined}
+        >
+          {link.label}
         </a>
-        <a href={companyConfig.contact.phoneLink} class="block w-full text-center text-airtur-dark font-semibold text-lg flex justify-center items-center gap-2">
-            <span>📞</span> Zadzwoń: {companyConfig.contact.phone}
+      ))}
+      <div class="pt-6 border-t border-gray-100 flex flex-col gap-4">
+        <a href="/kontakt" class="bg-airtur-blue text-white py-4 rounded-xl font-bold text-center uppercase shadow-md active:scale-[0.98] transition-transform">
+          Wycena
         </a>
-        <a href={companyConfig.contact.emailLink} class="block w-full text-center text-gray-500 font-medium text-base flex justify-center items-center gap-2">
-            <span>✉️</span> {companyConfig.contact.email}
+        <a href={companyConfig.contact.phoneLink} class="text-center font-bold text-airtur-dark italic py-2">
+          📞 {companyConfig.contact.phone}
         </a>
       </div>
     </nav>
@@ -100,10 +115,48 @@ import { companyConfig } from '../data/companyConfig';
 </header>
 
 <script>
-  const btn = document.getElementById('mobile-menu-button');
-  const menu = document.getElementById('mobile-menu');
+  /**
+   * [LOGIKA]: Obsługa menu mobilnego zgodna z cyklem życia Astro.
+   * Zarządza stanem widoczności oraz atrybutami dostępności (ARIA).
+   */
+  const initHeader = () => {
+    const btn = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    
+    if (!btn || !menu || !menuIcon) return;
 
-  btn?.addEventListener('click', () => {
-    menu?.classList.toggle('hidden');
-  });
+    const toggleMenu = () => {
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      
+      // Przełączanie stanu
+      btn.setAttribute('aria-expanded', (!isExpanded).toString());
+      menu.classList.toggle('hidden');
+      
+      // Zmiana ikony z Hamburgera na X (opcjonalnie dla lepszego UX)
+      if (!isExpanded) {
+        menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+      } else {
+        menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+      }
+    };
+
+    // Usunięcie starych listenerów (ważne przy nawigacji SPA w Astro)
+    btn.removeEventListener('click', toggleMenu);
+    btn.addEventListener('click', toggleMenu);
+
+    // Zamknij menu przy kliknięciu w link (dla Single Page Experience)
+    const mobileLinks = menu.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+      });
+    });
+  };
+
+  // Inicjalizacja przy pierwszym załadowaniu i po każdej zmianie strony w Astro
+  initHeader();
+  document.addEventListener('astro:page-load', initHeader);
 </script>

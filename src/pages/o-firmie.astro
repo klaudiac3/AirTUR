@@ -1,26 +1,83 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { companyConfig } from '../data/companyConfig';
+
+// Importy komponentów
 import HeroO from '../components/o-firmie/HeroO.astro';
 import Manifest from '../components/o-firmie/Manifest.astro';
 import Wartosci from '../components/o-firmie/Wartosci.astro';
-// Importujemy ostatnią część
 import MisjaCTA from '../components/o-firmie/MisjaCTA.astro';
+
+// [SEO]: Konkretne meta-dane
+const pageTitle = "O Firmie - Poznaj Standard AirTUR | Małopolska";
+const pageDescription = "Poznaj historię i wartości AirTUR. Jesteśmy liderem standardu montażu klimatyzacji i pomp ciepła w regionie. Sprawdź nasz manifest inżynierski.";
+
+// [SEO/UX]: Offset dla sticky headera (spójność z resztą stron)
+const sectionWrapperClass = "scroll-mt-24";
+
+// [SENIOR]: Dynamiczne przygotowanie danych dla Google (Schema AboutPage)
+const areas = companyConfig.serviceAreas.map(area => area.region).join(", ");
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "mainEntity": {
+    "@type": "LocalBusiness",
+    "name": companyConfig.name,
+    "description": pageDescription,
+    "areaServed": areas,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": companyConfig.address.street,
+      "addressLocality": companyConfig.address.city,
+      "postalCode": companyConfig.address.postCode,
+      "addressCountry": "PL"
+    },
+    "knowsAbout": ["Klimatyzacja", "Pompy Ciepła", "Ogrzewanie", "ROI", "Inżynieria komfortu"]
+  }
+};
 ---
 
-<Layout title="O Firmie - Nasza Historia i Wartości - AirTUR">
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   
-  <main>
-    <!-- Sekcja 1: Hero -->
-    <HeroO />
+  <main class="overflow-x-hidden outline-none">
+    
+    <section id="hero-o-firmie" class={sectionWrapperClass} aria-label="Sekcja powitalna o firmie">
+      <HeroO />
+    </section>
 
-    <!-- Sekcja 2: Manifest Założycielski -->
-    <Manifest />
+    <section id="manifest" class={sectionWrapperClass} aria-label="Nasz manifest i podejście do pracy">
+      <Manifest />
+    </section>
 
-    <!-- Sekcja 3: Wartości -->
-    <Wartosci />
+    <section id="nasze-wartosci" class={sectionWrapperClass} aria-label="Wartości jakimi kieruje się AirTUR">
+      <Wartosci />
+    </section>
 
-    <!-- Sekcja 4 i 5: Misja i CTA -->
-    <MisjaCTA />
+    <section id="misja-i-kontakt" class={sectionWrapperClass} aria-label="Nasza misja i wezwanie do kontaktu">
+      <MisjaCTA />
+    </section>
+
   </main>
-
 </Layout>
+
+<style is:global>
+  /**
+   * [UX]: Spójność systemowa przewijania i optymalizacji renderowania.
+   * Kopiujemy to z Home/Kontakt, aby cała witryna działała identycznie.
+   */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Wygląd tekstu "Premium" (Anti-aliasing) */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+</style>

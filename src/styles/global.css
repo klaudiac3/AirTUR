@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* Tutaj definiujemy Twoje kolory AirTUR */
   --color-airtur-blue: #0AB3C6;
   --color-airtur-dark: #3A4149;
   --color-airtur-navy: #0A3876;
@@ -10,6 +9,99 @@
   --color-airtur-gray-light: #F6F7FA;
   --color-airtur-tech: #212529;
   
-  /* Domyślna czcionka */
   --font-sans: "Inter", "ui-sans-serif", "system-ui", "sans-serif";
+}
+
+/* Ładowanie Inter dla strony www */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.woff2') format('woff2 supports variations'),
+       url('/fonts/Inter-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+/* 1. RESET I STYLE BAZOWE */
+@layer base {
+  html { @apply scroll-smooth; }
+  body { @apply font-sans antialiased text-airtur-dark bg-white; }
+  
+  /* Ładne zaznaczanie tekstu */
+  ::selection {
+    @apply bg-airtur-blue/30 text-airtur-navy;
+  }
+}
+
+/* 2. SYSTEM EDYTORSKI AirTUR (Zunifikowany: Blog & Case Studies) */
+@layer components {
+  /* Kontener główny treści */
+  .prose-airtur {
+    @apply text-gray-700 leading-relaxed text-lg;
+  }
+
+  /* Nagłówki - Inżynierska moc (font-black) */
+  .prose-airtur h2 {
+    @apply text-2xl md:text-4xl font-black text-airtur-dark mt-16 mb-8 tracking-tight leading-tight text-balance;
+  }
+  .prose-airtur h3 {
+    @apply text-xl md:text-2xl font-black text-airtur-dark mt-12 mb-6 tracking-tight;
+  }
+
+  /* Akapity - Czytelność premium */
+  .prose-airtur p {
+    @apply mb-8 font-medium text-gray-600 text-pretty;
+  }
+
+  /* Listy - Inżynierska strzałka zamiast nudnych kropek */
+  .prose-airtur ul {
+    @apply space-y-4 mb-10 pl-0 list-none;
+  }
+  .prose-airtur li {
+    @apply relative pl-8 font-medium text-gray-600;
+  }
+  .prose-airtur li::before {
+    content: "→";
+    @apply absolute left-0 text-airtur-blue font-black text-xl leading-none;
+  }
+
+  /* Cytaty - Standard AirTUR (Obsługuje klasę .prose-airtur ORAZ .custom-quote-wrapper) */
+  .prose-airtur blockquote,
+  .custom-quote-wrapper blockquote {
+    @apply relative border-l-4 border-airtur-blue bg-gray-50 p-8 md:p-12 rounded-r-3xl italic text-gray-700 font-medium text-xl shadow-sm my-12 overflow-hidden;
+  }
+
+  .prose-airtur blockquote::before,
+  .custom-quote-wrapper blockquote::before {
+    content: '"';
+    @apply absolute -top-4 left-4 text-9xl text-airtur-blue opacity-10 font-serif pointer-events-none;
+  }
+
+  /* Tabele - Raport techniczny */
+  .prose-airtur table {
+    @apply w-full my-12 border-collapse overflow-hidden rounded-2xl shadow-sm border border-gray-100;
+  }
+  .prose-airtur th {
+    @apply bg-airtur-dark text-white p-4 text-left font-black uppercase tracking-widest text-[10px];
+  }
+  .prose-airtur td {
+    @apply p-4 border-b border-gray-50 text-sm font-medium text-gray-600;
+  }
+  .prose-airtur tr:last-child td {
+    @apply border-b-0;
+  }
+
+  /* Multimedia */
+  .prose-airtur img, .prose-airtur .video-wrapper {
+    @apply rounded-3xl shadow-2xl my-12 border border-gray-100 transition-transform duration-500 hover:scale-[1.01];
+  }
+  
+  .prose-airtur figcaption {
+    @apply text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mt-[-2rem] mb-12;
+  }
+
+  /* Linki wewnątrz tekstu */
+  .prose-airtur a {
+    @apply text-airtur-blue font-bold border-b-2 border-airtur-blue/20 hover:border-airtur-blue transition-all;
+  }
 }

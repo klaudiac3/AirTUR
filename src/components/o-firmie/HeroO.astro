@@ -1,34 +1,58 @@
 ---
-// src/components/o-firmie/HeroO.astro
+// [LOGIKA]: Sekcja Hero zoptymalizowana pod kątem widoczności na laptopach.
 ---
 
-<section class="bg-airtur-dark text-white py-20 md:py-32 relative overflow-hidden">
-  
-  <!-- Opcjonalne tło dekoracyjne (np. subtelne logo w tle) -->
-  <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-airtur-blue opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+<section 
+  class="relative bg-airtur-dark pt-24 pb-16 md:pt-20 md:pb-24 overflow-hidden" 
+  aria-labelledby="hero-about-title"
+>
+  <div 
+    class="absolute top-0 right-0 -mr-20 -mt-20 w-[500px] h-[500px] bg-airtur-blue/10 rounded-full blur-[120px] pointer-events-none z-0"
+    aria-hidden="true"
+  ></div>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <div class="max-w-3xl text-left">
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl text-left">
       
-      <!-- NAGŁÓWEK H1 -->
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 leading-tight tracking-tight">
-        Precyzja. Technologia.<br />
-        Szacunek do Twojego Domu.
+      <h1 
+        id="hero-about-title" 
+        class="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[1.05] tracking-tight text-balance"
+      >
+        Sprawdzone standardy. Rzetelne podejście.<br />
+        <span class="text-airtur-blue">Szacunek do Twojego Domu.</span>
       </h1>
 
-      <!-- TEKST POMOCNICZY -->
-      <p class="text-lg md:text-xl text-gray-300 mb-12 leading-relaxed font-light">
-        AirTUR powstał z buntu przeciwko bylejakości. Pracując na wymagających rynkach europejskich, nauczyliśmy się, że montaż to nie tylko "powieszenie urządzenia na ścianie". To proces, który wymaga inżynierskiej precyzji, szacunku do cudzej własności i żelaznej dyscypliny. Wróciliśmy do Małopolski, aby udowodnić, że tutaj też można pracować na najwyższym, światowym poziomie. Bez kompromisów.
+      <p class="text-lg md:text-xl lg:text-2xl text-white/80 mb-10 leading-relaxed max-w-3xl text-pretty font-medium">
+        AirTUR powstał z przekonania, że usługi instalacyjne w Polsce mogą wyglądać inaczej. Doświadczenie zdobyte na rynkach Niemiec, Austrii i Francji nauczyło nas, że montaż to coś więcej niż tylko techniczne podłączenie urządzenia. To proces, który wymaga starannego planowania, dbałości o detale i kultury pracy, która stawia komfort klienta na pierwszym miejscu.
       </p>
 
-      <!-- PRZYCISK CTA (SCROLL DOWN) -->
-      <a href="#historia" class="inline-flex items-center gap-2 bg-transparent border-2 border-airtur-blue text-airtur-blue px-8 py-4 rounded-xl font-bold text-sm tracking-wide hover:bg-airtur-blue hover:text-white transition-all duration-300 uppercase group">
-        POZNAJ NASZĄ HISTORIĘ
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:translate-y-1 transition-transform">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a 
+          href="#manifest" 
+          class="group inline-flex items-center justify-center gap-3 bg-transparent border-2 border-airtur-blue text-white px-10 py-5 rounded-xl font-black text-sm tracking-widest hover:bg-airtur-blue hover:shadow-2xl active:scale-95 transition-all duration-300 uppercase"
+          aria-label="Poznaj naszą historię i manifest"
+        >
+          <span>Poznaj naszą historię</span>
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke-width="3" 
+            stroke="currentColor" 
+            class="w-5 h-5 group-hover:translate-y-2 transition-transform duration-300"
+            aria-hidden="true"
+          >
             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
-        </svg>
-      </a>
+          </svg>
+        </a>
+      </div>
 
     </div>
   </div>
 </section>
+
+<style>
+  /* [UX]: Optymalizacja łamania wierszy - krótsze linie są łatwiejsze do czytania */
+  h1 { max-width: 18ch; }
+  @media (min-width: 768px) { h1 { max-width: 22ch; } }
+</style>

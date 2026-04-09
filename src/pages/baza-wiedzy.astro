@@ -1,26 +1,118 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { companyConfig } from '../data/companyConfig';
+import { knowledgeData } from '../data/KnowledgeData';
+
+// Importy komponentów
 import HeroSearch from '../components/baza-wiedzy/HeroSearch.astro';
 import WiedzaGrid from '../components/baza-wiedzy/WiedzaGrid.astro';
 
-// Uwaga: Komponent FAQ nie jest tutaj importowany, 
-// ponieważ został przeniesiony bezpośrednio do wnętrza HeroSearch.
+/** * [SENIOR LOGIC]: Agregacja wszystkich źródeł wiedzy
+ * Pobieramy bloga i realizacje, aby wyszukiwarka i grid miały komplet danych.
+ */
+const allBlogPosts = await getCollection('blog');
+const allCases = await getCollection('cases');
+
+// Przygotowanie FAQ pod SEO
+const faqItems = knowledgeData
+  .filter(item => item.type === 'faq')
+  .map(item => ({
+    "@type": "Question",
+    "name": item.title,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer
+    }
+  }));
+
+const pageTitle = "Baza Wiedzy AirTUR - Poradniki, FAQ i Technologia HVAC";
+const pageDescription = "Kompleksowa baza wiedzy: od odpowiedzi na trudne pytania (FAQ), przez studia przypadków, aż po eksperckie artykuły blogowe.";
+
+/**
+ * [SEO]: Rozszerzona Schema.org
+ * Łączymy CollectionPage z FAQPage, aby Google wiedziało o artykułach i pytaniach.
+ */
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": `${companyConfig.websiteUrl}/baza-wiedzy/#webpage`,
+      "url": `${companyConfig.websiteUrl}/baza-wiedzy`,
+      "name": pageTitle,
+      "description": pageDescription,
+      "publisher": {
+        "@type": "Organization",
+        "name": "AirTUR"
+      },
+      // Informujemy Google o liczbie artykułów
+      "significantLink": [
+        ...allBlogPosts.map(post => `${companyConfig.websiteUrl}/blog/${post.slug}`),
+        ...allCases.map(c => `${companyConfig.websiteUrl}/studia-przypadkow/${c.slug}`)
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqItems
+    }
+  ]
+};
+
+const sectionWrapperClass = "scroll-mt-24";
 ---
 
-<Layout title="Baza Wiedzy - AirTUR">
-  <main>
-    <!-- 
-      Sekcja Hero zawiera teraz:
-      - Nagłówek na całą szerokość
-      - FAQ (lewa kolumna)
-      - Wyszukiwarkę (prawa kolumna)
-    -->
-    <HeroSearch />
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-    <!-- 
-      Sekcja Bloga (WiedzaGrid) wyświetla się 
-      bezpośrednio pod nowym układem gridowym.
-    -->
-    <WiedzaGrid />
+  <main id="main-content" class="bg-white focus:outline-none" tabindex="-1">
+    
+    <section 
+      id="szukaj-wiedzy" 
+      class={sectionWrapperClass} 
+      aria-label="Wyszukiwarka wiedzy"
+      role="search"
+    >
+      <HeroSearch 
+        blogPosts={allBlogPosts} 
+        faqData={knowledgeData} 
+        cases={allCases} 
+      />
+    </section>
+
+    <section 
+      id="lista-artykulow" 
+      class={sectionWrapperClass} 
+      aria-label="Artykuły, poradniki i realizacje"
+    >
+      <WiedzaGrid posts={allBlogPosts} />
+    </section>
+
   </main>
 </Layout>
+
+<style is:global>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Stylizacja wyników wyszukiwania */
+  .search-highlight {
+    background-color: rgba(var(--color-airtur-blue-rgb, 0, 102, 204), 0.2);
+    color: #0f172a; /* Slate 900 dla lepszego kontrastu */
+    font-weight: 700;
+    padding: 0 2px;
+    border-radius: 4px;
+  }
+
+  #main-content:focus:not(:focus-visible) {
+    outline: none;
+  }
+</style>

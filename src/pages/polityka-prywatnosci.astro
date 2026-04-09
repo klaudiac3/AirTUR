@@ -1,75 +1,178 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { companyConfig } from '../data/companyConfig';
-import fs from 'node:fs';
-import path from 'node:path';
 
-// Pobieramy ścieżkę do bieżącego pliku
-const filePath = path.resolve('./src/pages/polityka-prywatnosci.astro');
-// Pobieramy statystyki pliku
-const stats = fs.statSync(filePath);
-// Formatujemy datę modyfikacji na polski format
-const lastModifiedDate = stats.mtime.toLocaleDateString('pl-PL', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric'
-});
+// [LOGIKA]: Pobieranie i formatowanie daty dla SEO i czytelnika
+const humanDate = companyConfig.dates.privacyPolicy;
+
+const getMachineDate = (dateString: string) => {
+  const months: { [key: string]: string } = {
+    'stycznia': '01', 'lutego': '02', 'marca': '03', 'kwietnia': '04',
+    'maja': '05', 'czerwca': '06', 'lipca': '07', 'sierpnia': '08',
+    'września': '09', 'października': '10', 'listopada': '11', 'grudnia': '12'
+  };
+  const parts = dateString.split(' ');
+  if (parts.length < 3) return "2026-01-01";
+  const day = parts[0].padStart(2, '0');
+  const month = months[parts[1].toLowerCase()] || '01';
+  const year = parts[2];
+  return `${year}-${month}-${day}`;
+};
+
+const machineDate = getMachineDate(humanDate);
+
+// [STRUKTURA]: Sekcje dla Spisu Treści i nawigacji
+const sections = [
+  { id: 'administrator', title: '1. Administrator Danych' },
+  { id: 'dane', title: '2. Zakres Przetwarzania' },
+  { id: 'cel', title: '3. Cel i Podstawa' },
+  { id: 'prawa', title: '4. Twoje Prawa' },
+];
 ---
 
-<Layout title="Polityka Prywatności - AirTUR" description="Informacje o przetwarzaniu danych osobowych w serwisie AirTUR.">
+<Layout 
+  title="Polityka Prywatności - AirTUR" 
+  description="Informacje o zasadach przetwarzania danych osobowych oraz standardach bezpieczeństwa RODO w AirTUR."
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Polityka Prywatności AirTUR",
+    "lastReviewed": machineDate,
+    "publisher": {
+      "@type": "Organization",
+      "name": companyConfig.fullName
+    }
+  })} />
+
   <main class="pt-32 pb-24 bg-white">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <header class="mb-12 border-b border-gray-100 pb-8">
+      <header class="mb-12 border-b border-gray-100 pb-10 text-center sm:text-left">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-airtur-blue/10 rounded-2xl mb-6 text-airtur-blue">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
         <h1 class="text-4xl font-extrabold text-airtur-dark mb-4">Polityka Prywatności</h1>
-        <!-- Dynamiczna data modyfikacji -->
-        <p class="text-gray-500 italic">Zgodna z RODO. Ostatnia aktualizacja: {lastModifiedDate} r.</p>
+        <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 italic">
+          <span class="px-3 py-1 bg-green-50 text-green-700 rounded-full not-italic font-medium">Zgodna z RODO</span>
+          <span>Ostatnia aktualizacja: <time datetime={machineDate}>{humanDate} r.</time></span>
+        </div>
       </header>
 
-      <div class="prose prose-blue prose-lg max-w-none text-gray-700 space-y-8">
+      <nav class="mb-16 p-6 bg-gray-50 rounded-2xl border border-gray-100" aria-label="Spis treści">
+        <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Spis treści</p>
+        <ul class="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-8">
+          {sections.map(section => (
+            <li>
+              <a href={`#${section.id}`} class="text-gray-600 hover:text-airtur-blue transition-colors flex items-center gap-2 group">
+                <span class="w-1.5 h-1.5 rounded-full bg-airtur-blue/30 group-hover:bg-airtur-blue transition-colors"></span>
+                {section.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="prose prose-blue prose-lg max-w-none text-gray-700">
         
-        <section>
-          <h2 class="text-2xl font-bold text-airtur-dark mb-4">1. Kto jest Administratorem danych?</h2>
+        <section id="administrator" class="scroll-mt-32">
+          <h2 class="text-2xl font-bold text-airtur-dark mb-6">1. Kto jest Administratorem danych?</h2>
           <p>Operatorem serwisu oraz Administratorem Twoich danych osobowych jest:</p>
-          <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mt-4">
-            <p class="font-bold text-airtur-dark">{companyConfig.fullName}</p>
-            <p>{companyConfig.address.full}</p>
-            <p>NIP: {companyConfig.nip}</p>
-            <p>E-mail: <a href={companyConfig.contact.emailLink} class="text-airtur-blue font-medium">{companyConfig.contact.email}</a></p>
+          
+          <div class="bg-white p-8 rounded-2xl border-2 border-airtur-blue/10 mt-6 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-airtur-blue/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+            <div class="relative z-10">
+              <p class="font-bold text-xl text-airtur-dark mb-1">{companyConfig.fullName}</p>
+              <p class="text-gray-600 mb-4">{companyConfig.address.full}</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                <div>
+                  <span class="block text-xs uppercase text-gray-400 font-bold">NIP</span>
+                  <span class="text-airtur-dark font-medium">{companyConfig.nip}</span>
+                </div>
+                <div>
+                  <span class="block text-xs uppercase text-gray-400 font-bold">Kontakt e-mail</span>
+                  <a href={companyConfig.contact.emailLink} class="text-airtur-blue font-bold hover:underline">
+                    {companyConfig.contact.email}
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section>
-          <h2 class="text-2xl font-bold text-airtur-dark mb-4">2. Jakie dane przetwarzamy?</h2>
-          <p>Zbieramy tylko te dane, które są niezbędne do rzetelnego świadczenia usług:</p>
-          <ul class="list-disc pl-6 space-y-2">
-            <li><strong>Formularze kontaktowe:</strong> Imię, nazwisko, adres e-mail oraz numer telefonu, aby móc odpowiedzieć na Twoje zapytanie ofertowe.</li>
-            <li><strong>Kalkulator Mocy i ROI:</strong> Parametry techniczne budynku oraz Twój e-mail, aby przesłać Ci gotowy raport z wyliczeniami.</li>
-            <li><strong>Analityka i Marketing:</strong> Anonimowe dane o ruchu (Google Analytics) oraz narzędzia marketingowe (np. Facebook Pixel), które pomagają nam mierzyć skuteczność reklam i dopasowywać ofertę do potrzeb użytkowników.</li>
+        <section id="dane" class="mt-16 scroll-mt-32">
+          <h2 class="text-2xl font-bold text-airtur-dark mb-6">2. Jakie dane przetwarzamy?</h2>
+          <p>Zbieramy tylko te dane, które są niezbędne do rzetelnego świadczenia usług i zapewnienia najwyższej jakości doradztwa:</p>
+          <ul class="space-y-4">
+            <li class="flex gap-4">
+              <span class="flex-shrink-0 w-6 h-6 rounded-full bg-airtur-blue/10 text-airtur-blue flex items-center justify-center text-xs font-bold">01</span>
+              <span><strong>Formularze kontaktowe:</strong> Imię, nazwisko, e-mail oraz numer telefonu (do obsługi zapytania).</span>
+            </li>
+            <li class="flex gap-4">
+              <span class="flex-shrink-0 w-6 h-6 rounded-full bg-airtur-blue/10 text-airtur-blue flex items-center justify-center text-xs font-bold">02</span>
+              <span><strong>Narzędzia diagnostyczne:</strong> Parametry budynku w kalkulatorach mocy, aby przesłać Ci spersonalizowany raport ROI.</span>
+            </li>
+            <li class="flex gap-4">
+              <span class="flex-shrink-0 w-6 h-6 rounded-full bg-airtur-blue/10 text-airtur-blue flex items-center justify-center text-xs font-bold">03</span>
+              <span><strong>Analityka:</strong> Anonimowe dane o ruchu (Google Analytics), które pozwalają nam ulepszać treści w Bazie Wiedzy.</span>
+            </li>
           </ul>
         </section>
 
-        <section>
-          <h2 class="text-2xl font-bold text-airtur-dark mb-4">3. Cel i podstawa przetwarzania</h2>
-          <p>Podstawą przetwarzania Twoich danych jest realizacja zapytania (Art. 6 ust. 1 lit. b RODO) lub Twoja dobrowolna zgoda wyrażona przy korzystaniu z kalkulatora (Art. 6 ust. 1 lit. a RODO).</p>
+        <section id="cel" class="mt-16 scroll-mt-32">
+          <h2 class="text-2xl font-bold text-airtur-dark mb-6">3. Cel i podstawa przetwarzania</h2>
+          <p>
+            Twoje dane przetwarzamy zgodnie z prawem, opierając się na:
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <div class="p-5 bg-gray-50 rounded-xl border border-gray-100">
+              <span class="block font-bold text-airtur-dark mb-2">Realizacja zapytania</span>
+              <p class="text-sm text-gray-600">Niezbędne do podjęcia działań na Twoje żądanie przed zawarciem umowy (Art. 6 ust. 1 lit. b RODO).</p>
+            </div>
+            <div class="p-5 bg-gray-50 rounded-xl border border-gray-100">
+              <span class="block font-bold text-airtur-dark mb-2">Dobrowolna zgoda</span>
+              <p class="text-sm text-gray-600">Wyrażona przez Ciebie podczas korzystania z kalkulatorów lub zapisu na raport (Art. 6 ust. 1 lit. a RODO).</p>
+            </div>
+          </div>
         </section>
 
-        <section>
-          <h2 class="text-2xl font-bold text-airtur-dark mb-4">4. Twoje prawa</h2>
-          <p>W każdej chwili masz prawo do:</p>
-          <ul class="list-disc pl-6 space-y-2">
-            <li>Dostępu do swoich danych oraz otrzymania ich kopii.</li>
-            <li>Sprostowania lub usunięcia danych („prawo do bycia zapomnianym”).</li>
-            <li>Wycofania zgody na przetwarzanie danych w celach marketingowych.</li>
-          </ul>
+        <section id="prawa" class="mt-16 scroll-mt-32">
+          <h2 class="text-2xl font-bold text-airtur-dark mb-6">4. Twoje prawa</h2>
+          <p>W każdej chwili masz pełną kontrolę nad swoimi danymi. Przysługuje Ci prawo do:</p>
+          <div class="grid grid-cols-1 gap-3 mt-6 text-sm">
+             {['Dostępu do danych i otrzymania ich kopii', 'Sprostowania lub usunięcia danych (prawo do zapomnienia)', 'Ograniczenia przetwarzania', 'Wycofania zgody w dowolnym momencie'].map(text => (
+               <div class="flex items-center gap-3 p-3 border border-gray-100 rounded-lg">
+                 <svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                 </svg>
+                 {text}
+               </div>
+             ))}
+          </div>
         </section>
 
-        <section class="bg-airtur-blue/5 p-8 rounded-2xl border border-airtur-blue/10 mt-12 text-center">
-          <p class="text-sm font-medium mb-2">Masz dodatkowe pytania dotyczące bezpieczeństwa Twoich danych?</p>
-          <a href={companyConfig.contact.emailLink} class="text-xl font-bold text-airtur-blue hover:underline">{companyConfig.contact.email}</a>
-        </section>
+        <footer class="mt-20 p-8 bg-airtur-dark rounded-3xl text-center text-white relative overflow-hidden">
+          <div class="relative z-10">
+            <h3 class="text-xl font-bold mb-2">Masz pytania dotyczące Polityki Prywatności?</h3>
+            <p class="text-gray-400 mb-6 text-sm">Jesteśmy do Twojej dyspozycji.</p>
+            <a 
+              href={companyConfig.contact.emailLink} 
+              class="inline-block px-8 py-3 bg-airtur-blue hover:bg-white hover:text-airtur-dark font-bold rounded-full transition-all duration-300"
+            >
+              {companyConfig.contact.email}
+            </a>
+          </div>
+          <div class="absolute bottom-0 right-0 w-64 h-64 bg-airtur-blue/10 rounded-full -mb-32 -mr-32 blur-3xl"></div>
+        </footer>
 
       </div>
     </div>
   </main>
 </Layout>
+
+<style>
+  /* Płynne przewijanie do sekcji */
+  html { scroll-behavior: smooth; }
+</style>

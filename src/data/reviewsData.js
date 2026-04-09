@@ -10,7 +10,7 @@ export const reviewsData = [
   },
   {
     id: 2,
-    text: "Fachowe doradztwo i błyskawiczny montaż. Ekipa to prawdziwi profesjonaliści. Wszystko działa bez zarzutu, a po instalacji zostawili po sobie idealny porządek. Polecam z czystym sumieniem.",
+    text: "Fachowe doradztwo i błyskawiczny montaż. Ekipa to prawdziwi profesjonaliści. Wszystko działa bez zarzutu, a po instalacji w moim domu w Nowym Sączu zostawili po sobie idealny porządek. Polecam z czystym sumieniem.",
     author: "Marek W.",
     city: "Nowy Sącz",
     rating: 5
@@ -24,7 +24,7 @@ export const reviewsData = [
   },
   {
     id: 4,
-    text: "W naszym nowym domku w okolicach Zakopanego estetyka była kluczowa. Firma wykazała się dużym wyczuciem, montując jednostki dyskretnie i w przemyślanych miejscach. Wszystko wygląda świetnie i działa cicho. Klasa.",
+    text: "W naszym nowym domku w Zakopanem estetyka była kluczowa. Firma wykazała się dużym wyczuciem, montując jednostki dyskretnie i w przemyślanych miejscach. Wszystko wygląda świetnie i działa cicho. Klasa.",
     author: "Maria G.",
     city: "Zakopane",
     rating: 5

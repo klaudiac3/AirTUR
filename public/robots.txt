@@ -1,6 +1,28 @@
+# ==========================================
+# ROBOTS.TXT - AIRTUR.PL
+# ==========================================
+
+# [1] GLOBALNA POLITYKA DLA WYSZUKIWAREK
+# Pozwalamy Google, Bing i innym na indeksowanie całości strony
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /tmp/
+Disallow: /private/
 
-# Mapa witryny pomaga robotom wyszukiwarek szybciej znajdować Twoje podstrony
+# [2] OCHRONA PRZED BOTAMI AI (Opcjonalne, ale zalecane)
+# Blokujemy boty trenujące modele językowe, aby chronić Twoje unikalne treści
+User-agent: GPTBot
+Disallow: /
+User-agent: CCBot
+Disallow: /
+User-agent: ChatGPT-User
+Disallow: /
+
+# [3] MAPA WITRYNY
+# Wskazujemy robotom, gdzie znajdą strukturę wszystkich podstron
 Sitemap: https://airtur.pl/sitemap-index.xml
-```
+
+# [4] CRAWL-DELAY (Dla słabszych botów)
+# Prosimy o 1-sekundowy odstęp między zapytaniami, aby nie obciążać serwera
+Crawl-delay: 1

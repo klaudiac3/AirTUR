@@ -1,364 +1,319 @@
 ---
-// src/components/oferta/Serwis.astro
 import { companyConfig } from '../../data/companyConfig';
+
+/** * [DATA]: Benefity Serwisu
+ */
+const benefits = [
+  {
+    title: "Maksymalna wydajność",
+    desc: "Optymalizacja pracy systemu, obniżająca koszty eksploatacji.",
+    icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
+    rotate: "rotate-2"
+  },
+  {
+    title: "Czystość i Zdrowie",
+    desc: "Eliminacja drobnoustrojów i alergenów z filtrów.",
+    icon: "M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 0121 12z",
+    rotate: "-rotate-2"
+  },
+  {
+    title: "Niezawodność",
+    desc: "Proaktywne unikanie niespodziewanych awarii.",
+    icon: "M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.702.127 1.597 1.097 1.896 1.966 1.896 1.966M8.685 2.25l-1.904 1.904m4.034-3.834l-1.132 2.768m4.935-2.203L12.55 4.509",
+    rotate: "rotate-3"
+  },
+  {
+    title: "Dłuższa żywotność",
+    desc: "Zwiększenie trwałości i sprawności całego systemu.",
+    icon: "M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0z",
+    rotate: "-rotate-1"
+  }
+];
 ---
 
-<section id="serwis" class="py-12 md:py-20 bg-white scroll-mt-24">
+<section id="serwis" class="pt-2 md:pt-4 pb-12 md:pb-20 bg-white scroll-mt-24 overflow-hidden">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <div class="text-center mb-10">
-      <h2 class="text-3xl md:text-4xl font-bold text-airtur-dark">
-        Opieka Techniczna i Serwis – Ochrona Twojej Inwestycji
-      </h2>
+    <div class="relative py-12 md:py-16 mb-20 mt-0">
+      <div class="absolute inset-0 bg-airtur-blue/5 rounded-[3.5rem] -mx-4 md:-mx-12 pointer-events-none border border-airtur-blue/5"></div>
+
+      <div class="relative z-10">
+        <div class="text-center mb-12">
+          <h2 class="text-2xl md:text-4xl font-black text-airtur-dark tracking-tight leading-[1.1] mb-6 text-balance max-w-4xl mx-auto">
+            Opieka Techniczna i Serwis: <span class="text-airtur-blue">Żeby system działał tak, jak pierwszego dnia</span>
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+          <div class="lg:col-span-5 space-y-6">
+            <p class="text-base md:text-lg text-gray-600 leading-relaxed font-medium">
+              Zakup nowoczesnego systemu HVAC to mądra decyzja finansowa. <strong class="text-airtur-dark font-black">Regularny serwis</strong> to fundament, by ta decyzja przynosiła maksymalne korzyści przez wiele lat.
+            </p>
+            <p class="text-sm md:text-base text-gray-500 leading-relaxed">
+              Nasz zespół zadba o to, by Twój system pracował z najwyższą wydajnością, zapewniając niskie koszty eksploatacji i czyste, zdrowe powietrze dla Twojej rodziny. Możesz to postrzegać jako dodatkowy wydatek albo jako utrzymanie pełnej kontroli nad Twoją inwestycją.
+            </p>
+          </div>
+
+          <div class="lg:col-span-7">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {benefits.map(item => (
+                <div class="bg-white p-6 rounded-3xl shadow-lg border border-airtur-blue/5 flex gap-4 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                  <div class={`shrink-0 w-12 h-12 rounded-2xl bg-airtur-blue/5 flex items-center justify-center text-airtur-blue ${item.rotate} transition-transform group-hover:scale-110`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d={item.icon} />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="font-black text-airtur-dark text-base tracking-tight mb-1">{item.title}</h4>
+                    <p class="text-[11px] text-gray-400 leading-relaxed font-medium">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-16">
-      
-      <div class="flex flex-col justify-center h-full">
-        <p class="text-lg text-gray-600 leading-relaxed">
-          Zakup nowoczesnego systemu klimatyzacji to mądra decyzja finansowa. Regularny serwis to fundament, by ta decyzja przynosiła maksymalne korzyści przez wiele lat. <br><br>
-          Nasz zespół dba o to, by Twój system pracował z najwyższą wydajnością, zapewniając niskie koszty eksploatacji i czyste, zdrowe powietrze dla Twojej rodziny. To nie koszt – to utrzymanie pełnej kontroli nad Twoją inwestycją.
-        </p>
-      </div>
-
-      <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 shadow-sm">
-        <ul class="space-y-6">
-          
-          <li class="flex items-start gap-4">
-            <div class="flex-shrink-0 mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-              </svg>
-            </div>
-            <div>
-              <h4 class="font-bold text-airtur-dark text-lg">Maksymalna wydajność</h4>
-              <p class="text-sm text-gray-600">Utrzymanie niskiego zużycia energii.</p>
-            </div>
-          </li>
-
-          <li class="flex items-start gap-4">
-            <div class="flex-shrink-0 mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-              </svg>
-            </div>
-            <div>
-              <h4 class="font-bold text-airtur-dark text-lg">Czystość i Zdrowie</h4>
-              <p class="text-sm text-gray-600">Eliminacja drobnoustrojów i alergenów z filtrów.</p>
-            </div>
-          </li>
-
-          <li class="flex items-start gap-4">
-            <div class="flex-shrink-0 mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.702.127 1.597 1.097 1.896 1.966 1.896 1.966M8.685 2.25l-1.904 1.904m4.034-3.834l-1.132 2.768m4.935-2.203L12.55 4.509" />
-              </svg>
-            </div>
-            <div>
-              <h4 class="font-bold text-airtur-dark text-lg">Niezawodność</h4>
-              <p class="text-sm text-gray-600">Proaktywne unikanie niespodziewanych awarii.</p>
-            </div>
-          </li>
-
-          <li class="flex items-start gap-4">
-            <div class="flex-shrink-0 mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-airtur-blue">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0 1 18 0z" />
-              </svg>
-            </div>
-            <div>
-              <h4 class="font-bold text-airtur-dark text-lg">Dłuższa żywotność</h4>
-              <p class="text-sm text-gray-600">Zwiększenie trwałości i sprawności całego systemu.</p>
-            </div>
-          </li>
-
-        </ul>
-      </div>
-
-    </div>
-
-    <div class="max-w-3xl mx-auto mt-16">
-      
-      <div class="text-center mb-8">
-        <h3 class="text-2xl font-bold text-airtur-dark text-balance">
-          Chcesz umówić serwis lub przegląd? Wybierz formę kontaktu:
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-10">
+        <h3 class="text-2xl md:text-3xl font-black text-airtur-dark tracking-tight mb-4">
+          Chcesz umówić się na serwis lub <span class="text-airtur-blue">Masz pytania?</span>
         </h3>
+        <p class="text-gray-500 font-medium uppercase text-[10px] tracking-[0.2em]">Wybierz preferowaną formę kontaktu:</p>
       </div>
 
-      <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-        <button id="tab-email-serwis" class="w-full sm:w-auto px-6 py-3 rounded-lg border-2 border-airtur-dark text-sm font-bold uppercase tracking-wide transition-all bg-airtur-dark text-white shadow-lg cursor-pointer">
-          Chcę napisać e-mail
+      <div class="flex p-1.5 bg-gray-100 rounded-2xl mb-10 max-w-md mx-auto">
+        <button id="tab-email-serwis" class="flex-1 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 bg-airtur-dark text-white shadow-lg cursor-pointer">
+          E-mail
         </button>
-        <button id="tab-phone-serwis" class="w-full sm:w-auto px-6 py-3 rounded-lg border-2 border-airtur-dark text-sm font-bold uppercase tracking-wide transition-all bg-white text-airtur-dark hover:bg-gray-100 cursor-pointer">
-          Preferuję kontakt telefoniczny
+        <button id="tab-phone-serwis" class="flex-1 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 text-gray-500 hover:text-airtur-dark cursor-pointer">
+          Telefon
         </button>
       </div>
 
-      <div id="form-email-serwis" class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
-        <form 
-            id="serwis-form-mail"
-            name="zgloszenie-serwis-mail" 
-            method="POST" 
-            class="space-y-4"
-            novalidate
-        >
-          <input type="hidden" name="form-name" value="zgloszenie-serwis-mail" />
-          <input type="hidden" name="source" value="oferta_serwis_email" />
-          <input type="hidden" name="cel" value="serwis" />
+      <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-gray-100">
+        
+        <div id="form-email-serwis" class="transition-all duration-500">
+          <form id="serwis-form-mail" name="zgloszenie-serwis-mail" class="space-y-6" novalidate>
+            <div class="hidden" aria-hidden="true"><input type="text" name="b_website" tabindex="-1" value="" /></div>
+            <input type="hidden" name="form-name" value="zgloszenie-serwis-mail" />
+            <input type="hidden" name="source" value="oferta_serwis_email" />
+            <input type="hidden" name="cel" value="serwis" />
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label for="name-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
-              <input type="text" id="name-serwis" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
-              <div id="err-imie-serwis-mail" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
-            </div>
-            <div>
-              <label for="email-field-serwis" class="block text-sm font-bold text-airtur-dark mb-1">E-mail</label>
-              <input type="email" id="email-field-serwis" name="email" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="twoj@email.pl">
-              <div id="err-email-serwis-mail" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Proszę podać poprawny adres e-mail.</div>
-            </div>
-          </div>
-          
-          <div>
-            <label for="message-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Treść wiadomości</label>
-            <textarea 
-              id="message-serwis" 
-              name="wiadomosc"
-              rows="5" 
-              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50 text-gray-700 placeholder-gray-400"
-              placeholder="Dzień dobry,&#10;Proszę o kontakt w sprawie serwisu.&#10;Problem: [np. Klimatyzacja słabo chłodzi / Czas na przegląd]&#10;Marka urządzenia (jeśli znana): [np. Mitsubishi]&#10;Moja lokalizacja: [Miejscowość]"
-            ></textarea>
-          </div>
-
-          <div class="flex flex-col pt-2">
-            <div class="flex items-start">
-                <div class="flex items-center h-5">
-                  <input 
-                    id="consent-serwis-mail" 
-                    name="zgoda" 
-                    type="checkbox" 
-                    required 
-                    class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer"
-                  >
-                </div>
-                <div class="ml-3 text-sm leading-snug">
-                  <label for="consent-serwis-mail" class="text-gray-600 cursor-pointer">
-                    Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> w celu umówienia serwisu urządzenia. (Wymagane)
-                  </label>
-                </div>
-            </div>
-            <div id="err-zgoda-serwis-mail" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
-          </div>
-
-          <button type="submit" class="submit-btn w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide cursor-pointer">
-            WYŚLIJ ZGŁOSZENIE
-          </button>
-        </form>
-      </div>
-
-      <div id="form-phone-serwis" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
-        <form 
-            id="serwis-form-phone"
-            name="zgloszenie-serwis-phone" 
-            method="POST" 
-            class="space-y-4"
-            novalidate
-        >
-          <input type="hidden" name="form-name" value="zgloszenie-serwis-phone" />
-          <input type="hidden" name="source" value="oferta_serwis_telefon" />
-          <input type="hidden" name="cel" value="serwis" />
-
-          <div class="text-center mb-6 bg-blue-50 p-3 rounded-lg border border-blue-100">
-              <p class="text-airtur-dark font-medium text-sm">Zostaw numer. Oddzwonimy, by ustalić termin serwisu.</p>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label for="name-phone-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Imię</label>
-                <input type="text" id="name-phone-serwis" name="imie" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="Wpisz swoje imię">
-                <div id="err-imie-serwis-phone" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Imię musi mieć minimum 3 znaki.</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label for="name-serwis-mail" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Imię i Nazwisko *</label>
+                <input type="text" id="name-serwis-mail" name="imie" required 
+                  class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium" 
+                  placeholder="Twoje dane">
+                <div id="err-imie-serwis-mail" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Min. 3 znaki.</div>
               </div>
-              <div>
-                <label for="phone-field-serwis" class="block text-sm font-bold text-airtur-dark mb-1">Numer telefonu</label>
-                <input type="tel" id="phone-field-serwis" name="telefon" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-airtur-blue focus:ring-2 focus:ring-airtur-blue/20 outline-none transition bg-gray-50" placeholder="+48 ...">
-                <div id="err-phone-serwis-phone" class="hidden text-red-500 text-xs font-bold mt-1 ml-1">Numer telefonu musi mieć minimum 9 cyfr.</div>
+              <div class="space-y-2">
+                <label for="email-serwis-field" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Adres E-mail *</label>
+                <input type="email" id="email-serwis-field" name="email" required 
+                  class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium" 
+                  placeholder="twoj@email.pl">
+                <div id="err-email-serwis-mail" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Podaj poprawny e-mail.</div>
               </div>
-          </div>
-
-          <div class="flex flex-col pt-2">
-            <div class="flex items-start">
-                <div class="flex items-center h-5">
-                  <input id="consent-serwis-phone" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-gray-300 rounded focus:ring-airtur-blue cursor-pointer">
-                </div>
-                <div class="ml-3 text-sm leading-snug">
-                  <label for="consent-serwis-phone" class="text-gray-600 cursor-pointer">
-                    Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz wyrażam zgodę na przetwarzanie moich danych osobowych zgodnie z <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Polityką Prywatności</a> na kontakt telefoniczny w celu ustalenia szczegółów serwisu. (Wymagane)
-                  </label>
-                </div>
             </div>
-            <div id="err-zgoda-serwis-phone" class="hidden text-red-500 text-xs font-bold mt-2 pl-1">Akceptacja Regulaminu oraz Polityki Prywatności jest wymagana.</div>
-          </div>
+            
+            <div class="space-y-2">
+              <label for="message-serwis-mail" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Szczegóły zgłoszenia</label>
+              <textarea id="message-serwis-mail" name="wiadomosc" rows="4" 
+                class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium resize-none text-sm leading-relaxed" 
+                placeholder={"Model urządzenia / Typ usterki / Preferowany termin przeglądu"}></textarea>
+            </div>
 
-          <button type="submit" class="submit-btn w-full bg-airtur-dark text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-md uppercase tracking-wide cursor-pointer">
-            UMÓW SERWIS TERAZ
-          </button>
-        </form>
+            <div class="space-y-2">
+              <div class="flex items-start gap-3">
+                <input type="checkbox" id="consent-serwis-mail" name="zgoda" required class="w-5 h-5 text-airtur-blue border-gray-200 rounded focus:ring-airtur-blue/20 cursor-pointer">
+                <label for="consent-serwis-mail" class="text-[11px] text-gray-500 cursor-pointer leading-tight">
+                  Akceptuję <a href="/regulamin" class="text-airtur-blue font-bold hover:underline">Regulamin</a> i wyrażam zgodę na przetwarzanie danych (<a href="/polityka-prywatnosci" class="text-airtur-blue font-bold hover:underline">Polityka Prywatności</a>).
+                </label>
+              </div>
+              <div id="err-zgoda-serwis-mail" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Zgoda jest wymagana.</div>
+            </div>
+
+            <button type="submit" class="submit-btn group relative w-full py-5 bg-airtur-blue text-white rounded-2xl font-black text-[13px] tracking-[0.25em] shadow-xl hover:bg-airtur-navy transition-all duration-300 uppercase flex items-center justify-center">
+              <span class="btn-text">Wyślij zgłoszenie</span>
+              <svg class="spinner hidden w-5 h-5 ml-3 animate-spin text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </button>
+          </form>
+        </div>
+
+        <div id="form-phone-serwis" class="hidden transition-all duration-500">
+          <form id="serwis-form-phone" name="zgloszenie-serwis-phone" class="space-y-6" novalidate>
+            <div class="hidden" aria-hidden="true"><input type="text" name="b_website" tabindex="-1" value="" /></div>
+            <input type="hidden" name="form-name" value="zgloszenie-serwis-phone" />
+            <input type="hidden" name="source" value="oferta_serwis_telefon" />
+            <input type="hidden" name="cel" value="serwis" />
+            
+            <div class="bg-airtur-blue/5 p-5 rounded-2xl border border-airtur-blue/10 mb-8 text-center">
+              <p class="text-airtur-dark font-black text-sm tracking-tight">Zostaw numer. Oddzwonimy ustalić termin serwisu.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label for="name-serwis-phone" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Imię *</label>
+                <input type="text" id="name-serwis-phone" name="imie" required class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium" placeholder="Wpisz imię">
+                <div id="err-imie-serwis-phone" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Min. 3 znaki.</div>
+              </div>
+              <div class="space-y-2">
+                <label for="phone-serwis-field" class="block text-[10px] font-black text-airtur-dark uppercase tracking-widest ml-1">Numer Telefonu *</label>
+                <input type="tel" id="phone-serwis-field" name="telefon" required class="w-full px-5 py-4 rounded-2xl border border-gray-200 bg-gray-50/50 outline-none transition-all duration-300 focus:bg-white focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/5 text-airtur-dark font-medium" placeholder="+48 ...">
+                <div id="err-telefon-serwis-phone" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Podaj min. 9 cyfr.</div>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex items-start gap-3">
+                <input type="checkbox" id="consent-serwis-phone" name="zgoda" required class="w-5 h-5 text-airtur-blue border-gray-200 rounded focus:ring-airtur-blue/20 cursor-pointer">
+                <label for="consent-phone" class="text-[11px] text-gray-500 cursor-pointer">Wyrażam zgodę na kontakt telefoniczny. Akceptuję <a href="/regulamin" class="text-airtur-blue font-bold hover:underline">Regulamin</a> i wyrażam zgodę na przetwarzanie danych (<a href="/polityka-prywatnosci" class="text-airtur-blue font-bold hover:underline">Polityka Prywatności</a>).
+              </div>
+              <div id="err-zgoda-serwis-phone" class="hidden text-[10px] font-black text-red-500 mt-2 ml-4 uppercase">Zgoda jest wymagana.</div>
+            </div>
+
+            <button type="submit" class="submit-btn group relative w-full py-5 bg-airtur-dark text-white rounded-2xl font-black text-[13px] tracking-[0.25em] shadow-xl hover:bg-black transition-all duration-300 uppercase flex items-center justify-center">
+              <span class="btn-text">Proszę o telefon</span>
+              <svg class="spinner hidden w-5 h-5 ml-3 animate-spin text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </button>
+          </form>
+        </div>
+
       </div>
-
     </div>
-
   </div>
 </section>
 
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-      console.log("🚀 SERWIS DOM READY: Szukam formularzy...");
+  /** * Form Engine v5.1 - SERWIS 100% Sync with Montaż
+   */
+  const initSerwisForm = () => {
+    const UI = {
+      tabEmail: document.getElementById('tab-email-serwis'),
+      tabPhone: document.getElementById('tab-phone-serwis'),
+      formEmailCont: document.getElementById('form-email-serwis'),
+      formPhoneCont: document.getElementById('form-phone-serwis'),
+      phoneInput: document.getElementById('phone-serwis-field')
+    };
 
-      const forms = document.querySelectorAll('#serwis-form-mail, #serwis-form-phone');
-      
-      const tabEmail = document.getElementById('tab-email-serwis');
-      const tabPhone = document.getElementById('tab-phone-serwis');
-      const formEmailContainer = document.getElementById('form-email-serwis');
-      const formPhoneContainer = document.getElementById('form-phone-serwis');
+    if (!UI.tabEmail || !UI.tabPhone) return;
 
-      // --- LOGIKA TABÓW ---
-      const activeClassS = ['bg-airtur-dark', 'text-white'];
-      const activeRemoveS = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
-      const inactiveClassS = ['bg-white', 'text-airtur-dark', 'hover:bg-gray-100'];
-      const inactiveRemoveS = ['bg-airtur-dark', 'text-white'];
+    // 1. Phone Formatting "Live"
+    UI.phoneInput?.addEventListener('input', (e) => {
+      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+      e.target.value = !x[2] ? x[1] : `${x[1]} ${x[2]}${x[3] ? ' ' + x[3] : ''}`;
+    });
 
-      if(tabEmail && tabPhone) {
-          tabEmail.addEventListener('click', () => {
-            formEmailContainer?.classList.remove('hidden');
-            formPhoneContainer?.classList.add('hidden');
-            tabEmail.classList.add(...activeClassS);
-            tabEmail.classList.remove(...activeRemoveS);
-            tabPhone?.classList.add(...inactiveClassS);
-            tabPhone?.classList.remove(...inactiveRemoveS);
+    // 2. Tab Logic (Identyczna z Montażem)
+    const setTab = (active, inactive, show, hide) => {
+      active.classList.add('bg-airtur-dark', 'text-white', 'shadow-lg');
+      active.classList.remove('text-gray-500');
+      inactive.classList.remove('bg-airtur-dark', 'text-white', 'shadow-lg');
+      inactive.classList.add('text-gray-500');
+      show.classList.remove('hidden');
+      hide.classList.add('hidden');
+    };
+
+    UI.tabEmail.addEventListener('click', () => setTab(UI.tabEmail, UI.tabPhone, UI.formEmailCont, UI.formPhoneCont));
+    UI.tabPhone.addEventListener('click', () => setTab(UI.tabPhone, UI.tabEmail, UI.formPhoneCont, UI.formEmailCont));
+
+    // 3. Validation & Submission
+    const forms = document.querySelectorAll('#serwis-form-mail, #serwis-form-phone');
+    
+    forms.forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const targetForm = e.currentTarget;
+        const formData = new FormData(targetForm);
+        const data = Object.fromEntries(formData.entries());
+        const suffix = targetForm.id === 'serwis-form-mail' ? 'serwis-mail' : 'serwis-phone';
+        let hasError = false;
+
+        if (data.b_website) {
+          window.location.assign('/podziekowanie/?cel=serwis');
+          return;
+        }
+
+        const lastSent = localStorage.getItem('last_serwis_sent');
+        if (lastSent && Date.now() - parseInt(lastSent) < 20000) {
+          alert("Poczekaj chwilę przed kolejną próbą.");
+          return;
+        }
+
+        const resetErrors = () => {
+          targetForm.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
+          targetForm.querySelectorAll('input, textarea').forEach(el => el.classList.remove('border-red-500', 'bg-red-50'));
+        };
+        resetErrors();
+
+        // Walidacja Imię
+        if (data.imie.trim().length < 3) {
+          hasError = true;
+          document.getElementById(`err-imie-${suffix}`).classList.remove('hidden');
+          targetForm.querySelector('[name="imie"]').classList.add('border-red-500', 'bg-red-50');
+        }
+
+        // Walidacja Email (tylko w mailowym)
+        if (targetForm.id === 'serwis-form-mail' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+          hasError = true;
+          document.getElementById(`err-email-${suffix}`).classList.remove('hidden');
+          targetForm.querySelector('[name="email"]').classList.add('border-red-500', 'bg-red-50');
+        }
+
+        // Walidacja Telefon (tylko w tel)
+        if (targetForm.id === 'serwis-form-phone' && data.telefon.replace(/\D/g, '').length < 9) {
+          hasError = true;
+          document.getElementById(`err-telefon-${suffix}`).classList.remove('hidden');
+          targetForm.querySelector('[name="telefon"]').classList.add('border-red-500', 'bg-red-50');
+        }
+
+        if (!data.zgoda) {
+          hasError = true;
+          document.getElementById(`err-zgoda-${suffix}`).classList.remove('hidden');
+        }
+
+        if (hasError) return;
+
+        const btn = targetForm.querySelector('.submit-btn');
+        const btnText = btn.querySelector('.btn-text');
+        const spinner = btn.querySelector('.spinner');
+        btn.disabled = true;
+        btnText.innerText = "WYSYŁANIE...";
+        spinner.classList.remove('hidden');
+
+        try {
+          const res = await fetch('/api/send-form', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
           });
-
-          tabPhone.addEventListener('click', () => {
-            formPhoneContainer?.classList.remove('hidden');
-            formEmailContainer?.classList.add('hidden');
-            tabPhone.classList.add(...activeClassS);
-            tabPhone.classList.remove(...activeRemoveS);
-            tabEmail?.classList.add(...inactiveClassS);
-            tabEmail?.classList.remove(...inactiveRemoveS);
-          });
-      }
-
-      // --- LOGIKA WYSYŁKI I WALIDACJI ---
-      const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
-
-      forms.forEach(form => {
-          form.addEventListener('submit', async (e) => {
-              e.preventDefault(); 
-
-              const targetForm = e.currentTarget; 
-              const submitBtn = targetForm.querySelector('.submit-btn');
-              const isMailForm = targetForm.id === 'serwis-form-mail';
-              const suffix = isMailForm ? 'serwis-mail' : 'serwis-phone';
-              
-              let hasError = false;
-
-              // 1. Walidacja Imienia
-              const nameInput = targetForm.querySelector('input[name="imie"]');
-              const nameErr = document.getElementById(`err-imie-${suffix}`);
-              if (nameInput.value.trim().length < 3) {
-                  hasError = true;
-                  nameInput.classList.add('border-red-400', 'bg-red-50');
-                  nameInput.classList.remove('border-gray-300');
-                  if(nameErr) nameErr.classList.remove('hidden');
-              }
-
-              // 2. Walidacja Emaila lub Telefonu
-              if (isMailForm) {
-                  const emailInput = targetForm.querySelector('input[name="email"]');
-                  const emailErr = document.getElementById(`err-email-${suffix}`);
-                  if (!isValidEmail(emailInput.value)) {
-                      hasError = true;
-                      emailInput.classList.add('border-red-400', 'bg-red-50');
-                      emailInput.classList.remove('border-gray-300');
-                      if(emailErr) emailErr.classList.remove('hidden');
-                  }
-              } else {
-                  const phoneInput = targetForm.querySelector('input[name="telefon"]');
-                  const phoneErr = document.getElementById(`err-phone-${suffix}`);
-                  if (!isValidPhone(phoneInput.value)) {
-                      hasError = true;
-                      phoneInput.classList.add('border-red-400', 'bg-red-50');
-                      phoneInput.classList.remove('border-gray-300');
-                      if(phoneErr) phoneErr.classList.remove('hidden');
-                  }
-              }
-
-              // 3. Walidacja Zgody
-              const consentInput = targetForm.querySelector('input[name="zgoda"]');
-              const consentErr = document.getElementById(`err-zgoda-${suffix}`);
-              if (!consentInput.checked) {
-                  hasError = true;
-                  if(consentErr) consentErr.classList.remove('hidden');
-              }
-
-              if (hasError) return; // Stop
-
-              // WYSYŁKA
-              const originalBtnText = submitBtn?.innerText || "WYŚLIJ";
-              if (submitBtn) {
-                  submitBtn.disabled = true;
-                  submitBtn.innerText = "WYSYŁANIE...";
-              }
-
-              const formData = new FormData(targetForm);
-              const dataObj = Object.fromEntries(formData.entries());
-
-              try {
-                  const response = await fetch('/api/send-form', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(dataObj)
-                  });
-
-                  if (!response.ok) {
-                      throw new Error(`Błąd serwera: ${response.status}`);
-                  }
-
-                  // <<< TUTAJ JEST TWOJA ZMIANA Z POPRAWIONYM LINKIEM >>>
-                  window.location.assign('/podziekowanie/?cel=serwis');
-
-              } catch (error) {
-                  console.error("❌ BŁĄD WYSYŁKI:", error);
-                  alert(`Wystąpił błąd: ${error.message}`);
-                  if(submitBtn) {
-                      submitBtn.disabled = false;
-                      submitBtn.innerText = originalBtnText;
-                  }
-              }
-          });
+          if (res.ok) {
+            localStorage.setItem('last_serwis_sent', Date.now().toString());
+            window.location.assign('/podziekowanie/?cel=serwis');
+          } else throw new Error();
+        } catch (err) {
+          btn.disabled = false;
+          btnText.innerText = "SPRÓBUJ PONOWNIE";
+          spinner.classList.add('hidden');
+          alert("Błąd połączenia. Zadzwoń do nas!");
+        }
       });
 
-      // Czyszczenie błędów przy pisaniu
-      document.querySelectorAll('input, textarea').forEach(input => {
-          input.addEventListener('input', () => {
-              input.classList.remove('border-red-400', 'bg-red-50');
-              input.classList.add('border-gray-300'); 
-              
-              // Znajdź i ukryj najbliższy komunikat błędu
-              const parent = input.parentElement;
-              const errorDiv = parent.querySelector('[id^="err-"]');
-              if(errorDiv) errorDiv.classList.add('hidden');
-          });
-          
-          if(input.type === 'checkbox') {
-             input.addEventListener('change', () => {
-                const form = input.closest('form');
-                if(form) {
-                    const isMail = form.id === 'serwis-form-mail';
-                    const suffix = isMail ? 'serwis-mail' : 'serwis-phone';
-                    document.getElementById(`err-zgoda-${suffix}`)?.classList.add('hidden');
-                }
-             });
-          }
+      // Live error clearing
+      form.querySelectorAll('input, textarea').forEach(inp => {
+        inp.addEventListener('input', () => {
+          inp.classList.remove('border-red-500', 'bg-red-50');
+          const name = inp.name === 'telefon' ? 'telefon' : (inp.name === 'email' ? 'email' : 'imie');
+          const errEl = document.getElementById(`err-${name}-${suffix}`);
+          if (errEl) errEl.classList.add('hidden');
+          document.getElementById(`err-zgoda-${suffix}`)?.classList.add('hidden');
+        });
       });
-  });
+    });
+  };
+
+  initSerwisForm();
+  document.addEventListener('astro:page-load', initSerwisForm);
 </script>

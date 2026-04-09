@@ -1,23 +1,91 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content'; // Oficjalny klucz do Twoich danych
+import { companyConfig } from '../data/companyConfig';
+
+// Importy komponentów
 import Wprowadzenie from '../components/studia-przypadkow/Wprowadzenie.astro';
 import SiatkaStudiow from '../components/studia-przypadkow/SiatkaStudiow.astro';
-// Import nowej sekcji
 import ZamkniecieCTA from '../components/studia-przypadkow/ZamkniecieCTA.astro';
+
+/**
+ * [SENIOR LOGIC]: Content Collections API
+ * Pobieramy wszystkie wpisy z folderu src/content/cases/
+ */
+const allCases = await getCollection('cases');
+const caseCount = allCases.length;
+
+const pageTitle = "Studia Przypadków AirTUR - Realizacje i Wyniki | Małopolska";
+const pageDescription = "Zobacz mierzalne efekty montażu klimatyzacji i pomp ciepła AirTUR. Analizy ROI, dowody skuteczności i inżynierska precyzja.";
+
+/**
+ * [SEO]: Dynamiczne generowanie listy ItemList dla Google.
+ * Wykorzystujemy 'slug' do budowy linków i 'data.title' z frontmattera Twoich .md
+ */
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": pageTitle,
+  "description": pageDescription,
+  "url": `${companyConfig.websiteUrl}/studia-przypadkow`,
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": caseCount,
+    "itemListElement": allCases.map((entry, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": `${companyConfig.websiteUrl}/studia-przypadkow/${entry.slug}`,
+      "name": entry.data.title // Tytuł pobierany z Twojego pliku .md
+    }))
+  }
+};
+
+const sectionWrapperClass = "scroll-mt-24";
 ---
 
-<Layout title="Studia Przypadków - Dowody Skuteczności">
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   
-  <main>
-    <!-- Sekcja 1: Wprowadzenie -->
-    <Wprowadzenie />
-
-    <!-- Sekcja 2: Siatka Kart (Slider) -->
-    <SiatkaStudiow />
+  <main id="main-content" class="bg-white focus:outline-none" tabindex="-1">
     
-    <!-- Sekcja 3: Zamknięcie i CTA -->
-    <ZamkniecieCTA />
+    <section id="hero-przypadki" class={sectionWrapperClass} aria-label="Wprowadzenie">
+      <Wprowadzenie />
+    </section>
+
+    <section id="lista-przypadkow" class={sectionWrapperClass} aria-label="Realizacje">
+      <SiatkaStudiow />
+    </section>
+    
+    <section id="cta-przypadkow" class={sectionWrapperClass} aria-label="Kontakt">
+      <ZamkniecieCTA />
+    </section>
     
   </main>
-
 </Layout>
+
+<style is:global>
+  /**
+   * [SENIOR UX]: Spójność renderowania marki.
+   */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus Management: Dostępność zgodna z WCAG */
+  #main-content:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* GPU Acceleration dla sliderów/animacji na podstronie realizacji */
+  #cases-track {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+</style>

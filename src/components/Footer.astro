@@ -1,83 +1,95 @@
 ---
-// src/components/Footer.astro
 import { companyConfig } from '../data/companyConfig';
 const currentYear = new Date().getFullYear();
+
+const linkClass = "text-airtur-gray/80 hover:text-airtur-blue hover:translate-x-1 transition-all duration-300 ease-out flex items-center gap-2";
 ---
 
-<!-- Tło: airtur-dark (#3A4149), Tekst: Biały -->
-<footer class="bg-airtur-dark text-white font-sans pt-16">
-  <!-- Większy padding boczny dla elegancji -->
-  <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+<footer class="bg-airtur-tech text-airtur-gray pt-16 border-t border-white/5" aria-labelledby="footer-heading">
+  <h2 id="footer-heading" class="sr-only">Stopka AirTUR</h2>
+  
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- GŁÓWNA STRUKTURA STOPKI (4 KOLUMNY) -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-16 pb-10">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-16">
       
-      <!-- KOLUMNA 1: Na skróty -->
-      <div>
-        <h4 class="text-lg font-bold text-white mb-4">Na skróty<br class="hidden lg:inline" /></h4>
-        <nav class="space-y-2 text-sm">
-          <a href="/o-firmie" class="block text-gray-300 hover:text-airtur-blue transition">O&nbsp;firmie</a>
-          <a href="/studia-przypadkow" class="block text-gray-300 hover:text-airtur-blue transition">Studia Przypadków</a>
-          <a href="/baza-wiedzy" class="block text-gray-300 hover:text-airtur-blue transition">Baza Wiedzy</a>
-          <a href="/narzedzia" class="block text-gray-300 hover:text-airtur-blue transition">Narzędzia</a>
-          <a href="/kontakt" class="block text-gray-300 hover:text-airtur-blue transition">Kontakt</a>
-          
-          <!-- SEKCJA PRAWNA -->
-          <div class="pt-4 mt-4 border-t border-white/5 space-y-2">
-            <a href="/regulamin" class="block text-xs text-gray-400 hover:text-airtur-blue transition">Regulamin</a>
-            <a href="/polityka-prywatnosci" class="block text-xs text-gray-400 hover:text-airtur-blue transition">Polityka Prywatności</a>
-            <a href="/polityka-cookies" class="block text-xs text-gray-400 hover:text-airtur-blue transition">Polityka Cookies</a>
-          </div>
-        </nav>
-      </div>
-
-      <!-- KOLUMNA 2: Kluczowe Usługi (SEO) -->
-      <div>
-        <h4 class="text-lg font-bold text-white mb-4">Kluczowe Usługi<br class="hidden lg:inline" /></h4>
-        <nav class="space-y-2 text-sm">
-          <a href="/oferta#montaz" class="block text-gray-300 hover:text-airtur-blue transition">Montaż klimatyzacji z&nbsp;funkcją grzania</a>
-          <a href="/oferta#serwis" class="block text-gray-300 hover:text-airtur-blue transition">Serwis i&nbsp;przeglądy gwarancyjne</a>
-          <a href="/oferta#analiza" class="block text-gray-300 hover:text-airtur-blue transition">Sprzedaż systemów o&nbsp;wysokim ROI</a>
-          <a href="/kontakt" class="block text-gray-300 hover:text-airtur-blue transition">Bezpłatne doradztwo inwestycyjne</a>
-        </nav>
-      </div>
-
-      <!-- KOLUMNA 3: Dane Firmy (Automatyczne) -->
-      <div class="col-span-2 md:col-span-1">
-        <h4 class="text-lg font-bold text-white mb-4">{companyConfig.name} – Twój Partner w&nbsp;Małopolsce</h4>
-        <div class="space-y-2 text-sm pt-0.5"> 
-          <p class="font-semibold text-gray-200">{companyConfig.fullName}</p>
-          <p>NIP: {companyConfig.nip}</p>
-          <p>Adres: {companyConfig.address.full}</p>
-          <p>Telefon: <a href={companyConfig.contact.phoneLink} class="text-white hover:text-airtur-blue transition">{companyConfig.contact.phoneFull}</a></p>
-          <p>E-mail: <a href={companyConfig.contact.emailLink} class="text-white hover:text-airtur-blue transition">{companyConfig.contact.email}</a></p>
+      <div class="flex flex-col items-start space-y-6">
+        <img src="/logo.svg" alt="AirTUR" class="h-14 md:h-16 w-auto brightness-0 invert opacity-90 -ml-2" />
+        <p class="text-xs leading-relaxed text-airtur-gray/60 text-pretty max-w-[220px]">
+          Eksperci od klimatyzacji z funkcją grzania. Komfort i oszczędność przez 365 dni w roku.
+        </p>
+        <div class="flex gap-4">
+          {companyConfig.socials.facebook && (
+            <a href={companyConfig.socials.facebook} class="text-airtur-gray/40 hover:text-airtur-blue transition-colors" aria-label="Facebook">
+              <svg class="size-5 fill-current" viewBox="0 0 24 24"><path d="M9 8H6v4h3v12h5V12h3.642L18 8h-4V6.333C14 5.388 14.185 5 15.692 5H18V0h-3.851C10.233 0 9 1.585 9 4.333V8z"/></svg>
+            </a>
+          )}
         </div>
       </div>
 
-      <!-- KOLUMNA 4: Obszar Działania (Automatyczny z serviceAreas) -->
-      <div>
-        <h4 class="text-lg font-bold text-white mb-4">Obszar Działania - Małopolska i okolice</h4>
-        <p class="text-gray-300 text-sm mb-3">Działamy profesjonalnie w&nbsp;całym regionie:</p>
-        <ul class="space-y-1 text-sm text-gray-300">
-          {companyConfig.serviceAreas.map((area) => (
-            area.places.map((place) => (
-                <li class="flex items-center gap-2">
-                    <span class="text-airtur-blue text-[10px]">●</span>
-                    {place.label}
-                </li>
-            ))
-          ))}
-          <li class="pt-2 text-[11px] italic text-gray-400">...oraz wybrane lokalizacje do&nbsp;200km.</li>
-        </ul>
+      <nav class="flex flex-col gap-5">
+        <h4 class="text-[11px] font-bold uppercase tracking-[0.2em] text-airtur-blue">Na skróty</h4>
+        <div class="flex flex-col gap-3 text-sm">
+          <a href="/o-firmie" class={linkClass}>O firmie</a>
+          <a href="/studia-przypadkow" class={linkClass}>Studia Przypadków</a>
+          <a href="/narzedzia" class={linkClass}>Narzędzia</a>
+          <a href="/kontakt" class={linkClass}>Kontakt</a>
+          <div class="pt-4 flex flex-col gap-2 border-t border-white/5">
+            <a href="/regulamin" class="text-[11px] text-airtur-gray/40 hover:text-white transition">Regulamin</a>
+            <a href="/polityka-prywatnosci" class="text-[11px] text-airtur-gray/40 hover:text-white transition">Polityka Prywatności</a>
+            <a href="/polityka-cookies" class="text-[11px] text-airtur-gray/40 hover:text-white transition">Polityka Cookies</a>
+          </div>
+        </div>
+      </nav>
+
+      <nav class="flex flex-col gap-5">
+        <h4 class="text-[11px] font-bold uppercase tracking-[0.2em] text-airtur-blue">Kluczowe Usługi</h4>
+        <div class="flex flex-col gap-3 text-sm">
+          <a href="/oferta#montaz" class={linkClass}>Montaż klimatyzacji z&nbsp;funkcją grzania</a>
+          <a href="/oferta#serwis" class={linkClass}>Serwis i przeglądy</a>
+          <a href="/oferta#analiza" class={linkClass}>Sprzedaż systemów o&nbsp;wysokim ROI</a>
+          <a href="/kontakt#formularz-kontaktowy" class={linkClass}>Bezpłatne doradztwo inwestycyjne</a>
+        </div>
+      </nav>
+
+      <div class="flex flex-col gap-5">
+        <h4 class="text-[11px] font-bold uppercase tracking-[0.2em] text-airtur-blue">Dane Firmy</h4>
+        <div class="space-y-4 text-sm">
+          <div class="text-airtur-gray/80 leading-relaxed">
+            <p class="text-white font-bold">{companyConfig.fullName}</p>
+            <p>{companyConfig.address.street}</p>
+            <p>{companyConfig.address.postCode} {companyConfig.address.city}</p>
+            <p class="text-[11px] text-airtur-gray/40 mt-1">NIP: {companyConfig.nip}</p>
+          </div>
+          
+          <div class="text-[12px] space-y-1 text-airtur-gray/50 border-y border-white/5 py-3">
+            <p class="flex justify-between"><span>Pon - Pt:</span> <span class="text-white">{companyConfig.workingHours.weekdays}</span></p>
+            <p class="flex justify-between"><span>Sobota:</span> <span class="text-white">{companyConfig.workingHours.saturday}</span></p>
+          </div>
+
+          <div class="space-y-2">
+            <a href={companyConfig.contact.phoneLink} class="text-white hover:text-airtur-blue font-bold transition-colors flex items-center gap-2">
+              <span class="text-airtur-blue">📞</span> {companyConfig.contact.phone}
+            </a>
+            <a href={companyConfig.contact.emailLink} class="text-airtur-gray/70 hover:text-airtur-blue transition-colors flex items-center gap-2 text-xs">
+              <span>✉</span> {companyConfig.contact.email}
+            </a>
+          </div>
+        </div>
       </div>
 
     </div>
 
-    <!-- PASEK COPYRIGHT (Na samym dole) -->
-    <div class="border-t border-white/10 pt-4 pb-4 text-center text-xs">
-      <p class="text-gray-400">
-        &copy; {currentYear} {companyConfig.name} - Pełna kontrola nad Twoim komfortem i&nbsp;budżetem.
+    <div class="border-t border-white/5 py-10 flex flex-col md:flex-row justify-between items-center gap-6">
+      <p class="text-airtur-gray/40 text-[10px] tracking-wide text-center md:text-left">
+        &copy; {currentYear} <strong>{companyConfig.name}</strong> • Profesjonalny dobór i montaż klimatyzacji.
       </p>
+      
+      <nav class="flex items-center gap-5 text-[9px] uppercase tracking-[0.2em] text-airtur-gray/30">
+        <span class="text-airtur-blue font-bold">Obszar działania:</span>
+        <a href="/kontakt#obszar-dzialania" class="hover:text-airtur-blue transition-colors">Małopolska</a>
+        <a href="/kontakt#obszar-dzialania" class="hover:text-airtur-blue transition-colors">Śląsk</a>
+        <a href="/kontakt#obszar-dzialania" class="hover:text-airtur-blue transition-colors">Podkarpacie</a>
+      </nav>
     </div>
 
   </div>

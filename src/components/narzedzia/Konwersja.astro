@@ -1,51 +1,102 @@
 ---
 // src/components/narzedzia/Konwersja.astro
 import { companyConfig } from '../../data/companyConfig';
+
+// ============================================================
+// ⚙️ KONFIGURACJA TEKSTÓW (EDYTOWAĆ TYLKO TUTAJ)
+// ============================================================
+const TEXTS = {
+  hero: {
+    report: {
+      titleLine1: "Twoja osobista Analiza",
+      titleLine2: "Inwestycyjna jest gotowa.",
+      subtitle: "Wyniki Twoich obliczeń to doskonały fundament. Odbierz pełny raport PDF prosto na swój e-mail.",
+      benefits: [
+        "Listę 3 rekomendowanych modeli o mocy dopasowanej do Twoich potrzeb.",
+        "Wyliczenie potencjalnych oszczędności (ROI).",
+        "Porównanie danych technicznych urządzeń."
+      ]
+    },
+    quote: {
+      titleLine1: "Świetna decyzja!",
+      titleLine2: "Umówmy bezpłatną wycenę.",
+      subtitle: "Przeanalizujemy wynik dla modelu {{MODEL}} oraz dwóch rekomendowanych modeli o mocy dopasowanej do Twoich potrzeb. Zostaw numer telefonu, abyśmy mogli przygotować ofertę.",
+      benefits: [
+        "Szczegółową, transparentną wycenę montażu modelu {{MODEL}} oraz dwóch rekomendowanych modeli.",
+        "Gwarancję niezmienności ceny przez 30 dni.",
+        "Porównanie danych technicznych urządzeń."
+      ]
+    }
+  },
+  mainForm: {
+    preTitle: "Ostatni krok",
+    title: "Gdzie wysłać Twój raport?",
+    btnSubmit: "ODBIERZ RAPORT I WYCENĘ",
+    btnLoading: "GENEROWANIE...",
+    phoneHint: "(Niezbędny do omówienia wyceny)",
+    consent: "Akceptuję Regulamin oraz Politykę Prywatności."
+  },
+  secondaryForm: {
+    toggleText: "Wolisz omówić wyniki z ekspertem? Zostaw numer, oddzwonimy.",
+    btnSubmit: "PROSZĘ O TELEFON",
+    btnLoading: "WYSYŁANIE...",
+    consent: "Proszę o kontakt. Akceptuję Regulamin i Politykę Prywatności."
+  },
+  errors: {
+    name: "Minimum 3 znaki.",
+    email: "Podaj poprawny e-mail.",
+    phone: "Wymagane min. 9 cyfr.",
+    consent: "Akceptacja regulaminu jest wymagana.",
+    generalMain: "Wprowadź poprawne dane i zaakceptuj zgody.",
+    generalSecondary: "Wypełnij pola i zaznacz zgodę.",
+    serverError: "Wystąpił błąd. Prosimy spróbować ponownie."
+  }
+};
 ---
 
-<section class="bg-white pb-24 pt-12" id="conversion-section">
+<section class="bg-white pb-24 pt-12 scroll-mt-12" id="conversion-section"
+  data-title-report={`${TEXTS.hero.report.titleLine1} ${TEXTS.hero.report.titleLine2}`}
+  data-sub-report={TEXTS.hero.report.subtitle}
+  data-benefits-report={JSON.stringify(TEXTS.hero.report.benefits)}
+  data-title-quote={`${TEXTS.hero.quote.titleLine1} ${TEXTS.hero.quote.titleLine2}`}
+  data-sub-quote={TEXTS.hero.quote.subtitle}
+  data-benefits-quote={JSON.stringify(TEXTS.hero.quote.benefits)}
+>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <div class="bg-airtur-dark rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
-      
+    <div class="bg-airtur-dark rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden mb-12 border border-white/10">
       <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-airtur-blue to-transparent"></div>
+      <div class="absolute -top-20 -right-20 w-64 h-64 bg-airtur-blue/20 rounded-full blur-[80px] pointer-events-none"></div>
 
-      <div class="flex justify-center mb-8">
-        <div class="p-4 bg-white/10 rounded-full backdrop-blur-sm border border-white/20">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-white">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 1.043 3.296 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-            </svg>
+      <div class="flex justify-center mb-8 relative z-10">
+        <div class="p-4 bg-white/10 rounded-full backdrop-blur-md border border-white/20 shadow-inner">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-airtur-blue"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 1.043 3.296 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>
         </div>
       </div>
 
-      <div class="text-center mb-10">
-        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 transition-colors duration-300">
-          Twoja osobista Analiza Inwestycyjna jest gotowa.
+      <div class="text-center mb-10 relative z-10">
+        <h2 class="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight leading-tight">
+          {TEXTS.hero.report.titleLine1}<br class="hidden md:block" /> {TEXTS.hero.report.titleLine2}
         </h2>
-        <p class="text-lg text-gray-300 leading-relaxed max-w-2xl mx-auto">
-          Wyniki Twoich obliczeń to doskonały fundament. Odbierz pełny raport PDF na swój e-mail.
+        <p class="text-base md:text-lg text-gray-300 font-medium leading-relaxed max-w-2xl mx-auto">
+          {TEXTS.hero.report.subtitle}
         </p>
       </div>
 
-      <div class="bg-white/5 rounded-2xl p-6 md:p-8 mb-10 border border-white/10">
-        <ul class="space-y-4 text-left max-w-lg mx-auto">
+      <div class="bg-white/5 rounded-3xl p-6 md:p-8 mb-10 border border-white/10 relative z-10 backdrop-blur-sm">
+        <ul id="conversion-benefits-list" class="space-y-4 text-left max-w-lg mx-auto">
+          {TEXTS.hero.report.benefits.map(benefit => (
             <li class="flex items-start gap-4">
                 <div class="flex-shrink-0 mt-1"><div class="w-6 h-6 rounded-full bg-airtur-blue flex items-center justify-center shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg></div></div>
-                <span class="text-gray-200">Listę 3 rekomendowanych modeli o mocy dopasowanej do Twoich potrzeb.</span>
+                <span class="text-gray-200">{benefit}</span>
             </li>
-            <li class="flex items-start gap-4">
-                <div class="flex-shrink-0 mt-1"><div class="w-6 h-6 rounded-full bg-airtur-blue flex items-center justify-center shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg></div></div>
-                <span class="text-gray-200">Szczegółową, transparentną wycenę montażu.</span>
-            </li>
-            <li class="flex items-start gap-4">
-                <div class="flex-shrink-0 mt-1"><div class="w-6 h-6 rounded-full bg-airtur-blue flex items-center justify-center shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5 text-white"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg></div></div>
-                <span class="text-gray-200">Gwarancję niezmienności ceny przez 30 dni.</span>
-            </li>
+          ))}
         </ul>
       </div>
 
-      <div class="max-w-md mx-auto mb-12">
-        <form id="tools-form-email" class="space-y-4" novalidate>
+      <div class="max-w-md mx-auto mb-12 relative z-10">
+        <form id="tools-form-email" class="space-y-4 transition-all duration-300" novalidate>
+            <div class="hidden" aria-hidden="true"><input type="text" name="b_website" tabindex="-1" value="" /></div>
             <input type="hidden" name="source" value="narzedzia_kalkulator_raport_email" />
             <input type="hidden" name="cel" value="raport_wyslany" />
 
@@ -55,14 +106,11 @@ import { companyConfig } from '../../data/companyConfig';
             <input type="hidden" name="wynik_oszczednosci" class="calc-field-savings" value="" />
             <input type="hidden" name="wynik_oszczednosci_5" class="calc-field-savings5" value="" />
             <input type="hidden" name="wynik_oszczednosci_10" class="calc-field-savings10" value="" />
-            
-            <!-- 🔥 UKRYTE POLA DLA NOWEGO SYSTEMU MODELI -->
             <input type="hidden" name="wynik_model" class="calc-field-model" value="" />
             <input type="hidden" name="wynik_wybrany_tier" class="calc-field-tier" value="" />
             <input type="hidden" name="wynik_model_eco" class="calc-field-model-eco" value="" />
             <input type="hidden" name="wynik_model_smart" class="calc-field-model-smart" value="" />
             <input type="hidden" name="wynik_model_premium" class="calc-field-model-premium" value="" />
-            
             <input type="hidden" name="expertExplanation" class="calc-field-explanation" value="" />
             <input type="hidden" name="wynik_rachunek" class="calc-field-bill" value="" />
             <input type="hidden" name="wynik_paliwo" class="calc-field-fuel" value="" />
@@ -70,172 +118,228 @@ import { companyConfig } from '../../data/companyConfig';
             <input type="hidden" name="wynik_slonce" class="calc-field-sun" value="" />
             <input type="hidden" name="wynik_typ_budynku" class="calc-field-building" value="" />
             <input type="hidden" name="wynik_ludzie" class="calc-field-people" value="" />
+            <input type="hidden" name="isMultisplit" value="false" />
             
-            <div><input type="text" name="imie" required placeholder="Twoje imię" class="w-full px-5 py-4 rounded-xl bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg"></div>
-            <div><input type="email" id="email-field-tools" name="email" required placeholder="Adres e-mail" class="w-full px-5 py-4 rounded-xl bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg"></div>
-
-            <div id="main-phone-container" class="hidden">
-                <input type="tel" name="telefon" placeholder="Numer telefonu (wymagany do wyceny)" class="w-full px-5 py-4 rounded-xl bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg border-2 border-airtur-blue/20">
+            <div class="relative">
+                <input type="text" name="imie" required placeholder="Twoje imię" 
+                    class="w-full px-5 py-4 rounded-2xl bg-white text-airtur-dark font-bold placeholder-gray-400 border-2 border-transparent focus:outline-none focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg">
+                <div id="err-imie-main" class="hidden text-red-400 text-[10px] font-black mt-1 ml-2 uppercase">{TEXTS.errors.name}</div>
+            </div>
+            
+            <div class="relative">
+                <input type="email" id="email-field-tools" name="email" required placeholder="Adres e-mail" 
+                    class="w-full px-5 py-4 rounded-2xl bg-white text-airtur-dark font-bold placeholder-gray-400 border-2 border-transparent focus:outline-none focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg">
+                <div id="err-email-main" class="hidden text-red-400 text-[10px] font-black mt-1 ml-2 uppercase">{TEXTS.errors.email}</div>
             </div>
 
-            <div id="error-tools-mail" class="hidden text-red-400 text-xs font-bold italic py-1 text-center">Wprowadź poprawne dane i zaakceptuj zgody.</div>
+            <div id="main-phone-container" class="hidden animate-fade-in-down relative">
+                <input type="tel" name="telefon" placeholder="Numer telefonu" 
+                    class="w-full px-5 py-4 rounded-2xl bg-white text-airtur-dark font-bold placeholder-gray-400 border-2 border-airtur-blue focus:outline-none focus:ring-4 focus:ring-airtur-blue/30 transition shadow-lg">
+                <div id="err-phone-main" class="hidden text-red-400 text-[10px] font-black mt-1 ml-2 uppercase">{TEXTS.errors.phone}</div>
+                <span class="text-gray-400 text-[10px] ml-2 mt-1 block">{TEXTS.mainForm.phoneHint}</span>
+            </div>
+
+            <div id="error-tools-mail" class="hidden text-red-400 text-[11px] font-bold py-2 px-4 text-center bg-red-500/10 rounded-lg border border-red-500/20 shadow-inner">{TEXTS.errors.generalMain}</div>
 
             <div class="flex items-start pt-2 px-1">
-                <div class="flex items-center h-5"><input id="consent-tools-mail" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-white/20 rounded focus:ring-airtur-blue cursor-pointer bg-white/10"></div>
-                <div class="ml-3 text-xs leading-snug text-gray-400">
-                    <label for="consent-tools-mail" class="cursor-pointer">Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a> oraz <a href="/polityka-prywatnosci" class="text-airtur-blue hover:underline font-semibold">Politykę Prywatności</a>. (Wymagane)</label>
+                <div class="flex items-center h-5">
+                    <input id="consent-tools-mail" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-white/20 rounded focus:ring-airtur-blue cursor-pointer bg-white/10">
+                </div>
+                <div class="ml-3 text-[11px] leading-snug text-gray-400 w-full">
+                    <label for="consent-tools-mail" class="cursor-pointer block mb-1" set:html={TEXTS.mainForm.consent.replace('Regulamin', '<a href="/regulamin" target="_blank" rel="noopener noreferrer" class="text-airtur-blue hover:text-white transition-colors font-bold">Regulamin</a>').replace('Politykę Prywatności', '<a href="/polityka-prywatnosci" target="_blank" rel="noopener noreferrer" class="text-airtur-blue hover:text-white transition-colors font-bold">Politykę Prywatności</a>')}></label>
+                    <div id="err-zgoda-main" class="hidden text-red-400 text-[10px] font-black uppercase mt-1 tracking-wider">{TEXTS.errors.consent}</div>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn w-full bg-airtur-blue text-white font-bold py-4 rounded-xl hover:bg-opacity-90 transition shadow-lg uppercase tracking-wide transform hover:-translate-y-1 cursor-pointer">
-                ODBIERZ RAPORT I WYCENĘ
+            <button type="submit" data-loading-text={TEXTS.mainForm.btnLoading} class="submit-btn group relative w-full bg-airtur-blue text-white font-black py-4 rounded-2xl hover:bg-airtur-navy hover:shadow-2xl transition-all duration-300 shadow-lg uppercase tracking-widest transform hover:-translate-y-1 cursor-pointer flex items-center justify-center mt-2">
+                <span class="btn-text" data-default-text={TEXTS.mainForm.btnSubmit}>{TEXTS.mainForm.btnSubmit}</span>
+                <svg class="spinner hidden w-5 h-5 ml-3 animate-spin text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             </button>
         </form>
       </div>
 
-      <div class="border-t border-white/10 pt-8 text-center" id="secondary-phone-section">
+      <div class="border-t border-white/10 pt-8 text-center relative z-10" id="secondary-phone-section">
         <button id="toggle-phone-form" class="group inline-flex items-center gap-2 text-gray-300 hover:text-white transition-colors cursor-pointer focus:outline-none">
-            <span class="text-lg font-semibold border-b border-gray-500 group-hover:border-white transition-colors">Wolisz omówić wyniki z ekspertem? Zostaw numer, oddzwonimy.</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 transition-transform duration-300" id="arrow-icon"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+            <span class="text-[13px] md:text-sm font-bold border-b border-gray-500 group-hover:border-white transition-colors pb-0.5">{TEXTS.secondaryForm.toggleText}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 transition-transform duration-300 text-airtur-blue" id="arrow-icon"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
         </button>
 
         <div id="phone-form-container" class="hidden mt-6 max-w-md mx-auto animate-fade-in-down">
-            <form id="tools-form-phone" class="space-y-4 bg-white/5 p-6 rounded-xl border border-white/10 text-left" novalidate>
+            <form id="tools-form-phone" class="space-y-4 bg-white/5 p-6 rounded-3xl border border-white/10 text-left transition-all duration-300" novalidate>
+                <div class="hidden" aria-hidden="true"><input type="text" name="b_website" tabindex="-1" value="" /></div>
                 <input type="hidden" name="source" value="narzedzia_kalkulator_raport_telefon" />
                 <input type="hidden" name="cel" value="kontakt_telefoniczny" />
-
-                <input type="hidden" name="wynik_metraz" class="calc-field-area" value="" />
-                <input type="hidden" name="wynik_moc" class="calc-field-power" value="" />
-                <input type="hidden" name="wynik_cel" class="calc-field-goal" value="" />
-                <input type="hidden" name="wynik_oszczednosci" class="calc-field-savings" value="" />
-                <input type="hidden" name="wynik_oszczednosci_5" class="calc-field-savings5" value="" />
-                <input type="hidden" name="wynik_oszczednosci_10" class="calc-field-savings10" value="" />
                 
-                <!-- 🔥 UKRYTE POLA DLA NOWEGO SYSTEMU MODELI -->
-                <input type="hidden" name="wynik_model" class="calc-field-model" value="" />
-                <input type="hidden" name="wynik_wybrany_tier" class="calc-field-tier" value="" />
-                <input type="hidden" name="wynik_model_eco" class="calc-field-model-eco" value="" />
-                <input type="hidden" name="wynik_model_smart" class="calc-field-model-smart" value="" />
-                <input type="hidden" name="wynik_model_premium" class="calc-field-model-premium" value="" />
+                <div class="relative">
+                    <input type="text" name="imie" required placeholder="Twoje imię" 
+                        class="w-full px-5 py-4 rounded-2xl bg-white text-airtur-dark font-bold placeholder-gray-400 border-2 border-transparent focus:outline-none focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/30 transition shadow-sm">
+                    <div id="err-imie-secondary" class="hidden text-red-400 text-[10px] font-black mt-1 ml-2 uppercase">{TEXTS.errors.name}</div>
+                </div>
                 
-                <input type="hidden" name="expertExplanation" class="calc-field-explanation" value="" />
-                <input type="hidden" name="wynik_rachunek" class="calc-field-bill" value="" />
-                <input type="hidden" name="wynik_paliwo" class="calc-field-fuel" value="" />
-                <input type="hidden" name="wynik_komfort" class="calc-field-comfort" value="" />
-                <input type="hidden" name="wynik_slonce" class="calc-field-sun" value="" />
-                <input type="hidden" name="wynik_typ_budynku" class="calc-field-building" value="" />
-                <input type="hidden" name="wynik_ludzie" class="calc-field-people" value="" />
-
-                <div><input type="text" name="imie" required placeholder="Twoje imię" class="w-full px-5 py-3 rounded-lg bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-airtur-blue transition"></div>
-                <div><input type="tel" id="phone-field-tools" name="telefon" required placeholder="Numer telefonu" class="w-full px-5 py-3 rounded-lg bg-white text-airtur-dark font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-airtur-blue transition"></div>
+                <div class="relative">
+                    <input type="tel" id="phone-field-tools" name="telefon" required placeholder="Numer telefonu" 
+                        class="w-full px-5 py-4 rounded-2xl bg-white text-airtur-dark font-bold placeholder-gray-400 border-2 border-transparent focus:outline-none focus:border-airtur-blue focus:ring-4 focus:ring-airtur-blue/30 transition shadow-sm">
+                    <div id="err-phone-secondary" class="hidden text-red-400 text-[10px] font-black mt-1 ml-2 uppercase">{TEXTS.errors.phone}</div>
+                </div>
                 
-                <div id="error-tools-phone" class="hidden text-red-400 text-xs font-bold italic py-1 text-center">Numer min. 9 cyfr oraz wymagana zgoda.</div>
+                <div id="error-tools-phone" class="hidden text-red-400 text-[11px] font-bold py-2 px-4 text-center bg-red-500/10 rounded-lg border border-red-500/20 shadow-inner">{TEXTS.errors.generalSecondary}</div>
                 
                 <div class="flex items-start pt-1">
-                    <div class="flex items-center h-5"><input id="consent-tools-phone" name="zgoda" type="checkbox" required class="w-4 h-4 text-airtur-blue border-white/20 rounded focus:ring-airtur-blue cursor-pointer bg-white/10"></div>
-                    <div class="ml-3 text-[11px] leading-snug text-gray-400"><label for="consent-tools-phone" class="cursor-pointer">Akceptuję <a href="/regulamin" class="text-airtur-blue hover:underline font-semibold">Regulamin</a>. (Wymagane)</label></div>
+                    <div class="flex items-center h-5">
+                        <input id="consent-tools-phone" name="zgoda" type="checkbox" required class="w-5 h-5 text-airtur-blue border-white/20 rounded focus:ring-airtur-blue cursor-pointer bg-white/10">
+                    </div>
+                    <div class="ml-3 text-[11px] leading-snug text-gray-400 w-full">
+                        <label for="consent-tools-phone" class="cursor-pointer block mb-1" set:html={TEXTS.secondaryForm.consent.replace('Regulamin', '<a href="/regulamin" target="_blank" rel="noopener noreferrer" class="text-airtur-blue hover:text-white transition-colors font-bold">Regulamin</a>').replace('Politykę Prywatności', '<a href="/polityka-prywatnosci" target="_blank" rel="noopener noreferrer" class="text-airtur-blue hover:text-white transition-colors font-bold">Politykę Prywatności</a>')}></label>
+                        <div id="err-zgoda-secondary" class="hidden text-red-400 text-[10px] font-black uppercase mt-1 tracking-wider">{TEXTS.errors.consent}</div>
+                    </div>
                 </div>
-                <button type="submit" class="submit-btn w-full bg-white text-airtur-dark font-bold py-3 rounded-lg hover:bg-gray-100 transition shadow-md uppercase tracking-wide cursor-pointer">PROSZĘ O TELEFON</button>
+
+                <button type="submit" data-loading-text={TEXTS.secondaryForm.btnLoading} class="submit-btn group relative w-full py-4 bg-white text-airtur-dark font-black rounded-2xl hover:bg-gray-100 transition-all shadow-md uppercase tracking-widest cursor-pointer flex items-center justify-center mt-2">
+                    <span class="btn-text" data-default-text={TEXTS.secondaryForm.btnSubmit}>{TEXTS.secondaryForm.btnSubmit}</span>
+                    <svg class="spinner hidden w-5 h-5 ml-3 animate-spin text-airtur-dark" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                </button>
             </form>
         </div>
       </div>
+
     </div>
   </div>
 </section>
 
 <script is:inline>
-const toggleBtn = document.getElementById('toggle-phone-form');
-const phoneContainer = document.getElementById('phone-form-container');
-const arrowIcon = document.getElementById('arrow-icon');
-
-toggleBtn?.addEventListener('click', () => {
-    const isHidden = phoneContainer.classList.contains('hidden');
-    phoneContainer.classList.toggle('hidden');
-    arrowIcon?.classList.toggle('rotate-180');
-});
-
 document.addEventListener('DOMContentLoaded', () => {
+    
+    const validators = {
+        email: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+        phone: (val) => val.replace(/\D/g, "").length >= 9
+    };
+
+    const DOM_CACHE = {
+        savings: document.getElementById('savings-year'),
+        model: document.getElementById('final-model-name'),
+        eco: document.getElementById('table-eco-name'),
+        smart: document.getElementById('table-smart-name'),
+        premium: document.getElementById('table-premium-name')
+    };
+
+    const toggleBtn = document.getElementById('toggle-phone-form');
+    const phoneContainer = document.getElementById('phone-form-container');
+    const arrowIcon = document.getElementById('arrow-icon');
+
+    toggleBtn?.addEventListener('click', () => {
+        phoneContainer.classList.toggle('hidden');
+        arrowIcon?.classList.toggle('rotate-180');
+    });
+
     const fixSavingsData = (form) => {
-        const savingsRaw = document.getElementById('savings-year')?.innerText || "0";
+        const savingsRaw = DOM_CACHE.savings?.innerText || "0";
         const savingsClean = savingsRaw.replace(/[^\d]/g, '');
-        const modelRaw = document.getElementById('final-model-name')?.innerText || "Nie wybrano modelu";
+        const modelRaw = DOM_CACHE.model?.innerText || "Nie wybrano modelu";
 
-        // 🔥 POBIERAMY DANE Z TABELKI W KROKU 4
-        const ecoRaw = document.getElementById('table-eco-name')?.innerText || "";
-        const smartRaw = document.getElementById('table-smart-name')?.innerText || "";
-        const premiumRaw = document.getElementById('table-premium-name')?.innerText || "";
+        const ecoRaw = DOM_CACHE.eco?.innerText || "";
+        const smartRaw = DOM_CACHE.smart?.innerText || "";
+        const premiumRaw = DOM_CACHE.premium?.innerText || "";
 
-        const savingsInput = form.querySelector('.calc-field-savings');
-        const modelInput = form.querySelector('.calc-field-model');
-        const ecoInput = form.querySelector('.calc-field-model-eco');
-        const smartInput = form.querySelector('.calc-field-model-smart');
-        const premiumInput = form.querySelector('.calc-field-model-premium');
-        
-        if (savingsInput) savingsInput.value = savingsClean;
-        if (modelInput) modelInput.value = modelRaw;
-        
-        // Zapisujemy dodatkowe modele do wysyłki
-        if (ecoInput) ecoInput.value = ecoRaw;
-        if (smartInput) smartInput.value = smartRaw;
-        if (premiumInput) premiumInput.value = premiumRaw;
+        if (form.id === 'tools-form-phone') {
+            const mainForm = document.getElementById('tools-form-email');
+            if(!mainForm) return; 
+            
+            const hiddenInputs = mainForm.querySelectorAll('input[type="hidden"]');
+            hiddenInputs.forEach(inp => {
+                if(inp.name !== 'cel' && inp.name !== 'source' && inp.name !== 'b_website') {
+                    let existing = form.querySelector(`input[name="${inp.name}"]`);
+                    if (!existing) {
+                        existing = document.createElement('input');
+                        existing.type = 'hidden';
+                        existing.name = inp.name;
+                        form.appendChild(existing);
+                    }
+                    existing.value = inp.value;
+                }
+            });
+        }
+
+        const assignIfExist = (selector, value) => {
+            const el = form.querySelector(selector);
+            if (el) el.value = value;
+        };
+
+        assignIfExist('.calc-field-savings', savingsClean);
+        assignIfExist('.calc-field-model', modelRaw);
+        assignIfExist('.calc-field-model-eco', ecoRaw);
+        assignIfExist('.calc-field-model-smart', smartRaw);
+        assignIfExist('.calc-field-model-premium', premiumRaw);
     };
 
     const forms = document.querySelectorAll('#tools-form-email, #tools-form-phone');
-    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const isValidPhone = (phone) => phone.replace(/\D/g, "").length >= 9;
 
     forms.forEach(form => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault(); 
-            
-            fixSavingsData(form);
-            
             const targetForm = e.target;
-            const submitBtn = targetForm.querySelector('.submit-btn');
+            
+            if (targetForm.dataset.submitting === "true") return;
 
-            const emailInput = targetForm.querySelector('input[name="email"]');
-            const phoneInput = targetForm.querySelector('input[name="telefon"]');
-            const consent = targetForm.querySelector('input[name="zgoda"]');
-
+            const suffix = targetForm.id === 'tools-form-email' ? 'main' : 'secondary';
             let hasError = false;
 
-            if (emailInput && !isValidEmail(emailInput.value)) {
+            if (targetForm.querySelector('input[name="b_website"]')?.value) return;
+
+            targetForm.querySelectorAll('.text-red-400').forEach(el => el.classList.add('hidden'));
+            targetForm.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"]').forEach(el => {
+                el.classList.remove('border-red-500');
+            });
+
+            const nameInput = targetForm.querySelector('input[name="imie"]');
+            if (nameInput && nameInput.value.trim().length < 3) {
                 hasError = true;
+                document.getElementById(`err-imie-${suffix}`)?.classList.remove('hidden');
+                nameInput.classList.add('border-red-500');
             }
-            
+
+            const emailInput = targetForm.querySelector('input[name="email"]');
+            if (emailInput && !validators.email(emailInput.value)) {
+                hasError = true;
+                document.getElementById(`err-email-${suffix}`)?.classList.remove('hidden');
+                emailInput.classList.add('border-red-500');
+            }
+
+            const phoneInput = targetForm.querySelector('input[name="telefon"]');
             if (phoneInput) {
-                const isRequired = phoneInput.hasAttribute('required');
+                const phoneContainerVisible = !document.getElementById('main-phone-container')?.classList.contains('hidden');
+                const isRequired = phoneInput.hasAttribute('required') || (suffix === 'main' && phoneContainerVisible);
                 const isNotEmpty = phoneInput.value.trim() !== "";
-                if ((isRequired || isNotEmpty) && !isValidPhone(phoneInput.value)) {
+                
+                if ((isRequired || isNotEmpty) && !validators.phone(phoneInput.value)) {
                     hasError = true;
+                    document.getElementById(`err-phone-${suffix}`)?.classList.remove('hidden');
+                    phoneInput.classList.add('border-red-500');
                 }
             }
 
-            if (!consent.checked) {
+            const consent = targetForm.querySelector('input[name="zgoda"]');
+            if (consent && !consent.checked) {
                 hasError = true;
-            }
-
-            if (hasError) {
-                const errorId = targetForm.id === 'tools-form-email' ? 'error-tools-mail' : 'error-tools-phone';
-                const errorDiv = document.getElementById(errorId);
-                if(errorDiv) {
-                    if (!consent.checked) {
-                        errorDiv.innerText = "Musisz zaakceptować Regulamin oraz Politykę Prywatności, aby wysłać zgłoszenie.";
-                    } else {
-                        errorDiv.innerText = targetForm.id === 'tools-form-email' 
-                            ? "Wprowadź poprawne dane i zaakceptuj zgody." 
-                            : "Numer min. 9 cyfr oraz wymagana zgoda.";
-                    }
-                    errorDiv.classList.remove('hidden');
+                const errZgoda = document.getElementById(`err-zgoda-${suffix}`);
+                if (errZgoda) {
+                    errZgoda.classList.remove('hidden');
                 }
-                return;
             }
 
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.style.opacity = "0.7";
-                submitBtn.innerText = "GENEROWANIE...";
-            }
+            if (hasError) return;
+
+            targetForm.dataset.submitting = "true";
+            targetForm.classList.add('opacity-70', 'pointer-events-none');
+            
+            fixSavingsData(targetForm);
+            
+            const submitBtn = targetForm.querySelector('.submit-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const spinner = submitBtn.querySelector('.spinner');
+            
+            submitBtn.disabled = true;
+            btnText.innerText = submitBtn.dataset.loadingText || "WYSYŁANIE...";
+            spinner.classList.remove('hidden');
 
             const formData = new FormData(targetForm);
             const dataObj = Object.fromEntries(formData.entries());
@@ -248,16 +352,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 
                 if (!response.ok) throw new Error('Błąd serwera');
-
                 const result = await response.json();
 
                 if (result.pdfBase64) {
                     try {
                         sessionStorage.setItem('currentReportPdf', result.pdfBase64);
                         sessionStorage.setItem('currentReportFilename', `Raport_AirTUR_${result.reportId || 'Nowy'}.pdf`);
-                    } catch (storageError) {
-                        console.error("Storage error:", storageError);
-                    }
+                    } catch (e) { console.error("Session storage error:", e); }
                 }
 
                 const params = new URLSearchParams();
@@ -268,10 +369,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 params.append('reportId', result.reportId || 'PENDING');
                 params.append('imie', dataObj.imie || 'Klient');
                 
-                [
-                    'wynik_metraz', 'wynik_moc', 'wynik_oszczednosci', 'wynik_model', 
-                    'wynik_cel', 'wynik_paliwo', 'wynik_rachunek', 'wynik_typ_budynku',
-                    'wynik_wybrany_tier', 'wynik_model_eco', 'wynik_model_smart', 'wynik_model_premium'
+                ['wynik_metraz', 'wynik_moc', 'wynik_oszczednosci', 'wynik_model', 
+                 'wynik_cel', 'wynik_paliwo', 'wynik_rachunek', 'wynik_typ_budynku',
+                 'wynik_wybrany_tier', 'wynik_model_eco', 'wynik_model_smart', 'wynik_model_premium'
                 ].forEach(key => {
                     const val = dataObj[key];
                     if(val) params.append(key.replace('wynik_', ''), val);
@@ -281,27 +381,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } catch (error) {
                 console.error("Submission Error:", error);
-                alert("Wystąpił błąd. Prosimy spróbować ponownie.");
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.style.opacity = "1";
-                    submitBtn.innerText = "SPRÓBUJ PONOWNIE";
+                
+                const errorDiv = targetForm.id === 'tools-form-email' ? document.getElementById('error-tools-mail') : document.getElementById('error-tools-phone');
+                if (errorDiv) {
+                    errorDiv.innerText = "Wystąpił błąd serwera. Spróbuj ponownie.";
+                    errorDiv.classList.remove('hidden');
                 }
+
+                targetForm.dataset.submitting = "false";
+                targetForm.classList.remove('opacity-70', 'pointer-events-none');
+                submitBtn.disabled = false;
+                btnText.innerText = btnText.dataset.defaultText || "SPRÓBUJ PONOWNIE";
+                spinner.classList.add('hidden');
             }
         });
-    });
 
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', () => {
-            document.getElementById('error-tools-mail')?.classList.add('hidden');
-            document.getElementById('error-tools-phone')?.classList.add('hidden');
+        form.querySelectorAll('input').forEach(inp => {
+            inp.addEventListener('input', () => {
+                inp.classList.remove('border-red-500');
+                const suffix = form.id === 'tools-form-email' ? 'main' : 'secondary';
+                const name = inp.name === 'telefon' ? 'phone' : inp.name;
+                
+                document.getElementById(`err-${name}-${suffix}`)?.classList.add('hidden');
+                
+                const mainErr = document.getElementById(form.id === 'tools-form-email' ? 'error-tools-mail' : 'error-tools-phone');
+                if(mainErr) mainErr.classList.add('hidden');
+            });
         });
-        if(input.type === 'checkbox') {
-             input.addEventListener('change', () => {
-                document.getElementById('error-tools-mail')?.classList.add('hidden');
-                document.getElementById('error-tools-phone')?.classList.add('hidden');
-             });
-        }
     });
 });
 </script>
