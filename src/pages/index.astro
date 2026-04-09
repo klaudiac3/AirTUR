@@ -1,80 +1,120 @@
 ---
-// src/pages/index.astro
+import Layout from '../layouts/Layout.astro';
+import { companyConfig } from '../data/companyConfig';
+import { reviewsData } from '../data/reviewsData'; // Import Twoich opinii
+
+// Komponenty sekcji
+import Hero from '../components/strona-glowna/Hero.astro';
+import Fundamenty from '../components/strona-glowna/Fundamenty.astro';
+import ProblemRozwiazanie from '../components/strona-glowna/ProblemRozwiazanie.astro';
+import Opinie from '../components/strona-glowna/Opinie.astro';
+import Narzedzia from '../components/strona-glowna/Narzedzia.astro';
+import OstatnieCTA from '../components/strona-glowna/OstatnieCTA.astro';
+
+const seoTitle = "Klimatyzacja z funkcją grzania i montaż | AirTUR";
+const seoDescription = "Nowoczesna klimatyzacja z funkcją grzania AirTUR. Oblicz zwrot z inwestycji (ROI) i zyskaj komfort przez 365 dni w roku.";
+
+/**
+ * [LOGIKA]: Obliczanie średniej ocen dla Google (SEO Power-Up)
+ * Zautomatyzowane wyciąganie danych z reviewsData.js
+ */
+const totalReviews = reviewsData.length;
+const averageRating = (reviewsData.reduce((acc, rev) => acc + rev.rating, 0) / totalReviews).toFixed(1);
+
+const serviceRegions = companyConfig.serviceAreas.map(area => area.region);
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://airtur.pl/#website",
+      "url": "https://airtur.pl",
+      "name": "AirTUR",
+      "publisher": { "@id": "https://airtur.pl/#organization" }
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://airtur.pl/#organization",
+      "name": companyConfig.name,
+      "legalName": companyConfig.fullName,
+      "url": "https://airtur.pl",
+      "logo": "https://airtur.pl/logo.png",
+      "image": "https://airtur.pl/assets/hero.jpg",
+      "telephone": companyConfig.contact.phoneFull,
+      "email": companyConfig.contact.email,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": companyConfig.address.street,
+        "addressLocality": companyConfig.address.city,
+        "postalCode": companyConfig.address.postCode,
+        "addressCountry": "PL"
+      },
+      "areaServed": serviceRegions,
+      "priceRange": "$$",
+      // [SEO]: Dodanie zagregowanych opinii do wizytówki Google
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": averageRating,
+        "reviewCount": totalReviews
+      }
+    }
+  ]
+};
+
+const sectionClass = "scroll-mt-24";
 ---
 
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AirTUR | Strona w przygotowaniu</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <style>
-        /* Bezpośrednie wstrzyknięcie Twoich kolorów */
-        @import "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css";
-        
-        :root {
-            --airtur-blue: #0AB3C6;
-            --airtur-dark: #3A4149;
-            --airtur-navy: #0A3876;
-        }
-
-        .bg-airtur-dark { background-color: var(--airtur-dark) !important; }
-        .text-airtur-blue { color: var(--airtur-blue) !important; }
-        .bg-airtur-blue { background-color: var(--airtur-blue) !important; }
-        .border-airtur-blue { border-color: var(--airtur-blue) !important; }
-        .bg-glow { background-color: rgba(10, 179, 198, 0.1); }
-    </style>
-</head>
-<body class="min-h-screen flex flex-col bg-airtur-dark text-white font-sans overflow-hidden">
+<Layout title={seoTitle} description={seoDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  
+  <main id="main-content" tabindex="-1" class="focus:outline-none">
     
-    <header class="bg-white py-6 shadow-md relative z-20">
-      <div class="max-w-7xl mx-auto px-4 text-center">
-        <img src="/logo.svg" alt="AirTUR Logo" class="h-12 md:h-16 mx-auto" />
-      </div>
-    </header>
+    <section id="start" class={sectionClass} aria-label="Sekcja powitalna">
+      <Hero />
+    </section>
 
-    <main class="flex-grow flex items-center justify-center relative bg-airtur-dark">
-      
-      <div class="absolute inset-0 opacity-20">
-          <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-airtur-blue rounded-full blur-[120px]"></div>
-          <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-airtur-blue rounded-full blur-[120px]"></div>
-      </div>
+    <section id="dlaczego-my" class={sectionClass} aria-label="Nasze standardy pracy">
+      <Fundamenty />
+    </section>
 
-      <div class="max-w-3xl mx-auto px-4 text-center relative z-10 py-12">
-        <div class="mb-8">
-          <div class="inline-block px-4 py-1 rounded-full border border-airtur-blue bg-glow text-airtur-blue text-xs font-black uppercase tracking-[0.2em]">
-              Nowoczesna Klimatyzacja & Pompy Ciepła
-          </div>
-        </div>
-        
-        <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight uppercase">
-          Trwa <span class="text-airtur-blue">optymalizacja</span><br/>naszej witryny
-        </h1>
-        
-        <p class="text-gray-300 text-lg md:text-xl mb-12 leading-relaxed max-w-2xl mx-auto">
-          Pracujemy nad tym, aby dostarczyć Ci najlepsze rozwiązania w zakresie klimatu i energii. 
-          Pełna oferta AirTUR będzie dostępna już niebawem.
-        </p>
+    <section id="rozwiazania" class={sectionClass} aria-label="Rozwiązania HVAC">
+      <ProblemRozwiazanie />
+    </section>
 
-        <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-[2.5rem] p-8 md:p-12 mb-8">
-          <p class="text-airtur-blue font-bold uppercase tracking-widest text-sm mb-4 italic">Zapytania ofertowe i kontakt:</p>
-          <a href="mailto:kontakt@airtur.pl" class="text-2xl md:text-4xl font-black hover:text-airtur-blue transition-all break-all">
-              kontakt@airtur.pl
-          </a>
-          
-          <div class="mt-8 pt-8 border-t border-white/10 flex justify-center">
-            <div class="flex items-center gap-3">
-                <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]"></span>
-                <span class="text-sm text-gray-400 font-bold uppercase tracking-widest">Dział techniczny pracuje normalnie</span>
-            </div>
-          </div>
-        </div>
+    <section id="opinie" class={sectionClass} aria-label="Opinie klientów">
+      <Opinie reviews={reviewsData} />
+    </section>
 
-        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-medium">
-          © {new Date().getFullYear()} AirTUR – Inżynieria Twojego Klimatu
-        </p>
-      </div>
-    </main>
-</body>
-</html>
+    <section id="narzedzia" class={sectionClass} aria-label="Kalkulatory ROI">
+      <Narzedzia />
+    </section>
+
+    <section id="wycena" class={sectionClass} aria-label="Kontakt">
+      <OstatnieCTA />
+    </section>
+
+  </main>
+</Layout>
+
+<style is:global>
+  html {
+    scroll-behavior: smooth;
+    /* [UX]: Zapobieganie przesunięciom układu przy overflow */
+    overflow-x: hidden;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Przenosimy overflow tutaj, by nie blokować sticky na <main> */
+    overflow-x: hidden;
+    margin: 0;
+  }
+
+  #main-content:focus:not(:focus-visible) {
+    outline: none;
+  }
+</style>
